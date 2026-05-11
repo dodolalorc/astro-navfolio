@@ -1,0 +1,244 @@
+---
+import { islandNavItems } from '../data/island-nav';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string) {
+  const normalizedHref = href.replace(/\/$/, '') || '/';
+
+  if (normalizedHref === '/') {
+    return currentPath === '/';
+  }
+
+  return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
+}
+---
+
+<div class="island-shell" aria-label="floating navigation">
+  <nav class="island-nav" aria-label="primary navigation">
+    <a class="island-home" href="/" aria-label="Go to home">
+      <span class="island-dot" aria-hidden="true"></span>
+      <span class="island-brand">navfolio</span>
+    </a>
+
+    <div class="island-links">
+      {
+        islandNavItems.map((item) => (
+          <a class:list={['island-link', { active: isActive(item.href) }]} href={item.href}>
+            <span>{item.label}</span>
+            <small>{item.description}</small>
+          </a>
+        ))
+      }
+    </div>
+  </nav>
+</div>
+
+<style>
+  .island-shell {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 100;
+    width: min(calc(100% - 32px), 440px);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .island-nav {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 20px;
+    margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: visible;
+    border: 0;
+    border-radius: 0 0 13px 13px;
+    background:
+      linear-gradient(90deg, rgba(126, 198, 175, 0.62), rgba(230, 247, 241, 0.82)),
+      rgba(244, 252, 249, 0.72);
+    box-shadow: 0 1px 4px rgba(42, 98, 90, 0.06);
+    color: #142033;
+    backdrop-filter: blur(18px) saturate(1.18);
+    pointer-events: auto;
+    clip-path: path('M 0 0 H 72 C 70 6 64 18 56 20 H 16 C 8 18 2 6 0 0 Z');
+    transform: translateY(0);
+    transform-origin: top center;
+    transition:
+      width 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      height 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      padding 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      border-radius 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      clip-path 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      box-shadow 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      transform 520ms cubic-bezier(0.2, 0.9, 0.18, 1);
+  }
+
+  .island-nav::before {
+    position: absolute;
+    inset: -9px -38px;
+    border-radius: 999px;
+    content: '';
+  }
+
+  .island-nav:hover,
+  .island-nav:focus-within {
+    width: 100%;
+    height: 58px;
+    padding: 9px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.88);
+    border-radius: 24px;
+    clip-path: inset(0 round 24px);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 249, 245, 0.88)),
+      rgba(245, 252, 249, 0.9);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.92),
+      0 18px 38px rgba(45, 88, 84, 0.16),
+      0 6px 16px rgba(20, 32, 51, 0.08);
+    transform: translateY(1px);
+  }
+
+  .island-home {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition:
+      left 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      transform 520ms cubic-bezier(0.2, 0.9, 0.18, 1),
+      opacity 240ms ease 60ms;
+  }
+
+  .island-nav:hover .island-home,
+  .island-nav:focus-within .island-home {
+    left: 16px;
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+
+  .island-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #21b68a;
+    box-shadow: 0 0 14px rgba(33, 182, 138, 0.42);
+  }
+
+  .island-brand {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .island-links {
+    position: absolute;
+    top: 9px;
+    right: 10px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    width: calc(100% - 116px);
+    opacity: 0;
+    transform: translateY(-2px) scale(0.99);
+    pointer-events: none;
+    transition:
+      opacity 320ms ease 90ms,
+      transform 420ms cubic-bezier(0.2, 0.9, 0.18, 1);
+  }
+
+  .island-nav:hover .island-links,
+  .island-nav:focus-within .island-links {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .island-link {
+    display: grid;
+    gap: 2px;
+    min-height: 40px;
+    padding: 7px 10px;
+    border: 1px solid rgba(101, 139, 132, 0.1);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.48);
+    color: #243246;
+    text-decoration: none;
+    transition:
+      background 220ms ease,
+      color 220ms ease,
+      transform 220ms ease,
+      border-color 220ms ease;
+  }
+
+  .island-link:hover,
+  .island-link:focus-visible,
+  .island-link.active {
+    border-color: rgba(33, 182, 138, 0.22);
+    background: rgba(236, 251, 245, 0.82);
+    color: #116e59;
+    transform: translateY(-1px);
+  }
+
+  .island-link span {
+    overflow: hidden;
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .island-link small {
+    overflow: hidden;
+    color: #637486;
+    font-size: 0.68rem;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 560px) {
+    .island-shell {
+      top: 0;
+      width: min(calc(100% - 20px), 340px);
+    }
+
+    .island-nav:hover,
+    .island-nav:focus-within {
+      height: 150px;
+      border-radius: 22px;
+    }
+
+    .island-nav:hover .island-home,
+    .island-nav:focus-within .island-home {
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .island-links {
+      top: 47px;
+      right: 10px;
+      grid-template-columns: 1fr;
+      width: calc(100% - 20px);
+    }
+
+    .island-link {
+      min-height: 34px;
+      padding: 6px 10px;
+    }
+  }
+</style>

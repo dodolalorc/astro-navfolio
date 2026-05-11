@@ -9,32 +9,40 @@ import DashboardGrid from '../components/layout/DashboardGrid.astro';
 import CalendarWidget from '../components/widgets/CalendarWidget.astro';
 import ClockWidget from '../components/widgets/ClockWidget.astro';
 import DoingCard from '../components/widgets/DoingCard.astro';
-import { connectLinks, doingItems, githubStats, intro, navigationLinks, profile, quote } from '../data/profile';
+import {
+  connectLinks,
+  doingItems,
+  githubStats,
+  intro,
+  navigationLinks,
+  profile,
+  quote,
+} from '../data/profile';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const pageTitle = 'dodola | Personal Dashboard';
-const pageDescription = 'dodola 的个人主页仪表盘，关于 AI、全栈工程、博客与独立开发。';
+const pageTitle = 'navfolio | Personal Dashboard';
+const pageDescription = 'A customizable personal navigation portfolio dashboard built with Astro.';
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
-	<div class="dashboard-bg" aria-hidden="true"></div>
-	<DashboardGrid>
-		<Fragment slot="left">
-			<ProfileCard profile={profile} />
-			<NavigationCard items={navigationLinks} />
-		</Fragment>
+  <div class="dashboard-bg" aria-hidden="true"></div>
+  <DashboardGrid>
+    <Fragment slot="left">
+      <ProfileCard profile={profile} />
+      <NavigationCard items={navigationLinks} />
+    </Fragment>
 
-		<Fragment slot="center">
-			<QuoteCard quote={quote} />
-			<IntroCard intro={intro} />
-			<GithubStatsCard stats={githubStats} />
-			<ConnectCard items={connectLinks} />
-		</Fragment>
+    <Fragment slot="center">
+      <QuoteCard quote={quote} />
+      <IntroCard intro={intro} />
+      <GithubStatsCard stats={githubStats} />
+      <ConnectCard items={connectLinks} />
+    </Fragment>
 
-		<Fragment slot="right">
-			<ClockWidget />
-			<CalendarWidget />
-			<DoingCard items={doingItems} />
-		</Fragment>
-	</DashboardGrid>
+    <Fragment slot="right">
+      <ClockWidget />
+      <CalendarWidget />
+      <DoingCard items={doingItems} />
+    </Fragment>
+  </DashboardGrid>
 </BaseLayout>

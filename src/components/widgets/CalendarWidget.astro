@@ -5,97 +5,99 @@ const month = today.getMonth();
 const currentDay = today.getDate();
 const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
 const daysInMonth = new Date(year, month + 1, 0).getDate();
-const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const days = Array.from({ length: daysInMonth }, (_, index) => index + 1);
 ---
 
 <article class="glass-card calendar-card">
-	<header>
-		<h2>{year}年{month + 1}月</h2>
-		<time datetime={today.toISOString().slice(0, 10)}>{currentDay}</time>
-	</header>
+  <header>
+    <h2>{year}/{month + 1}</h2>
+    <time datetime={today.toISOString().slice(0, 10)}>{currentDay}</time>
+  </header>
 
-	<div class="calendar-grid" aria-label={`${year}年${month + 1}月日历`}>
-		{weekdays.map((day) => <span class="weekday">{day}</span>)}
-		{Array.from({ length: firstDay }).map(() => <span class="day empty" aria-hidden="true"></span>)}
-		{days.map((day) => (
-			<time
-				class:list={['day', { today: day === currentDay }]}
-				datetime={`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`}
-				aria-current={day === currentDay ? 'date' : undefined}
-			>
-				{day}
-			</time>
-		))}
-	</div>
+  <div class="calendar-grid" aria-label={`${year}-${month + 1} calendar`}>
+    {weekdays.map((day) => <span class="weekday">{day}</span>)}
+    {Array.from({ length: firstDay }).map(() => <span class="day empty" aria-hidden="true" />)}
+    {
+      days.map((day) => (
+        <time
+          class:list={['day', { today: day === currentDay }]}
+          datetime={`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`}
+          aria-current={day === currentDay ? 'date' : undefined}
+        >
+          {day}
+        </time>
+      ))
+    }
+  </div>
 </article>
 
 <style>
-	.calendar-card {
-		min-height: 330px;
-		padding: 28px;
-	}
+  .calendar-card {
+    min-height: 330px;
+    padding: 28px;
+  }
 
-	header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-bottom: 20px;
-	}
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
 
-	h2 {
-		margin: 0;
-		color: #142033;
-		font-size: 1.15rem;
-	}
+  h2 {
+    margin: 0;
+    color: #142033;
+    font-size: 1.15rem;
+  }
 
-	header time {
-		display: grid;
-		place-items: center;
-		width: 38px;
-		height: 38px;
-		border-radius: 14px;
-		background: linear-gradient(135deg, #25c493, #54d6a4);
-		color: #fff;
-		font-size: 1rem;
-		font-weight: 750;
-		box-shadow: 0 10px 18px rgba(37, 196, 147, 0.28);
-	}
+  header time {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #25c493, #54d6a4);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 750;
+    box-shadow: 0 10px 18px rgba(37, 196, 147, 0.28);
+  }
 
-	.calendar-grid {
-		display: grid;
-		grid-template-columns: repeat(7, minmax(0, 1fr));
-		gap: 14px 10px;
-		text-align: center;
-	}
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 14px 10px;
+    text-align: center;
+  }
 
-	.weekday,
-	.day {
-		display: grid;
-		place-items: center;
-		height: 31px;
-		border-radius: 10px;
-		color: #4e5b6b;
-		font-size: 0.95rem;
-	}
+  .weekday,
+  .day {
+    display: grid;
+    place-items: center;
+    height: 31px;
+    border-radius: 10px;
+    color: #4e5b6b;
+    font-size: 0.95rem;
+  }
 
-	.weekday {
-		color: #687588;
-		font-weight: 650;
-	}
+  .weekday {
+    color: #687588;
+    font-weight: 650;
+  }
 
-	.day {
-		text-decoration: none;
-	}
+  .day {
+    text-decoration: none;
+  }
 
-	.day.today {
-		background: linear-gradient(135deg, #25c493, #54d6a4);
-		color: #fff;
-		font-weight: 750;
-		box-shadow: 0 9px 16px rgba(37, 196, 147, 0.28);
-	}
+  .day.today {
+    background: linear-gradient(135deg, #25c493, #54d6a4);
+    color: #fff;
+    font-weight: 750;
+    box-shadow: 0 9px 16px rgba(37, 196, 147, 0.28);
+  }
 
-	.day.empty {
-		visibility: hidden;
-	}
+  .day.empty {
+    visibility: hidden;
+  }
 </style>

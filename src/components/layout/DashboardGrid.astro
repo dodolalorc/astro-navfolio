@@ -1,63 +1,64 @@
 ---
+
 ---
 
 <main class="dashboard-shell">
-	<section class="dashboard-grid" aria-label="dodola personal dashboard">
-		<aside class="dashboard-column side-column">
-			<slot name="left" />
-		</aside>
-		<section class="dashboard-column main-column">
-			<slot name="center" />
-		</section>
-		<aside class="dashboard-column side-column">
-			<slot name="right" />
-		</aside>
-	</section>
+  <section class="dashboard-grid" aria-label="navfolio personal dashboard">
+    <aside class="dashboard-column side-column">
+      <slot name="left" />
+    </aside>
+    <section class="dashboard-column main-column">
+      <slot name="center" />
+    </section>
+    <aside class="dashboard-column side-column">
+      <slot name="right" />
+    </aside>
+  </section>
 </main>
 
 <style>
-	.dashboard-shell {
-		width: min(100%, 1500px);
-		margin: 0 auto;
-		padding: 24px;
-	}
+  .dashboard-shell {
+    width: min(100%, 1500px);
+    margin: 0 auto;
+    padding: 24px;
+  }
 
-	.dashboard-grid {
-		display: grid;
-		grid-template-columns: minmax(250px, 0.9fr) minmax(460px, 2fr) minmax(270px, 1fr);
-		gap: 18px;
-		align-items: stretch;
-	}
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(250px, 0.9fr) minmax(460px, 2fr) minmax(270px, 1fr);
+    gap: 18px;
+    align-items: stretch;
+  }
 
-	.dashboard-column {
-		display: grid;
-		gap: 18px;
-		align-content: start;
-	}
+  .dashboard-column {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
 
-	.main-column {
-		grid-template-rows: auto auto auto auto;
-	}
+  .main-column {
+    grid-template-rows: auto auto auto auto;
+  }
 
-	@media (max-width: 1180px) {
-		.dashboard-grid {
-			grid-template-columns: minmax(260px, 0.9fr) minmax(420px, 1.6fr);
-		}
+  @media (max-width: 1180px) {
+    .dashboard-grid {
+      grid-template-columns: minmax(260px, 0.9fr) minmax(420px, 1.6fr);
+    }
 
-		.dashboard-grid > .dashboard-column:last-child {
-			grid-column: 1 / -1;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
-	}
+    .dashboard-grid > .dashboard-column:last-child {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
 
-	@media (max-width: 820px) {
-		.dashboard-shell {
-			padding: 16px;
-		}
+  @media (max-width: 820px) {
+    .dashboard-shell {
+      padding: 16px;
+    }
 
-		.dashboard-grid,
-		.dashboard-grid > .dashboard-column:last-child {
-			grid-template-columns: 1fr;
-		}
-	}
+    .dashboard-grid,
+    .dashboard-grid > .dashboard-column:last-child {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

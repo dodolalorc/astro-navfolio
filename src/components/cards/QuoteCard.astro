@@ -1,77 +1,83 @@
 ---
 interface Quote {
-	text: string[];
-	image: string;
+  text: string[];
+  image: string;
 }
 
 const { quote } = Astro.props as { quote: Quote };
 ---
 
 <article class="glass-card quote-card">
-	<div class="quote-mark" aria-hidden="true">“</div>
-	<blockquote>
-		{quote.text.map((line) => <span>{line}</span>)}
-	</blockquote>
-	<img src={quote.image} alt="books, plant and desk clock" width="410" height="230" loading="eager" />
+  <div class="quote-mark" aria-hidden="true">"</div>
+  <blockquote>
+    {quote.text.map((line) => <span>{line}</span>)}
+  </blockquote>
+  <img
+    src={quote.image}
+    alt="desk workspace illustration"
+    width="410"
+    height="230"
+    loading="eager"
+  />
 </article>
 
 <style>
-	.quote-card {
-		display: grid;
-		grid-template-columns: 48px minmax(0, 1fr) minmax(210px, 0.84fr);
-		gap: 14px;
-		align-items: center;
-		min-height: 250px;
-		padding: 22px 26px;
-		overflow: hidden;
-	}
+  .quote-card {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) minmax(210px, 0.84fr);
+    gap: 14px;
+    align-items: center;
+    min-height: 250px;
+    padding: 22px 26px;
+    overflow: hidden;
+  }
 
-	.quote-mark {
-		align-self: start;
-		color: #70c8a9;
-		font-family: Georgia, serif;
-		font-size: 5.5rem;
-		line-height: 0.9;
-	}
+  .quote-mark {
+    align-self: start;
+    color: #70c8a9;
+    font-family: Georgia, serif;
+    font-size: 5.5rem;
+    line-height: 0.9;
+  }
 
-	blockquote {
-		display: grid;
-		gap: 9px;
-		margin: 0;
-		border: 0;
-		padding: 0;
-		color: #15233a;
-		font-family: Georgia, 'Times New Roman', serif;
-		font-size: 1.25rem;
-		font-style: italic;
-		line-height: 1.3;
-	}
+  blockquote {
+    display: grid;
+    gap: 9px;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    color: #15233a;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    line-height: 1.3;
+  }
 
-	img {
-		width: 100%;
-		height: 206px;
-		object-fit: cover;
-		object-position: center;
-		border-radius: 22px;
-		filter: saturate(0.94);
-	}
+  img {
+    width: 100%;
+    height: 206px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 22px;
+    filter: saturate(0.94);
+  }
 
-	@media (max-width: 640px) {
-		.quote-card {
-			grid-template-columns: 1fr;
-			gap: 12px;
-		}
+  @media (max-width: 640px) {
+    .quote-card {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
 
-		.quote-mark {
-			display: none;
-		}
+    .quote-mark {
+      display: none;
+    }
 
-		blockquote {
-			font-size: 1.08rem;
-		}
+    blockquote {
+      font-size: 1.08rem;
+    }
 
-		img {
-			height: 170px;
-		}
-	}
+    img {
+      height: 170px;
+    }
+  }
 </style>

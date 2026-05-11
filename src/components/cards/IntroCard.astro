@@ -1,119 +1,130 @@
 ---
 interface Intro {
-	title: string;
-	body: string[];
-	image: string;
+  title: string;
+  name: string;
+  body: string[];
+  image: string;
 }
 
 const { intro } = Astro.props as { intro: Intro };
 ---
 
 <article class="glass-card intro-card">
-	<div class="intro-copy">
-		<h2><span aria-hidden="true">👋</span> {intro.title.replace('dodola', '')}<em>dodola</em></h2>
-		{intro.body.map((paragraph) => <p>{paragraph}</p>)}
-	</div>
-	<div class="pixel-stage" aria-hidden="true">
-		<span class="sparkle sparkle-a">✦</span>
-		<span class="sparkle sparkle-b">✦</span>
-		<span class="heart heart-a">♥</span>
-		<span class="heart heart-b">♥</span>
-		<img src={intro.image} alt="" width="250" height="270" loading="eager" />
-	</div>
+  <div class="intro-copy">
+    <h2>
+      <span aria-hidden="true">Hi,</span>
+      {intro.title.replace(intro.name, '')}<em>{intro.name}</em>
+    </h2>
+    {intro.body.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+  <div class="pixel-stage" aria-hidden="true">
+    <span class="sparkle sparkle-a">*</span>
+    <span class="sparkle sparkle-b">*</span>
+    <span class="heart heart-a">+</span>
+    <span class="heart heart-b">+</span>
+    <img src={intro.image} alt="" width="250" height="270" loading="eager" />
+  </div>
 </article>
 
 <style>
-	.intro-card {
-		display: grid;
-		grid-template-columns: minmax(0, 1.18fr) minmax(210px, 0.82fr);
-		gap: 20px;
-		align-items: center;
-		min-height: 330px;
-		padding: 38px;
-	}
+  .intro-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(210px, 0.82fr);
+    gap: 20px;
+    align-items: center;
+    min-height: 330px;
+    padding: 38px;
+  }
 
-	h2 {
-		margin: 0 0 26px;
-		color: #11182b;
-		font-size: 2.1rem;
-		line-height: 1.1;
-	}
+  h2 {
+    margin: 0 0 26px;
+    color: #11182b;
+    font-size: 2.1rem;
+    line-height: 1.1;
+  }
 
-	h2 em {
-		color: #247b65;
-		font-style: italic;
-	}
+  h2 span {
+    margin-right: 0.35rem;
+    color: #247b65;
+    font-style: normal;
+  }
 
-	p {
-		margin: 0 0 16px;
-		color: #17243a;
-		font-size: 1.02rem;
-		line-height: 1.9;
-	}
+  h2 em {
+    color: #247b65;
+    font-style: italic;
+  }
 
-	p:last-child {
-		margin-bottom: 0;
-	}
+  p {
+    margin: 0 0 16px;
+    color: #17243a;
+    font-size: 1.02rem;
+    line-height: 1.9;
+  }
 
-	.pixel-stage {
-		position: relative;
-		min-height: 250px;
-		display: grid;
-		place-items: center;
-	}
+  p:last-child {
+    margin-bottom: 0;
+  }
 
-	.pixel-stage img {
-		position: relative;
-		z-index: 1;
-		width: min(100%, 250px);
-		height: auto;
-		border-radius: 24px;
-		filter: drop-shadow(0 18px 24px rgba(93, 151, 177, 0.16));
-	}
+  .pixel-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 250px;
+  }
 
-	.sparkle,
-	.heart {
-		position: absolute;
-		font-size: 1.5rem;
-	}
+  .pixel-stage img {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 250px);
+    height: auto;
+    border-radius: 24px;
+    filter: drop-shadow(0 18px 24px rgba(93, 151, 177, 0.16));
+  }
 
-	.sparkle {
-		color: #78c7af;
-	}
+  .sparkle,
+  .heart {
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
 
-	.sparkle-a {
-		right: 6%;
-		top: 0;
-	}
+  .sparkle {
+    color: #78c7af;
+  }
 
-	.sparkle-b {
-		left: 4%;
-		top: 22%;
-		color: #f4c95d;
-	}
+  .sparkle-a {
+    right: 6%;
+    top: 0;
+  }
 
-	.heart {
-		color: #ff9db6;
-	}
+  .sparkle-b {
+    left: 4%;
+    top: 22%;
+    color: #f4c95d;
+  }
 
-	.heart-a {
-		left: 10%;
-		top: 48%;
-	}
+  .heart {
+    color: #ff9db6;
+  }
 
-	.heart-b {
-		right: 0;
-		top: 50%;
-	}
+  .heart-a {
+    left: 10%;
+    top: 48%;
+  }
 
-	@media (max-width: 640px) {
-		.intro-card {
-			grid-template-columns: 1fr;
-			padding: 28px;
-		}
+  .heart-b {
+    right: 0;
+    top: 50%;
+  }
 
-		h2 {
-			font-size: 1.7rem;
-		}
-	}
+  @media (max-width: 640px) {
+    .intro-card {
+      grid-template-columns: 1fr;
+      padding: 28px;
+    }
+
+    h2 {
+      font-size: 1.7rem;
+    }
+  }
 </style>

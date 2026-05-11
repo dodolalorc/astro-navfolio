@@ -1,59 +1,59 @@
 ---
 import {
-	BookOpen,
-	BriefcaseBusiness,
-	Building2,
-	CalendarDays,
-	Clock3,
-	Compass,
-	ExternalLink,
-	Gem,
-	GitBranch,
-	GitCommitHorizontal,
-	Github,
-	Link2,
-	Mail,
-	MapPin,
-	MessageCircle,
-	PenLine,
-	BookMarked,
-	Sparkles,
-	Star,
-	Twitter,
-	Tv,
-	type Props as LucideProps,
+  BookOpen,
+  BriefcaseBusiness,
+  Building2,
+  CalendarDays,
+  Clock3,
+  Compass,
+  ExternalLink,
+  Gem,
+  GitBranch,
+  GitCommitHorizontal,
+  Github,
+  Link2,
+  Mail,
+  MapPin,
+  MessageCircle,
+  PenLine,
+  BookMarked,
+  Sparkles,
+  Star,
+  Twitter,
+  Tv,
+  type Props as LucideProps,
 } from 'lucide-astro';
 
 interface Props extends Omit<LucideProps, 'name'> {
-	name: string;
-	size?: number | string;
-	class?: string;
+  name: string;
+  size?: number | string;
+  class?: string;
 }
 
 const { name, size = 20, class: className, style, ...attrs } = Astro.props;
 
 const icons = {
-	bilibili: Tv,
-	book: BookOpen,
-	branch: GitBranch,
-	briefcase: BriefcaseBusiness,
-	building: Building2,
-	calendar: CalendarDays,
-	clock: Clock3,
-	commit: GitCommitHorizontal,
-	compass: Compass,
-	external: ExternalLink,
-	github: Github,
-	juejin: Gem,
-	link: Link2,
-	mail: Mail,
-	map: MapPin,
-	mastodon: MessageCircle,
-	pen: PenLine,
-	repo: BookMarked,
-	sparkle: Sparkles,
-	star: Star,
-	twitter: Twitter,
+  bilibili: Tv,
+  book: BookOpen,
+  branch: GitBranch,
+  briefcase: BriefcaseBusiness,
+  building: Building2,
+  calendar: CalendarDays,
+  clock: Clock3,
+  commit: GitCommitHorizontal,
+  compass: Compass,
+  external: ExternalLink,
+  github: Github,
+  juejin: Gem,
+  link: Link2,
+  mail: Mail,
+  map: MapPin,
+  mastodon: MessageCircle,
+  pen: PenLine,
+  repo: BookMarked,
+  sparkle: Sparkles,
+  star: Star,
+  twitter: Twitter,
 };
 
 const IconComponent = icons[name as keyof typeof icons] ?? Sparkles;
@@ -62,11 +62,11 @@ const iconStyle = `--icon-size: ${iconSize};${style ? ` ${style}` : ''}`;
 ---
 
 <IconComponent
-	{...attrs}
-	size={size}
-	stroke-width={attrs['stroke-width'] ?? 1.9}
-	aria-hidden={attrs['aria-hidden'] ?? 'true'}
-	focusable={attrs.focusable ?? 'false'}
-	style={iconStyle}
-	class:list={['site-icon', className]}
+  {...attrs}
+  size={size}
+  stroke-width={attrs['stroke-width'] ?? 1.9}
+  aria-hidden={attrs['aria-hidden'] ?? 'true'}
+  focusable={attrs.focusable ?? 'false'}
+  style={iconStyle}
+  class:list={['site-icon', className]}
 />

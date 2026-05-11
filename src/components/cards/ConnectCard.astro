@@ -2,83 +2,88 @@
 import Icon from '../Icon.astro';
 
 interface ConnectItem {
-	label: string;
-	href: string;
-	icon: string;
+  label: string;
+  href: string;
+  icon: string;
 }
 
 const { items } = Astro.props as { items: ConnectItem[] };
 ---
 
 <article class="glass-card connect-card">
-	<h2><Icon name="link" /> Connect</h2>
-	<div class="connect-list">
-		{items.map((item) => (
-			<a href={item.href} aria-label={item.label}>
-				<Icon name={item.icon} />
-				<span>{item.label}</span>
-			</a>
-		))}
-	</div>
+  <h2><Icon name="link" /> Connect</h2>
+  <div class="connect-list">
+    {
+      items.map((item) => (
+        <a href={item.href} aria-label={item.label}>
+          <Icon name={item.icon} />
+          <span>{item.label}</span>
+        </a>
+      ))
+    }
+  </div>
 </article>
 
 <style>
-	.connect-card {
-		padding: 18px 24px 24px;
-	}
+  .connect-card {
+    padding: 18px 24px 24px;
+  }
 
-	h2 {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		margin: 0 0 14px;
-		color: #142033;
-		font-size: 1.05rem;
-	}
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    color: #142033;
+    font-size: 1.05rem;
+  }
 
-	h2 svg {
-		width: 20px;
-		height: 20px;
-		color: #288f84;
-	}
+  h2 svg {
+    width: 20px;
+    height: 20px;
+    color: #288f84;
+  }
 
-	.connect-list {
-		display: grid;
-		grid-template-columns: repeat(5, minmax(0, 1fr));
-		gap: 12px;
-	}
+  .connect-list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+  }
 
-	a {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		min-height: 48px;
-		padding: 0 12px;
-		border: 1px solid rgba(255, 255, 255, 0.86);
-		border-radius: 999px;
-		background: rgba(255, 255, 255, 0.46);
-		color: #142033;
-		text-decoration: none;
-		box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);
-		transition: transform 180ms ease, background 180ms ease, color 180ms ease;
-	}
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.86);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.46);
+    color: #142033;
+    text-decoration: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);
+    transition:
+      transform 180ms ease,
+      background 180ms ease,
+      color 180ms ease;
+  }
 
-	a:hover {
-		background: rgba(255, 255, 255, 0.82);
-		color: #118b70;
-		transform: translateY(-2px);
-	}
+  a:hover {
+    background: rgba(255, 255, 255, 0.82);
+    color: #118b70;
+    transform: translateY(-2px);
+  }
 
-	svg {
-		width: 20px;
-		height: 20px;
-		flex: 0 0 auto;
-	}
+  svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
 
-	@media (max-width: 640px) {
-		.connect-list {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
+  @media (max-width: 640px) {
+    .connect-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 </style>

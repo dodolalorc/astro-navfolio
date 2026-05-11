@@ -2,76 +2,78 @@
 import Icon from '../Icon.astro';
 
 interface DoingItem {
-	text: string;
-	mark: string;
+  text: string;
+  mark: string;
 }
 
 const { items } = Astro.props as { items: DoingItem[] };
 ---
 
 <article class="glass-card doing-card">
-	<h2><Icon name="calendar" /> 最近在做</h2>
-	<ul>
-		{items.map((item) => (
-			<li>
-				<span>{item.text}</span>
-				<strong aria-hidden="true">{item.mark}</strong>
-			</li>
-		))}
-	</ul>
+  <h2><Icon name="calendar" /> Recently</h2>
+  <ul>
+    {
+      items.map((item) => (
+        <li>
+          <span>{item.text}</span>
+          <strong aria-hidden="true">{item.mark}</strong>
+        </li>
+      ))
+    }
+  </ul>
 </article>
 
 <style>
-	.doing-card {
-		padding: 26px 28px;
-	}
+  .doing-card {
+    padding: 26px 28px;
+  }
 
-	h2 {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		margin: 0 0 18px;
-		color: #142033;
-		font-size: 1.06rem;
-	}
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    color: #142033;
+    font-size: 1.06rem;
+  }
 
-	h2 svg {
-		width: 21px;
-		height: 21px;
-		color: #28bb8f;
-	}
+  h2 svg {
+    width: 21px;
+    height: 21px;
+    color: #28bb8f;
+  }
 
-	ul {
-		display: grid;
-		gap: 18px;
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
+  ul {
+    display: grid;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 
-	li {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) 32px;
-		gap: 12px;
-		align-items: center;
-		padding-left: 18px;
-		color: #162338;
-		font-size: 0.98rem;
-	}
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 32px;
+    gap: 12px;
+    align-items: center;
+    padding-left: 18px;
+    color: #162338;
+    font-size: 0.98rem;
+  }
 
-	li::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		width: 5px;
-		height: 5px;
-		border-radius: 50%;
-		background: #75ad9c;
-	}
+  li::before {
+    position: absolute;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #75ad9c;
+    content: '';
+  }
 
-	strong {
-		font-size: 1.3rem;
-		text-align: right;
-	}
+  strong {
+    font-size: 0.82rem;
+    text-align: right;
+  }
 </style>

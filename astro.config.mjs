@@ -12,53 +12,53 @@ const customBase = process.env.SITE_BASE;
 const repositoryOwner = process.env.GITHUB_REPOSITORY_OWNER;
 const repositoryName = process.env.GITHUB_REPOSITORY?.split('/')[1];
 const isProjectPage =
-    Boolean(repositoryOwner) &&
-    Boolean(repositoryName) &&
-    repositoryName !== `${repositoryOwner}.github.io`;
+  Boolean(repositoryOwner) &&
+  Boolean(repositoryName) &&
+  repositoryName !== `${repositoryOwner}.github.io`;
 
 const githubPagesSite =
-    repositoryOwner && repositoryName
-        ? `https://${repositoryOwner}.github.io${isProjectPage ? `/${repositoryName}` : ''}`
-        : undefined;
+  repositoryOwner && repositoryName
+    ? `https://${repositoryOwner}.github.io${isProjectPage ? `/${repositoryName}` : ''}`
+    : undefined;
 
 const resolvedSite =
-    customSite || (isGitHubActions && githubPagesSite ? githubPagesSite : 'https://example.com');
+  customSite || (isGitHubActions && githubPagesSite ? githubPagesSite : 'https://example.com');
 
 const resolvedBase =
-    customBase || (isGitHubActions && isProjectPage && repositoryName ? `/${repositoryName}` : '/');
+  customBase || (isGitHubActions && isProjectPage && repositoryName ? `/${repositoryName}` : '/');
 
 // https://astro.build/config
 export default defineConfig({
-    site: resolvedSite,
-    base: resolvedBase,
-    integrations: [mdx(), sitemap()],
+  site: resolvedSite,
+  base: resolvedBase,
+  integrations: [mdx(), sitemap()],
 
-    fonts: [
-        {
-            provider: fontProviders.local(),
-            name: 'Atkinson',
-            cssVariable: '--font-atkinson',
-            fallbacks: ['sans-serif'],
-            options: {
-                variants: [
-                    {
-                        src: ['./src/assets/fonts/atkinson-regular.woff'],
-                        weight: 400,
-                        style: 'normal',
-                        display: 'swap',
-                    },
-                    {
-                        src: ['./src/assets/fonts/atkinson-bold.woff'],
-                        weight: 700,
-                        style: 'normal',
-                        display: 'swap',
-                    },
-                ],
-            },
-        },
-    ],
-
-    vite: {
-        plugins: [tailwindcss()],
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: 'Atkinson',
+      cssVariable: '--font-atkinson',
+      fallbacks: ['sans-serif'],
+      options: {
+        variants: [
+          {
+            src: ['./src/assets/fonts/atkinson-regular.woff'],
+            weight: 400,
+            style: 'normal',
+            display: 'swap',
+          },
+          {
+            src: ['./src/assets/fonts/atkinson-bold.woff'],
+            weight: 700,
+            style: 'normal',
+            display: 'swap',
+          },
+        ],
+      },
     },
+  ],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

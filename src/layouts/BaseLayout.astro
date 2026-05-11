@@ -1,5 +1,6 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
+import BaseHead from '../components/BaseHead.astro';
+import IslandNav from '../components/IslandNav.astro';
 
 interface Props {
   title: string;
@@ -15,6 +16,7 @@ const { title, description } = Astro.props;
     <BaseHead title={title} description={description} />
   </head>
   <body>
+    <IslandNav />
     <slot />
   </body>
 </html>

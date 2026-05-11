@@ -2,101 +2,108 @@
 import Icon from '../Icon.astro';
 
 interface NavItem {
-	icon: string;
-	title: string;
-	subtitle: string;
-	href: string;
+  icon: string;
+  title: string;
+  subtitle: string;
+  href: string;
 }
 
 const { items } = Astro.props as { items: NavItem[] };
 ---
 
 <article class="glass-card nav-card">
-	<h2><Icon name="repo" /> 主页导航</h2>
-	<nav aria-label="main links">
-		{items.map((item) => (
-			<a class="nav-item" href={item.href}>
-				<span class="nav-icon"><Icon name={item.icon} /></span>
-				<span>
-					<strong>{item.title}</strong>
-					<small>{item.subtitle}</small>
-				</span>
-				<Icon name="external" />
-			</a>
-		))}
-	</nav>
+  <h2><Icon name="repo" /> Identity Links</h2>
+  <nav aria-label="identity websites">
+    {
+      items.map((item) => (
+        <a class="nav-item" href={item.href}>
+          <span class="nav-icon">
+            <Icon name={item.icon} />
+          </span>
+          <span>
+            <strong>{item.title}</strong>
+            <small>{item.subtitle}</small>
+          </span>
+          <Icon name="external" />
+        </a>
+      ))
+    }
+  </nav>
 </article>
 
 <style>
-	.nav-card {
-		padding: 22px;
-	}
+  .nav-card {
+    padding: 22px;
+  }
 
-	h2 {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		margin: 0 0 14px;
-		color: #142033;
-		font-size: 1.05rem;
-	}
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    color: #142033;
+    font-size: 1.05rem;
+  }
 
-	h2 svg {
-		width: 20px;
-		height: 20px;
-		color: #18b98a;
-	}
+  h2 svg {
+    width: 20px;
+    height: 20px;
+    color: #18b98a;
+  }
 
-	nav {
-		display: grid;
-		gap: 8px;
-	}
+  nav {
+    display: grid;
+    gap: 8px;
+  }
 
-	.nav-item {
-		display: grid;
-		grid-template-columns: 28px minmax(0, 1fr) 18px;
-		gap: 12px;
-		align-items: center;
-		padding: 10px 12px;
-		border-radius: 14px;
-		color: #17243a;
-		text-decoration: none;
-		transition: background 180ms ease, transform 180ms ease, color 180ms ease;
-	}
+  .nav-item {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) 18px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 14px;
+    color: #17243a;
+    text-decoration: none;
+    transition:
+      background 180ms ease,
+      transform 180ms ease,
+      color 180ms ease;
+  }
 
-	.nav-item:hover {
-		background: rgba(255, 255, 255, 0.72);
-		color: #118b70;
-		transform: translateX(3px);
-	}
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.72);
+    color: #118b70;
+    transform: translateX(3px);
+  }
 
-	.nav-icon,
-	.nav-item > svg {
-		color: #13ae84;
-	}
+  .nav-icon,
+  .nav-item > svg {
+    color: #13ae84;
+  }
 
-	.nav-icon svg,
-	.nav-item > svg {
-		width: 20px;
-		height: 20px;
-	}
+  .nav-icon svg,
+  .nav-item > svg {
+    width: 20px;
+    height: 20px;
+  }
 
-	strong,
-	small {
-		display: block;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+  strong,
+  small {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-	strong {
-		font-size: 0.96rem;
-		font-weight: 650;
-	}
+  strong {
+    font-size: 0.96rem;
+    font-weight: 650;
+  }
 
-	small {
-		margin-top: 2px;
-		color: #478392;
-		font-size: 0.82rem;
-	}
+  small {
+    margin-top: 2px;
+    color: #478392;
+    font-size: 0.82rem;
+  }
 </style>

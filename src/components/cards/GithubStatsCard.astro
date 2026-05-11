@@ -1,5 +1,5 @@
 ---
-import Icon from "../Icon.astro";
+import Icon from '../Icon.astro';
 
 interface GithubStatsCardConfig {
   endpoint: string;
@@ -18,7 +18,7 @@ const { stats } = Astro.props as { stats: GithubStatsConfig };
 
 function getCardUrl(card: GithubStatsCardConfig) {
   const url = new URL(card.endpoint, stats.baseUrl);
-  url.searchParams.set("username", stats.username);
+  url.searchParams.set('username', stats.username);
 
   for (const [key, value] of Object.entries(card.params)) {
     url.searchParams.set(key, String(value));
@@ -31,12 +31,7 @@ function getCardUrl(card: GithubStatsCardConfig) {
 <article class="glass-card stats-card">
   <header>
     <h2><Icon name="github" /> GitHub Stats</h2>
-    <a
-      href={stats.profileUrl}
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Open GitHub profile"
-    >
+    <a href={stats.profileUrl} target="_blank" rel="noreferrer" aria-label="Open GitHub profile">
       <Icon name="external" size={18} />
     </a>
   </header>
@@ -44,18 +39,8 @@ function getCardUrl(card: GithubStatsCardConfig) {
   <div class="stats-frames">
     {
       stats.cards.map((card) => (
-        <a
-          class="stats-frame"
-          href={stats.profileUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img
-            src={getCardUrl(card)}
-            alt={card.alt}
-            loading="lazy"
-            decoding="async"
-          />
+        <a class="stats-frame" href={stats.profileUrl} target="_blank" rel="noreferrer">
+          <img src={getCardUrl(card)} alt={card.alt} loading="lazy" decoding="async" />
         </a>
       ))
     }
