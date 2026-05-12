@@ -6,7 +6,7 @@ import NavigationCard from '../components/cards/NavigationCard.astro';
 import ProfileCard from '../components/cards/ProfileCard.astro';
 import QuoteCard from '../components/cards/QuoteCard.astro';
 import DashboardGrid from '../components/layout/DashboardGrid.astro';
-import CalendarWidget from '../components/widgets/CalendarWidget.astro';
+import BlogHeatmap from '../components/widgets/BlogHeatmap.astro';
 import ClockWidget from '../components/widgets/ClockWidget.astro';
 import DoingCard from '../components/widgets/DoingCard.astro';
 import {
@@ -41,7 +41,7 @@ const pageDescription = 'A customizable personal navigation portfolio dashboard 
 
     <Fragment slot="right">
       <ClockWidget />
-      <CalendarWidget />
+      <BlogHeatmap weeks={24} />
       <DoingCard items={doingItems} />
     </Fragment>
   </DashboardGrid>

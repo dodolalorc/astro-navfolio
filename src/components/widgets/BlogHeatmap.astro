@@ -1,0 +1,434 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from '../Icon.astro';
+import {
+  createRecentBlogHeatmap,
+  type HeatmapDay,
+  type HeatmapPost,
+} from '../../utils/blog-heatmap';
+
+interface Props {
+  weeks?: 12 | 24;
+  title?: string;
+  showLatest?: boolean;
+  excludeDraft?: boolean;
+  dateArchiveBaseHref?: string;
+}
+
+const {
+  weeks = 24,
+  title = 'Writing Activity',
+  showLatest = true,
+  excludeDraft = true,
+  dateArchiveBaseHref,
+} = Astro.props;
+const posts = await getCollection('blog', ({ data }) => !excludeDraft || !data.draft);
+const heatmap = createRecentBlogHeatmap(posts, weeks);
+const formatDate = new Intl.DateTimeFormat('en', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+function getPostLabel(count: number) {
+  return `${count} ${count === 1 ? 'post' : 'posts'}`;
+}
+
+function getDayTitle(day: HeatmapDay) {
+  if (day.isFuture) return `${day.date}: upcoming`;
+
+  const titleLines = day.posts.slice(0, 5).map((post) => `- ${post.title}`);
+  const overflowLine = day.posts.length > 5 ? ['...'] : [];
+
+  return [`${day.date}: ${getPostLabel(day.count)}`, ...titleLines, ...overflowLine].join('\n');
+}
+
+function getDayHref(day: HeatmapDay) {
+  if (dateArchiveBaseHref && day.count > 0) {
+    return `${dateArchiveBaseHref.replace(/\/$/, '')}/${day.date}/`;
+  }
+
+  return day.posts[0]?.href;
+}
+
+function getTooltipPosts(posts: HeatmapPost[]) {
+  return posts.slice(0, 5);
+}
+---
+
+<article class="glass-card heatmap-card">
+  <header>
+    <h2><Icon name="calendar" /> {title}</h2>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat-item">
+      <strong>{heatmap.totalPosts}</strong>
+      <span>Total posts</span>
+    </div>
+    <div class="stat-item">
+      <strong>{heatmap.activeDays}</strong>
+      <span>Active days</span>
+    </div>
+    <div class="stat-item">
+      <strong>{heatmap.currentStreak}</strong>
+      <span>Day streak</span>
+    </div>
+  </div>
+
+  {
+    showLatest && heatmap.latestPost && (
+      <aside class="latest-tip" aria-label="Latest updated post">
+        <strong>Latest</strong>
+        <span>
+          <em>{heatmap.latestPost.title}</em>
+          <time datetime={heatmap.latestPost.date.toISOString()}>
+            {formatDate.format(heatmap.latestPost.date)}
+          </time>
+          <a
+            href={heatmap.latestPost.href}
+            aria-label={`Open latest post: ${heatmap.latestPost.title}`}
+          >
+            <Icon name="external" size={15} />
+          </a>
+        </span>
+      </aside>
+    )
+  }
+
+  <div class="rhythm-grid" aria-label={`Recent ${heatmap.weeks} weeks writing activity`}>
+    <div class="weekday-column" aria-hidden="true">
+      <span>Mon</span>
+      <span>Wed</span>
+      <span>Fri</span>
+    </div>
+
+    <div class="heatmap-cells" style={`--week-count: ${heatmap.weeks};`}>
+      {
+        heatmap.days.map((day) => {
+          if (day.isFuture) {
+            return <span class="heatmap-cell future-cell" aria-hidden="true" />;
+          }
+
+          const href = getDayHref(day);
+          const content = (
+            <span
+              class={`heatmap-cell level-${day.level}`}
+              title={getDayTitle(day)}
+              aria-hidden="true"
+            />
+          );
+          const tooltip = (
+            <span class="tooltip" role="tooltip">
+              <strong>{formatDate.format(new Date(day.date))}</strong>
+              <span>{getPostLabel(day.count)}</span>
+              {day.posts.length > 0 && (
+                <ul>
+                  {getTooltipPosts(day.posts).map((post) => (
+                    <li>{post.title}</li>
+                  ))}
+                  {day.posts.length > 5 && <li>...</li>}
+                </ul>
+              )}
+            </span>
+          );
+
+          return href ? (
+            <a class="cell-link" href={href} aria-label={getDayTitle(day)}>
+              {content}
+              {tooltip}
+            </a>
+          ) : (
+            <span class="cell-link static-cell" aria-label={getDayTitle(day)}>
+              {content}
+              {tooltip}
+            </span>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <footer>
+    <span>Less</span>
+    {[0, 1, 2, 3, 4].map((level) => <i class={`heatmap-cell level-${level}`} />)}
+    <span>More</span>
+  </footer>
+</article>
+
+<style>
+  .heatmap-card {
+    display: grid;
+    gap: 14px;
+    padding: 22px;
+    overflow: visible;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: #142033;
+    font-size: 1.05rem;
+    line-height: 1.15;
+  }
+
+  h2 svg {
+    width: 20px;
+    height: 20px;
+    color: #18b98a;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .stat-item {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .stat-item strong {
+    color: #142033;
+    font-size: 1.12rem;
+    line-height: 1;
+  }
+
+  .stat-item span {
+    overflow: hidden;
+    color: #687588;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .latest-tip {
+    display: grid;
+    gap: 6px;
+    padding: 10px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.68);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.44);
+  }
+
+  .latest-tip span {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content 24px;
+    align-items: center;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .latest-tip strong {
+    color: #478392;
+    font-size: 0.7rem;
+    line-height: 1.15;
+  }
+
+  .latest-tip em {
+    overflow: hidden;
+    color: #17243a;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: 650;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .latest-tip time {
+    color: #5d7188;
+    font-size: 0.68rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .latest-tip a {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    color: #13ae84;
+    text-decoration: none;
+    transition:
+      background 180ms ease,
+      transform 180ms ease;
+  }
+
+  .latest-tip a:hover {
+    background: rgba(255, 255, 255, 0.72);
+    transform: translateY(-1px);
+  }
+
+  .rhythm-grid {
+    --cell-size: 10px;
+    --cell-gap: 3px;
+    display: grid;
+    grid-template-columns: 26px minmax(0, max-content);
+    gap: 8px;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .weekday-column {
+    display: grid;
+    grid-template-rows: repeat(3, var(--cell-size));
+    gap: calc(var(--cell-size) + var(--cell-gap));
+    color: #687588;
+    font-size: 0.62rem;
+    line-height: 1;
+  }
+
+  .heatmap-cells {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(7, var(--cell-size));
+    grid-auto-columns: var(--cell-size);
+    gap: var(--cell-gap);
+    width: calc(
+      (var(--cell-size) * var(--week-count)) + (var(--cell-gap) * (var(--week-count) - 1))
+    );
+  }
+
+  .heatmap-cell,
+  .cell-link {
+    display: block;
+    width: var(--cell-size);
+    height: var(--cell-size);
+    min-width: 8px;
+    min-height: 8px;
+  }
+
+  .cell-link {
+    position: relative;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cell-link:hover .heatmap-cell {
+    outline: 1px solid rgba(20, 32, 51, 0.3);
+    outline-offset: 1px;
+  }
+
+  .heatmap-cell {
+    border-radius: 2.5px;
+    background: rgba(190, 207, 210, 0.34);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  }
+
+  .future-cell {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .level-0 {
+    background: rgba(190, 207, 210, 0.34);
+  }
+
+  .level-1 {
+    background: #bceccb;
+  }
+
+  .level-2 {
+    background: #7edba6;
+  }
+
+  .level-3 {
+    background: #33bf89;
+  }
+
+  .level-4 {
+    background: #12836f;
+  }
+
+  .tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 9px);
+    z-index: 4;
+    display: grid;
+    width: max-content;
+    max-width: 230px;
+    gap: 5px;
+    padding: 10px 12px;
+    border: 1px solid rgba(119, 139, 160, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 14px 34px rgba(48, 78, 103, 0.16);
+    color: #17243a;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 6px);
+    transition:
+      opacity 140ms ease,
+      transform 140ms ease;
+  }
+
+  .tooltip strong {
+    color: #142033;
+    font-size: 0.86rem;
+  }
+
+  .tooltip ul {
+    display: grid;
+    gap: 3px;
+    margin: 4px 0 0;
+    padding-left: 16px;
+  }
+
+  .tooltip li {
+    overflow-wrap: anywhere;
+  }
+
+  .cell-link:hover .tooltip,
+  .cell-link:focus-visible .tooltip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #687588;
+    font-size: 0.72rem;
+  }
+
+  footer .heatmap-cell {
+    --cell-size: 9px;
+  }
+
+  @media (max-width: 1180px) and (min-width: 821px) {
+    .rhythm-grid {
+      --cell-size: 11px;
+    }
+  }
+
+  @media (max-width: 820px) {
+    .heatmap-card {
+      padding: 20px;
+    }
+
+    .rhythm-grid {
+      --cell-size: 9px;
+      overflow-x: auto;
+      width: 100%;
+    }
+  }
+</style>
