@@ -26,13 +26,15 @@
 
 <table>
   <tr>
-    <td width="62%">
-      <img src="./homepage.png" alt="Navfolio homepage preview" />
+    <th width="50%">Orbit Layout</th>
+    <th width="50%">Grid Layout</th>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="./public/images/orbit-layout.png" alt="Navfolio orbit layout preview" />
     </td>
-    <td width="38%">
-      <img src="./public/images/cover.png" alt="Navfolio cover" />
-      <br />
-      <img src="./public/images/only-intro.png" alt="Navfolio intro card" />
+    <td width="50%">
+      <img src="./public/images/grid-layout.png" alt="Navfolio grid layout preview" />
     </td>
   </tr>
 </table>
@@ -124,7 +126,6 @@ src/
   pages/                  Astro 路由
   styles/global.css       全局样式
 astro.config.mjs          Astro 配置
-homepage.png              首页预览截图
 ```
 
 ## 部署

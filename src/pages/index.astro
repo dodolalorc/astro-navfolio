@@ -1,48 +1,46 @@
 ---
-import ConnectCard from '../components/cards/ConnectCard.astro';
-import GithubStatsCard from '../components/cards/GithubStatsCard.astro';
 import IntroCard from '../components/cards/IntroCard.astro';
 import NavigationCard from '../components/cards/NavigationCard.astro';
 import ProfileCard from '../components/cards/ProfileCard.astro';
-import QuoteCard from '../components/cards/QuoteCard.astro';
+import DashboardFlow from '../components/layout/DashboardFlow.astro';
 import DashboardGrid from '../components/layout/DashboardGrid.astro';
 import BlogHeatmap from '../components/widgets/BlogHeatmap.astro';
 import ClockWidget from '../components/widgets/ClockWidget.astro';
 import DoingCard from '../components/widgets/DoingCard.astro';
-import {
-  connectLinks,
-  doingItems,
-  githubStats,
-  intro,
-  navigationLinks,
-  profile,
-  quote,
-} from '../data/profile';
+import { homeLayout } from '../config/layout';
+import { doingItems, intro, navigationLinks, profile, quote } from '../data/profile';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const pageTitle = 'navfolio | Personal Dashboard';
 const pageDescription = 'A customizable personal navigation portfolio dashboard built with Astro.';
+const HomeLayout = homeLayout === 'grid' ? DashboardFlow : DashboardGrid;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
   <div class="dashboard-bg" aria-hidden="true"></div>
-  <DashboardGrid>
-    <Fragment slot="left">
+  <HomeLayout>
+    <Fragment slot="profile">
       <ProfileCard profile={profile} />
+    </Fragment>
+
+    <Fragment slot="clock">
+      <ClockWidget />
+    </Fragment>
+
+    <Fragment slot="hero">
+      <IntroCard intro={intro} quote={quote} />
+    </Fragment>
+
+    <Fragment slot="activity">
+      <BlogHeatmap weeks={24} />
+    </Fragment>
+
+    <Fragment slot="links">
       <NavigationCard items={navigationLinks} />
     </Fragment>
 
-    <Fragment slot="center">
-      <QuoteCard quote={quote} />
-      <IntroCard intro={intro} />
-      <GithubStatsCard stats={githubStats} />
-      <ConnectCard items={connectLinks} />
-    </Fragment>
-
-    <Fragment slot="right">
-      <ClockWidget />
-      <BlogHeatmap weeks={24} />
+    <Fragment slot="recently">
       <DoingCard items={doingItems} />
     </Fragment>
-  </DashboardGrid>
+  </HomeLayout>
 </BaseLayout>

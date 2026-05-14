@@ -8,7 +8,6 @@ import Icon from '../Icon.astro';
     <time class="time-value" data-time>
       <span data-time-main>--:--</span><small data-time-seconds>:--</small>
     </time>
-    <span class="time-period" data-period>AM</span>
   </div>
   <p data-date>----</p>
 </article>
@@ -17,22 +16,18 @@ import Icon from '../Icon.astro';
   const widget = document.querySelector('[data-clock-widget]');
   const timeMainNode = widget?.querySelector('[data-time-main]');
   const secondsNode = widget?.querySelector('[data-time-seconds]');
-  const periodNode = widget?.querySelector('[data-period]');
   const dateNode = widget?.querySelector('[data-date]');
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   function updateClock() {
     const now = new Date();
-    let hours = now.getHours();
-    const period = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
+    const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
     const date = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()} ${weekdays[now.getDay()]}`;
 
-    if (timeMainNode) timeMainNode.textContent = `${String(hours).padStart(2, '0')}:${minutes}`;
+    if (timeMainNode) timeMainNode.textContent = `${hours}:${minutes}`;
     if (secondsNode) secondsNode.textContent = `:${seconds}`;
-    if (periodNode) periodNode.textContent = period;
     if (dateNode) dateNode.textContent = date;
   }
 
@@ -44,6 +39,7 @@ import Icon from '../Icon.astro';
   .clock-card {
     min-height: 210px;
     padding: 30px 28px;
+    overflow: hidden;
   }
 
   h2 {
@@ -52,7 +48,7 @@ import Icon from '../Icon.astro';
     gap: 12px;
     margin: 0 0 22px;
     color: #142033;
-    font-size: 1.06rem;
+    font-size: 0.95rem;
   }
 
   h2 svg {
@@ -64,15 +60,16 @@ import Icon from '../Icon.astro';
   .time-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    min-width: 0;
   }
 
   .time-value {
     display: flex;
     align-items: baseline;
+    min-width: 0;
     color: #05080d;
     font-family: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, monospace;
-    font-size: clamp(3.2rem, 7vw, 5rem);
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
     font-weight: 650;
     letter-spacing: 0;
     line-height: 1;
@@ -84,17 +81,9 @@ import Icon from '../Icon.astro';
     line-height: 1;
   }
 
-  .time-period {
-    padding: 6px 11px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.72);
-    color: #171d2a;
-    font-size: 0.95rem;
-  }
-
   p {
-    margin: 22px 0 0;
+    margin: 12px 0 0;
     color: #17243a;
-    font-size: 1.1rem;
+    font-size: 0.86rem;
   }
 </style>
