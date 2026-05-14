@@ -161,7 +161,7 @@ function getTooltipPosts(posts: HeatmapPost[]) {
     display: grid;
     gap: 14px;
     padding: 22px;
-    overflow: visible;
+    overflow: hidden;
   }
 
   header {
@@ -274,14 +274,15 @@ function getTooltipPosts(posts: HeatmapPost[]) {
   }
 
   .rhythm-grid {
-    --cell-size: 10px;
-    --cell-gap: 3px;
+    --cell-size: 8px;
+    --cell-gap: 2.5px;
     display: grid;
-    grid-template-columns: 26px minmax(0, max-content);
+    grid-template-columns: 24px minmax(0, 1fr);
     gap: 8px;
     align-items: center;
-    width: fit-content;
+    width: 100%;
     max-width: 100%;
+    overflow: hidden;
   }
 
   .weekday-column {
@@ -302,6 +303,7 @@ function getTooltipPosts(posts: HeatmapPost[]) {
     width: calc(
       (var(--cell-size) * var(--week-count)) + (var(--cell-gap) * (var(--week-count) - 1))
     );
+    max-width: 100%;
   }
 
   .heatmap-cell,
@@ -380,6 +382,17 @@ function getTooltipPosts(posts: HeatmapPost[]) {
       transform 140ms ease;
   }
 
+  .cell-link:nth-child(n + 19) .tooltip {
+    left: auto;
+    right: 0;
+    transform: translate(0, 6px);
+  }
+
+  .cell-link:nth-child(n + 19):hover .tooltip,
+  .cell-link:nth-child(n + 19):focus-visible .tooltip {
+    transform: translate(0, 0);
+  }
+
   .tooltip strong {
     color: #142033;
     font-size: 0.86rem;
@@ -416,7 +429,7 @@ function getTooltipPosts(posts: HeatmapPost[]) {
 
   @media (max-width: 1180px) and (min-width: 821px) {
     .rhythm-grid {
-      --cell-size: 11px;
+      --cell-size: 8px;
     }
   }
 

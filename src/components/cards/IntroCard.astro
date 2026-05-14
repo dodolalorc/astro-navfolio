@@ -3,43 +3,71 @@ interface Intro {
   title: string;
   name: string;
   body: string[];
-  image: string;
 }
 
-const { intro } = Astro.props as { intro: Intro };
+interface Quote {
+  text: string[];
+}
+
+const { intro, quote } = Astro.props as { intro: Intro; quote?: Quote };
 ---
 
 <article class="glass-card intro-card">
   <div class="intro-copy">
+    {
+      quote && (
+        <div class="quote-mark" aria-hidden="true">
+          "
+        </div>
+      )
+    }
     <h2>
       <span aria-hidden="true">Hi,</span>
       {intro.title.replace(intro.name, '')}<em>{intro.name}</em>
     </h2>
+    {
+      quote && (
+        <blockquote>
+          {quote.text.map((line) => (
+            <span>{line}</span>
+          ))}
+        </blockquote>
+      )
+    }
     {intro.body.map((paragraph) => <p>{paragraph}</p>)}
-  </div>
-  <div class="pixel-stage" aria-hidden="true">
-    <span class="sparkle sparkle-a">*</span>
-    <span class="sparkle sparkle-b">*</span>
-    <span class="heart heart-a">+</span>
-    <span class="heart heart-b">+</span>
-    <img src={intro.image} alt="" width="250" height="270" loading="eager" />
   </div>
 </article>
 
 <style>
   .intro-card {
-    display: grid;
-    grid-template-columns: minmax(0, 1.18fr) minmax(210px, 0.82fr);
-    gap: 20px;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
     min-height: 330px;
     padding: 38px;
   }
 
+  .intro-copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    max-width: none;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .quote-mark {
+    margin-bottom: -4px;
+    color: #5bc99d;
+    font-family: Georgia, serif;
+    font-size: 4.8rem;
+    line-height: 0.7;
+  }
+
   h2 {
-    margin: 0 0 26px;
+    margin: 0 0 20px;
     color: #11182b;
-    font-size: 2.1rem;
+    font-size: clamp(2rem, 3.1vw, 3rem);
     line-height: 1.1;
   }
 
@@ -54,10 +82,27 @@ const { intro } = Astro.props as { intro: Intro };
     font-style: italic;
   }
 
+  blockquote {
+    display: block;
+    margin: 0 0 28px;
+    padding: 0;
+    border: 0;
+    color: #192842;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.05rem, 1.4vw, 1.36rem);
+    font-style: italic;
+    line-height: 1.55;
+  }
+
+  blockquote span {
+    display: block;
+  }
+
   p {
+    width: 100%;
     margin: 0 0 16px;
     color: #17243a;
-    font-size: 1.02rem;
+    font-size: 0.98rem;
     line-height: 1.9;
   }
 
@@ -65,61 +110,8 @@ const { intro } = Astro.props as { intro: Intro };
     margin-bottom: 0;
   }
 
-  .pixel-stage {
-    position: relative;
-    display: grid;
-    place-items: center;
-    min-height: 250px;
-  }
-
-  .pixel-stage img {
-    position: relative;
-    z-index: 1;
-    width: min(100%, 250px);
-    height: auto;
-    border-radius: 24px;
-    filter: drop-shadow(0 18px 24px rgba(93, 151, 177, 0.16));
-  }
-
-  .sparkle,
-  .heart {
-    position: absolute;
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-
-  .sparkle {
-    color: #78c7af;
-  }
-
-  .sparkle-a {
-    right: 6%;
-    top: 0;
-  }
-
-  .sparkle-b {
-    left: 4%;
-    top: 22%;
-    color: #f4c95d;
-  }
-
-  .heart {
-    color: #ff9db6;
-  }
-
-  .heart-a {
-    left: 10%;
-    top: 48%;
-  }
-
-  .heart-b {
-    right: 0;
-    top: 50%;
-  }
-
   @media (max-width: 640px) {
     .intro-card {
-      grid-template-columns: 1fr;
       padding: 28px;
     }
 

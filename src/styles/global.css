@@ -193,17 +193,21 @@ body::before {
   backdrop-filter: blur(18px);
   animation: card-in 520ms both;
   transition:
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    border-color 180ms ease;
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    border-color 220ms ease,
+    background 220ms ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.92);
+  transform: translateY(-7px) scale(1.012);
+  border-color: rgba(255, 255, 255, 0.98);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.48));
   box-shadow:
-    0 30px 80px rgba(93, 120, 138, 0.18),
-    inset 0 1px 1px rgba(255, 255, 255, 0.82);
+    0 36px 90px rgba(47, 92, 111, 0.2),
+    0 0 0 1px rgba(105, 221, 190, 0.16),
+    0 0 42px rgba(80, 213, 179, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.88);
 }
 
 .glass-card:nth-of-type(2) {

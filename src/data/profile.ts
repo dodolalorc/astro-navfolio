@@ -39,11 +39,7 @@ export const navigationLinks = [
 ];
 
 export const quote = {
-  text: [
-    'Navigate your world,',
-    'Showcase your story,',
-    'and keep everything in one place.',
-  ],
+  text: ['Navigate your world,', 'Showcase your story,', 'and keep everything in one place.'],
   image: '/images/logo-with-name.png',
 };
 
@@ -51,50 +47,11 @@ export const intro = {
   title: 'here is navfolio',
   name: 'navfolio',
   body: [
-    'The name combines “Navigation” and “Portfolio”',
+    'The name combines "Navigation" and "Portfolio".',
     'Navfolio focuses on lightweight organization, smooth reading experience, and developer-friendly aesthetics.',
-    'It feels less like a résumé, and more like a personal operating system for your ideas, projects, notes, and online presence.',
+    'It feels less like a resume, and more like a personal operating system for your ideas, projects, notes, and online presence.',
   ],
   image: '/images/logo-cat.png',
-};
-
-export const githubStats = {
-  username: 'dodolalorc',
-  profileUrl: profile.github,
-  baseUrl: 'https://github-readme-stats-two-sand-73.vercel.app',
-  cards: [
-    {
-      endpoint: '/api',
-      alt: 'Example GitHub stats',
-      params: {
-        show_icons: true,
-        include_all_commits: true,
-        count_private: false,
-        rank_icon: 'github',
-        hide_border: true,
-        bg_color: '00000000',
-        title_color: '142033',
-        text_color: '4d5d72',
-        icon_color: '18b98a',
-        ring_color: '21a575',
-        custom_title: 'GitHub Stats',
-      },
-    },
-    {
-      endpoint: '/api/top-langs',
-      alt: 'Example most used languages',
-      params: {
-        layout: 'compact',
-        langs_count: 8,
-        hide_border: true,
-        hide: 'html,css,scss',
-        bg_color: '00000000',
-        title_color: '142033',
-        text_color: '4d5d72',
-        custom_title: 'Most Used Languages',
-      },
-    },
-  ],
 };
 
 export const connectLinks = [
