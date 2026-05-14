@@ -39,6 +39,12 @@
   </tr>
 </table>
 
+## Blog Article Preview
+
+<p align="center">
+  <img src="./public/images/blog-preview.png" alt="Navfolio blog article page preview" />
+</p>
+
 ## About
 
 Navfolio combines Navigation and Portfolio. It is not a traditional one-page resume. It is a configurable personal entry point where you can collect your portfolio, blog, resume, open-source work, contact links, status cards, and recent activity in a single homepage.

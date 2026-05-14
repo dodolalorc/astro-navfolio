@@ -41,16 +41,9 @@ const readingTime = `${Math.max(3, Math.ceil(bodyText.trim().split(/\s+/).length
 const tags = ['Design', 'Thinking', 'AI'];
 const renderedTocItems = headings
   .filter((heading) => heading.depth === 2 || heading.depth === 3)
-  .slice(0, 6)
   .map((heading) => ({ href: `#${heading.slug}`, label: heading.text }));
-const tocItems =
-  renderedTocItems.length > 0
-    ? renderedTocItems
-    : [
-        { href: '#article-start', label: 'Article Start' },
-        { href: '#key-insight', label: 'Key Insight' },
-        { href: '#system-sketch', label: 'System Sketch' },
-      ];
+const tocItems = renderedTocItems;
+const hasToc = tocItems.length > 0;
 
 const relatedPosts = (await getCollection('blog', ({ id, data }) => id !== post.id && !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -129,7 +122,7 @@ const relatedPosts = (await getCollection('blog', ({ id, data }) => id !== post.
         <BottomActionBar />
 
         <section class="mobile-after-article" aria-label="More article tools">
-          <TableOfContents items={tocItems} compact />
+          {hasToc && <TableOfContents items={tocItems} compact />}
           <RelatedPosts posts={relatedPosts} />
           <SubscribeCard />
         </section>
@@ -137,7 +130,7 @@ const relatedPosts = (await getCollection('blog', ({ id, data }) => id !== post.
 
       <aside class="right-sidebar" aria-label="Reading tools">
         <div class="right-sidebar-inner">
-          <TableOfContents items={tocItems} />
+          {hasToc && <TableOfContents items={tocItems} />}
           <RelatedPosts posts={relatedPosts} />
           <SubscribeCard />
         </div>

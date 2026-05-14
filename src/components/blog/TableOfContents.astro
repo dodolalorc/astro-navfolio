@@ -10,81 +10,84 @@ interface Props {
 }
 
 const { items, compact = false } = Astro.props;
+const hasItems = items.length > 0;
 ---
 
-<nav class:list={['toc-card', 'blog-card', { compact }]} aria-label="On this page">
-  <h2>{compact ? 'On this page' : 'Table of contents'}</h2>
-  <ol>
-    {
-      items.map((item, index) => (
-        <li>
-          <a
-            class:list={{ active: index === 0 }}
-            href={item.href}
-            data-toc-link
-            aria-current={index === 0 ? 'true' : undefined}
-          >
-            <span>{index + 1}</span>
-            {item.label}
-          </a>
-        </li>
-      ))
-    }
-  </ol>
-</nav>
+{
+  hasItems && (
+    <nav class:list={['toc-card', 'blog-card', { compact }]} aria-label="Table of contents">
+      <h2>Table of contents</h2>
+      <ol>
+        {items.map((item, index) => (
+          <li>
+            <a
+              class:list={{ active: index === 0 }}
+              href={item.href}
+              data-toc-link
+              aria-current={index === 0 ? 'true' : undefined}
+            >
+              <span>{index + 1}</span>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 
-<script>
-  declare global {
-    interface Window {
-      __navfolioTocSpy?: boolean;
-    }
-  }
+{
+  hasItems && (
+    <script is:inline>
+      {String.raw`
+        if (!window.__navfolioTocSpy) {
+          window.__navfolioTocSpy = true;
 
-  if (!window.__navfolioTocSpy) {
-    window.__navfolioTocSpy = true;
+          const getTocLinks = () =>
+            Array.from(document.querySelectorAll('[data-toc-link]')).filter((link) =>
+              link.hash.startsWith('#'),
+            );
 
-    const getTocLinks = () =>
-      Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')).filter((link) =>
-        link.hash.startsWith('#'),
-      );
+          const setActiveLink = (activeHash) => {
+            for (const link of getTocLinks()) {
+              const isActive = link.hash === activeHash;
+              link.classList.toggle('active', isActive);
 
-    const setActiveLink = (activeHash: string) => {
-      for (const link of getTocLinks()) {
-        const isActive = link.hash === activeHash;
-        link.classList.toggle('active', isActive);
+              if (isActive) {
+                link.setAttribute('aria-current', 'true');
+              } else {
+                link.removeAttribute('aria-current');
+              }
+            }
+          };
 
-        if (isActive) {
-          link.setAttribute('aria-current', 'true');
-        } else {
-          link.removeAttribute('aria-current');
+          const updateActiveSection = () => {
+            const links = getTocLinks();
+            const sections = links
+              .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+              .filter(Boolean);
+
+            if (sections.length === 0) {
+              return;
+            }
+
+            const offset = 140;
+            const current =
+              sections
+                .filter((section) => section.getBoundingClientRect().top <= offset)
+                .at(-1) ?? sections[0];
+
+            setActiveLink(\`#\${current.id}\`);
+          };
+
+          updateActiveSection();
+          window.addEventListener('scroll', updateActiveSection, { passive: true });
+          window.addEventListener('resize', updateActiveSection);
         }
-      }
-    };
-
-    const updateActiveSection = () => {
-      const links = getTocLinks();
-      const sections = links
-        .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
-        .filter((section): section is HTMLElement => Boolean(section));
-
-      if (sections.length === 0) {
-        return;
-      }
-
-      const offset = 140;
-      const current =
-        sections
-          .filter((section) => section.getBoundingClientRect().top <= offset)
-          .at(-1) ?? sections[0];
-
-      setActiveLink(`#${current.id}`);
-    };
-
-    updateActiveSection();
-    window.addEventListener('scroll', updateActiveSection, { passive: true });
-    window.addEventListener('resize', updateActiveSection);
-  }
-</script>
+      `}
+    </script>
+  )
+}
 
 <style>
   .toc-card {

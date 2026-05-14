@@ -9,6 +9,8 @@
 </p>
 
 <p align="center">
+  <a href="./README.zh-CN.md">简体中文 README</a>
+  ·
   <a href="./README.en.md">English README</a>
 </p>
 
@@ -36,6 +38,12 @@
     </td>
   </tr>
 </table>
+
+## Blog Article Preview
+
+<p align="center">
+  <img src="./public/images/blog-preview.png" alt="Navfolio blog article page preview" />
+</p>
 
 ## 项目介绍
 
