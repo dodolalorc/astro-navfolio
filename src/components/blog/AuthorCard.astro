@@ -1,0 +1,87 @@
+---
+import { Github, Mail, Rss } from 'lucide-astro';
+import { profile } from '../../data/profile';
+---
+
+<aside class="author-card blog-card">
+  <img src={profile.avatar} alt={`${profile.name} avatar`} />
+  <h2>{profile.name}</h2>
+  <p>{profile.handle}</p>
+  <span>{profile.role}</span>
+
+  <div class="social-links" aria-label="Author links">
+    <a href={profile.github} aria-label="GitHub">
+      <Github size={16} />
+    </a>
+    <a href={`mailto:${profile.email}`} aria-label="Email">
+      <Mail size={16} />
+    </a>
+    <a href="/rss.xml" aria-label="RSS">
+      <Rss size={16} />
+    </a>
+  </div>
+</aside>
+
+<style>
+  .author-card {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 26px 20px;
+    text-align: center;
+  }
+
+  img {
+    width: 82px;
+    height: 82px;
+    border: 6px solid rgba(255, 255, 255, 0.74);
+    border-radius: 28px;
+    box-shadow: 0 18px 34px rgba(52, 96, 88, 0.14);
+    object-fit: cover;
+  }
+
+  h2 {
+    margin: 4px 0 0;
+    color: #18273a;
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+
+  p {
+    margin: 0;
+    color: #6a7887;
+    font-size: 0.9rem;
+  }
+
+  span {
+    display: inline-flex;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: rgba(229, 250, 242, 0.84);
+    color: #16775f;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 9px;
+    margin-top: 4px;
+  }
+
+  a {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid rgba(96, 143, 132, 0.14);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.62);
+    color: #28394d;
+  }
+
+  a:hover {
+    color: #148066;
+    background: rgba(229, 250, 242, 0.92);
+  }
+</style>

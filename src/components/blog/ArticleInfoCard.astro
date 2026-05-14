@@ -1,0 +1,86 @@
+---
+import FormattedDate from '../FormattedDate.astro';
+
+interface Props {
+  pubDate: Date;
+  updatedDate?: Date;
+  readingTime: string;
+  tags: string[];
+}
+
+const { pubDate, updatedDate, readingTime, tags } = Astro.props;
+---
+
+<aside class="article-info blog-card">
+  <dl>
+    <div>
+      <dt>Reading time</dt>
+      <dd>{readingTime}</dd>
+    </div>
+    <div>
+      <dt>Published</dt>
+      <dd><FormattedDate date={pubDate} /></dd>
+    </div>
+    {
+      updatedDate && (
+        <div>
+          <dt>Updated</dt>
+          <dd>
+            <FormattedDate date={updatedDate} />
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+
+  <div class="tags" aria-label="Article tags">
+    {tags.map((tag) => <span>{tag}</span>)}
+  </div>
+</aside>
+
+<style>
+  .article-info {
+    padding: 22px;
+  }
+
+  dl {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+
+  div {
+    display: grid;
+    gap: 3px;
+  }
+
+  dt {
+    color: #788695;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+    color: #213246;
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .tags span {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(230, 250, 243, 0.86);
+    color: #15745d;
+    font-size: 0.76rem;
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+import { Send } from 'lucide-astro';
+---
+
+<aside class="subscribe-card blog-card">
+  <div class="icon-wrap" aria-hidden="true">
+    <Send size={20} />
+  </div>
+  <h2>Like this article?</h2>
+  <p>Get quiet notes on design, code, and personal knowledge systems.</p>
+  <form>
+    <label class="sr-only" for="blog-subscribe-email">Email</label>
+    <input id="blog-subscribe-email" type="email" placeholder="you@example.com" />
+    <button type="button">Subscribe</button>
+  </form>
+</aside>
+
+<style>
+  .subscribe-card {
+    padding: 24px;
+  }
+
+  .icon-wrap {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 14px;
+    border-radius: 16px;
+    background: #dff9ef;
+    color: #128164;
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    color: #1b2a3d;
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0 0 16px;
+    color: #667686;
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  form {
+    display: grid;
+    gap: 9px;
+  }
+
+  input,
+  button {
+    width: 100%;
+    min-height: 42px;
+    border-radius: 15px;
+    font: inherit;
+  }
+
+  input {
+    border: 1px solid rgba(91, 131, 121, 0.16);
+    background: rgba(255, 255, 255, 0.68);
+    color: #203147;
+    padding: 0 12px;
+  }
+
+  button {
+    border: 0;
+    background: #28bd8f;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+  }
+</style>

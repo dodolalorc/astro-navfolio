@@ -1,0 +1,176 @@
+---
+interface Item {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  items: Item[];
+  compact?: boolean;
+}
+
+const { items, compact = false } = Astro.props;
+---
+
+<nav class:list={['toc-card', 'blog-card', { compact }]} aria-label="On this page">
+  <h2>{compact ? 'On this page' : 'Table of contents'}</h2>
+  <ol>
+    {
+      items.map((item, index) => (
+        <li>
+          <a
+            class:list={{ active: index === 0 }}
+            href={item.href}
+            data-toc-link
+            aria-current={index === 0 ? 'true' : undefined}
+          >
+            <span>{index + 1}</span>
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+
+<script>
+  declare global {
+    interface Window {
+      __navfolioTocSpy?: boolean;
+    }
+  }
+
+  if (!window.__navfolioTocSpy) {
+    window.__navfolioTocSpy = true;
+
+    const getTocLinks = () =>
+      Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')).filter((link) =>
+        link.hash.startsWith('#'),
+      );
+
+    const setActiveLink = (activeHash: string) => {
+      for (const link of getTocLinks()) {
+        const isActive = link.hash === activeHash;
+        link.classList.toggle('active', isActive);
+
+        if (isActive) {
+          link.setAttribute('aria-current', 'true');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      }
+    };
+
+    const updateActiveSection = () => {
+      const links = getTocLinks();
+      const sections = links
+        .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+        .filter((section): section is HTMLElement => Boolean(section));
+
+      if (sections.length === 0) {
+        return;
+      }
+
+      const offset = 140;
+      const current =
+        sections
+          .filter((section) => section.getBoundingClientRect().top <= offset)
+          .at(-1) ?? sections[0];
+
+      setActiveLink(`#${current.id}`);
+    };
+
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+  }
+</script>
+
+<style>
+  .toc-card {
+    padding: 22px;
+  }
+
+  h2 {
+    margin: 0 0 14px;
+    color: #1b2a3d;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  ol {
+    display: grid;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    position: relative;
+    padding-left: 14px;
+  }
+
+  li::before {
+    position: absolute;
+    top: 0;
+    bottom: -5px;
+    left: 3px;
+    width: 1px;
+    background: rgba(89, 135, 123, 0.16);
+    content: '';
+  }
+
+  li:last-child::before {
+    display: none;
+  }
+
+  a {
+    position: relative;
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 8px;
+    align-items: center;
+    padding: 9px 10px;
+    border-radius: 15px;
+    color: #5c6d7c;
+    font-size: 0.86rem;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  a::before {
+    position: absolute;
+    left: -13px;
+    width: 7px;
+    height: 7px;
+    border: 2px solid #b5cec5;
+    border-radius: 50%;
+    background: #ffffff;
+    content: '';
+  }
+
+  a.active,
+  a:hover {
+    background: rgba(229, 250, 242, 0.82);
+    color: #14775e;
+  }
+
+  a.active::before,
+  a:hover::before {
+    border-color: #31c395;
+    background: #31c395;
+    box-shadow: 0 0 15px rgba(49, 195, 149, 0.36);
+  }
+
+  span {
+    color: #9aadba;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .compact {
+    padding: 18px;
+  }
+</style>

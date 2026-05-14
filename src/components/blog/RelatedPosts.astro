@@ -1,0 +1,90 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../FormattedDate.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+---
+
+<aside class="related-posts blog-card">
+  <h2>More from navfolio</h2>
+  <div class="related-list">
+    {
+      posts.map((post) => (
+        <a href={`/blog/${post.id}/`}>
+          {post.data.heroImage && <Image width={88} height={64} src={post.data.heroImage} alt="" />}
+          <span>
+            <strong>{post.data.title}</strong>
+            <small>
+              <FormattedDate date={post.data.pubDate} />
+            </small>
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</aside>
+
+<style>
+  .related-posts {
+    padding: 22px;
+  }
+
+  h2 {
+    margin: 0 0 14px;
+    color: #1b2a3d;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .related-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 11px;
+    align-items: center;
+    color: #26374a;
+    text-decoration: none;
+  }
+
+  a:hover strong {
+    color: #14775e;
+  }
+
+  img {
+    width: 58px;
+    height: 48px;
+    border-radius: 14px;
+    object-fit: cover;
+    box-shadow: 0 10px 22px rgba(68, 99, 94, 0.12);
+  }
+
+  span {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  strong {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 0.86rem;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  small {
+    color: #7b8998;
+    font-size: 0.75rem;
+  }
+</style>

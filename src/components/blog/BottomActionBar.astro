@@ -1,0 +1,85 @@
+---
+import { Heart, Link2, Share2, ThumbsDown } from 'lucide-astro';
+---
+
+<div class="bottom-action-bar" aria-label="Article feedback actions">
+  <span>Was this helpful?</span>
+  <button type="button" aria-label="Like article">
+    <Heart size={17} />
+  </button>
+  <button type="button" aria-label="Dislike article">
+    <ThumbsDown size={17} />
+  </button>
+  <button type="button" aria-label="Share article">
+    <Share2 size={17} />
+  </button>
+  <button type="button" aria-label="Copy article link">
+    <Link2 size={17} />
+  </button>
+</div>
+
+<style>
+  .bottom-action-bar {
+    position: sticky;
+    bottom: 24px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 28px auto 0;
+    padding: 10px 12px 10px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 16px 48px rgba(50, 80, 70, 0.12);
+    backdrop-filter: blur(16px);
+  }
+
+  span {
+    margin-right: 4px;
+    color: #526475;
+    font-size: 0.86rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  button {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid rgba(98, 143, 132, 0.14);
+    border-radius: 15px;
+    background: rgba(246, 252, 250, 0.78);
+    color: #28394d;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #e3f9f0;
+    color: #14775e;
+  }
+
+  @media (max-width: 520px) {
+    .bottom-action-bar {
+      width: 100%;
+      justify-content: space-between;
+      bottom: 14px;
+      padding-left: 14px;
+    }
+
+    span {
+      font-size: 0.8rem;
+    }
+
+    button {
+      width: 34px;
+      height: 34px;
+      border-radius: 13px;
+    }
+  }
+</style>

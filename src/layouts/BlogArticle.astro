@@ -1,0 +1,474 @@
+---
+import { Image } from 'astro:assets';
+import { type CollectionEntry, getCollection } from 'astro:content';
+import ArticleInfoCard from '../components/blog/ArticleInfoCard.astro';
+import AuthorCard from '../components/blog/AuthorCard.astro';
+import BlogTopNav from '../components/blog/BlogTopNav.astro';
+import BottomActionBar from '../components/blog/BottomActionBar.astro';
+import RelatedPosts from '../components/blog/RelatedPosts.astro';
+import SubscribeCard from '../components/blog/SubscribeCard.astro';
+import TableOfContents from '../components/blog/TableOfContents.astro';
+import BaseHead from '../components/BaseHead.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface Props {
+  post?: CollectionEntry<'blog'>;
+  headings?: { depth: number; slug: string; text: string }[];
+  title?: string;
+  description?: string;
+  pubDate?: Date;
+  updatedDate?: Date;
+  heroImage?: ImageMetadata;
+}
+
+const props = Astro.props;
+const headings = props.headings ?? [];
+const post = props.post ?? {
+  id: 'standalone',
+  body: props.description ?? '',
+  data: {
+    title: props.title ?? 'Untitled',
+    description: props.description ?? '',
+    pubDate: props.pubDate ?? new Date(),
+    updatedDate: props.updatedDate,
+    heroImage: props.heroImage,
+    draft: false,
+  },
+};
+const { title, description, pubDate, updatedDate, heroImage } = post.data;
+const bodyText = 'body' in post && typeof post.body === 'string' ? post.body : description;
+const readingTime = `${Math.max(3, Math.ceil(bodyText.trim().split(/\s+/).length / 220))} min read`;
+const tags = ['Design', 'Thinking', 'AI'];
+const renderedTocItems = headings
+  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+  .slice(0, 6)
+  .map((heading) => ({ href: `#${heading.slug}`, label: heading.text }));
+const tocItems =
+  renderedTocItems.length > 0
+    ? renderedTocItems
+    : [
+        { href: '#article-start', label: 'Article Start' },
+        { href: '#key-insight', label: 'Key Insight' },
+        { href: '#system-sketch', label: 'System Sketch' },
+      ];
+
+const relatedPosts = (await getCollection('blog', ({ id, data }) => id !== post.id && !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="blog-detail-page">
+    <BlogTopNav />
+    <div class="blog-background" aria-hidden="true"></div>
+
+    <main class="blog-layout">
+      <aside class="left-sidebar" aria-label="Article context">
+        <AuthorCard />
+        <ArticleInfoCard
+          pubDate={pubDate}
+          updatedDate={updatedDate}
+          readingTime={readingTime}
+          tags={tags}
+        />
+        <aside class="quote-card blog-card">
+          <p>Writing is thinking.</p>
+          <p>To write well is to think clearly.</p>
+        </aside>
+      </aside>
+
+      <div class="article-column">
+        <article class="article-card">
+          <header class="article-header">
+            <p class="category-line">Design / Thinking / AI</p>
+            <h1>{title}</h1>
+            <p class="article-subtitle">{description}</p>
+            <div class="meta-row">
+              <span><FormattedDate date={pubDate} /></span>
+              <span>{readingTime}</span>
+              {
+                updatedDate && (
+                  <span>
+                    Updated <FormattedDate date={updatedDate} />
+                  </span>
+                )
+              }
+            </div>
+          </header>
+
+          {
+            heroImage && (
+              <figure class="hero-image">
+                <Image width={1020} height={510} src={heroImage} alt="" />
+              </figure>
+            )
+          }
+
+          <section id="article-start" class="article-content">
+            <slot />
+          </section>
+
+          <section class="article-enhancements" aria-label="Article examples">
+            <div id="key-insight" class="highlight-callout">
+              <strong>Insight</strong>
+              <p>The goal is not to remember more, but to think more clearly.</p>
+            </div>
+            <pre
+              id="system-sketch"
+              class="code-block"><code>const system = capture()
+  .organize()
+  .connect()
+  .publish();</code></pre>
+          </section>
+        </article>
+
+        <BottomActionBar />
+
+        <section class="mobile-after-article" aria-label="More article tools">
+          <TableOfContents items={tocItems} compact />
+          <RelatedPosts posts={relatedPosts} />
+          <SubscribeCard />
+        </section>
+      </div>
+
+      <aside class="right-sidebar" aria-label="Reading tools">
+        <div class="right-sidebar-inner">
+          <TableOfContents items={tocItems} />
+          <RelatedPosts posts={relatedPosts} />
+          <SubscribeCard />
+        </div>
+      </aside>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    background: #f5fbfa;
+    scroll-behavior: smooth;
+  }
+
+  :global(.blog-detail-page) {
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(183, 240, 226, 0.45), transparent 30%),
+      radial-gradient(circle at 85% 20%, rgba(240, 245, 225, 0.55), transparent 35%),
+      linear-gradient(135deg, #f5fbfa 0%, #eef8f5 50%, #fbfaf4 100%);
+    color: #1f2a3d;
+  }
+
+  .blog-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .blog-background::before {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.34) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.34) 1px, transparent 1px);
+    background-size: 78px 78px;
+    content: '';
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.58), transparent 80%);
+  }
+
+  .blog-layout {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 720px) 280px;
+    gap: 36px;
+    width: min(100%, 1360px);
+    max-width: none;
+    margin: 0 auto;
+    padding: 112px 32px 52px;
+  }
+
+  .article-column {
+    min-width: 0;
+  }
+
+  .left-sidebar,
+  .right-sidebar-inner,
+  .mobile-after-article {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
+
+  .left-sidebar,
+  .right-sidebar-inner {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+
+  :global(.blog-card) {
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 28px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48));
+    box-shadow:
+      0 22px 64px rgba(61, 98, 92, 0.11),
+      inset 0 1px 1px rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(16px);
+  }
+
+  .quote-card {
+    padding: 22px;
+    color: #4e6070;
+  }
+
+  .quote-card p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .quote-card p:first-child {
+    color: #18273a;
+    font-weight: 700;
+  }
+
+  .article-card {
+    overflow: hidden;
+    padding: 56px;
+    border: 1px solid rgba(255, 255, 255, 0.76);
+    border-radius: 32px;
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 24px 80px rgba(50, 80, 70, 0.12);
+    backdrop-filter: blur(16px);
+  }
+
+  .article-header {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 36px;
+  }
+
+  .category-line {
+    margin: 0;
+    color: #15906e;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    max-width: 640px;
+    margin: 0;
+    color: #152236;
+    font-size: 4.25rem;
+    line-height: 0.98;
+  }
+
+  h1::first-letter {
+    color: #1eb888;
+  }
+
+  .article-subtitle {
+    max-width: 620px;
+    margin: 0;
+    color: #586a79;
+    font-size: 1.13rem;
+    line-height: 1.65;
+  }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: #738293;
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .meta-row span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(238, 249, 245, 0.8);
+  }
+
+  .hero-image {
+    margin: 0 0 42px;
+  }
+
+  .hero-image img {
+    display: block;
+    width: 100%;
+    border-radius: 26px;
+    box-shadow: 0 22px 58px rgba(56, 89, 84, 0.16);
+  }
+
+  .article-content {
+    color: #1f2a3d;
+    font-size: 16px;
+    line-height: 1.85;
+  }
+
+  .article-content :global(h2) {
+    margin-top: 56px;
+    margin-bottom: 20px;
+    color: #162338;
+    font-size: 26px;
+    line-height: 1.2;
+  }
+
+  .article-content :global(h3) {
+    margin-top: 38px;
+    margin-bottom: 16px;
+    color: #203047;
+    font-size: 20px;
+  }
+
+  .article-content :global(p) {
+    margin: 0 0 20px;
+  }
+
+  .article-content :global(a) {
+    color: #128365;
+    font-weight: 700;
+    text-decoration-color: rgba(18, 131, 101, 0.24);
+    text-underline-offset: 4px;
+  }
+
+  .article-content :global(blockquote) {
+    margin: 34px 0;
+    padding: 20px 24px;
+    border: 0;
+    border-radius: 24px;
+    background: rgba(231, 250, 243, 0.74);
+    color: #234338;
+    font-size: 1.08rem;
+  }
+
+  .article-content :global(pre),
+  .code-block {
+    overflow-x: auto;
+    border: 1px solid rgba(120, 160, 145, 0.18);
+    border-radius: 18px;
+    background: #f8fbfa;
+    color: #24364a;
+  }
+
+  .article-content :global(pre) {
+    padding: 20px;
+  }
+
+  .article-content :global(code) {
+    border-radius: 7px;
+    background: rgba(223, 241, 235, 0.68);
+    color: #204133;
+  }
+
+  .article-content :global(pre code) {
+    background: transparent;
+  }
+
+  .article-enhancements {
+    display: grid;
+    gap: 18px;
+    margin-top: 36px;
+  }
+
+  .highlight-callout {
+    padding: 22px 24px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(219, 249, 238, 0.88), rgba(242, 250, 236, 0.82));
+    color: #1d4337;
+  }
+
+  .highlight-callout strong {
+    display: block;
+    margin-bottom: 7px;
+    color: #128164;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+  }
+
+  .highlight-callout p {
+    margin: 0;
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  .code-block {
+    margin: 0;
+    padding: 20px;
+    font-size: 0.9rem;
+  }
+
+  .mobile-after-article {
+    display: none;
+  }
+
+  @media (max-width: 1180px) {
+    .blog-layout {
+      grid-template-columns: minmax(0, 680px) 260px;
+      justify-content: center;
+      width: min(100%, 1032px);
+    }
+
+    .left-sidebar {
+      display: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .blog-layout {
+      display: block;
+      max-width: 760px;
+      padding: 88px 16px 36px;
+    }
+
+    .right-sidebar {
+      display: none;
+    }
+
+    .mobile-after-article {
+      display: grid;
+      margin-top: 18px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .article-card {
+      padding: 28px 22px;
+      border-radius: 24px;
+    }
+
+    .article-header {
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    h1 {
+      max-width: 100%;
+      font-size: 2.35rem;
+      line-height: 1.04;
+    }
+
+    .article-subtitle {
+      font-size: 1rem;
+    }
+
+    .hero-image {
+      margin-bottom: 30px;
+    }
+
+    .hero-image img {
+      border-radius: 20px;
+    }
+  }
+</style>
