@@ -20,7 +20,13 @@ const hasTags = tags.length > 0;
   <h1>{title}</h1>
 
   <div class="meta-line" aria-label="Article metadata">
-    {pubDate && <span class="meta-item"><FormattedDate date={pubDate} /></span>}
+    {
+      pubDate && (
+        <span class="meta-item">
+          <FormattedDate date={pubDate} />
+        </span>
+      )
+    }
     <span class="meta-item">{wordCountLabel}</span>
     <span class="meta-item">{readingTime}</span>
     {

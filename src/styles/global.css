@@ -89,10 +89,12 @@
   --paper-nav: rgba(32, 38, 32, 0.92);
   --paper-card-wash-top: rgba(39, 47, 39, 0.72);
   --paper-card-wash-bottom: rgba(28, 33, 28, 0.52);
-  --paper-page-bg:
-    linear-gradient(180deg, rgba(23, 27, 24, 0.98) 0%, rgba(17, 20, 17, 0.98) 100%);
-  --paper-detail-bg:
-    linear-gradient(180deg, rgba(23, 27, 24, 0.98) 0%, rgba(17, 20, 17, 0.98) 100%);
+  --paper-page-bg: linear-gradient(180deg, rgba(23, 27, 24, 0.98) 0%, rgba(17, 20, 17, 0.98) 100%);
+  --paper-detail-bg: linear-gradient(
+    180deg,
+    rgba(23, 27, 24, 0.98) 0%,
+    rgba(17, 20, 17, 0.98) 100%
+  );
   --paper-texture-ink: rgba(217, 229, 213, 0.032);
   --paper-texture-light: rgba(255, 255, 255, 0.035);
   --paper-rule: rgba(217, 229, 213, 0.028);
@@ -251,8 +253,7 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image: linear-gradient(var(--paper-rule) 1px, transparent 1px);
-  background-size:
-    100% 32px;
+  background-size: 100% 32px;
   opacity: 0.28;
 }
 

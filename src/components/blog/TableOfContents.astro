@@ -10,17 +10,33 @@ interface Props {
 }
 
 const { items, compact = false } = Astro.props;
+import { normalizeHash } from '../../utils/toc-hash';
+
+const normalizedItems = items.map((item) => {
+  const normalizedHref = normalizeHash(item.href) || item.href;
+
+  return {
+    ...item,
+    href: normalizedHref,
+    normalizedHref,
+  };
+});
+
 const hasItems = items.length > 0;
 ---
 
 {
   hasItems && (
-    <nav class:list={['toc-card', 'blog-card', { compact }]} aria-label="Table of contents">
+    <nav
+      class:list={['toc-card', 'blog-card', { compact }]}
+      aria-label="Table of contents"
+      data-toc-root
+    >
       <h2>Table of contents</h2>
       <ol>
-        {items.map((item, index) => (
+        {normalizedItems.map((item, index) => (
           <li>
-            <a href={item.href} data-toc-link>
+            <a href={item.href} data-toc-link data-toc-hash={item.normalizedHref}>
               <span>{index + 1}</span>
               {item.label}
             </a>
@@ -31,189 +47,11 @@ const hasItems = items.length > 0;
   )
 }
 
-{
-  hasItems && (
-    <script is:inline>
-      {String.raw`
-        if (!window.__navfolioTocSpy) {
-          window.__navfolioTocSpy = true;
+<script>
+  import { mountNavfolioTocSpy } from '../../utils/toc-spy';
 
-          const initNavfolioToc = () => {
-            const normalizeHash = (value) => {
-              if (!value) {
-                return '';
-              }
-
-              const rawValue = value.startsWith('#') ? value.slice(1) : value;
-              if (!rawValue) {
-                return '';
-              }
-
-              try {
-                return '#' + decodeURIComponent(rawValue);
-              } catch {
-                return '#' + rawValue;
-              }
-            };
-
-            const getTocLinks = () =>
-              Array.from(document.querySelectorAll('[data-toc-link]')).filter((link) =>
-                link.hash.startsWith('#'),
-              );
-
-            const getNormalizedLinkHash = (link) =>
-              normalizeHash(link.hash || link.getAttribute('href') || '');
-
-            const getSections = () => {
-              const sectionHashes = new Set();
-
-              return getTocLinks()
-                .map((link) => getNormalizedLinkHash(link))
-                .filter((hash) => {
-                  if (!hash || sectionHashes.has(hash)) {
-                    return false;
-                  }
-
-                  sectionHashes.add(hash);
-                  return true;
-                })
-                .map((hash) => document.getElementById(hash.slice(1)))
-                .filter(Boolean);
-            };
-
-            const setActiveLink = (activeHash) => {
-              const links = getTocLinks();
-              const normalizedActiveHash = normalizeHash(activeHash);
-              const activeIndex = links.findIndex(
-                (link) => getNormalizedLinkHash(link) === normalizedActiveHash,
-              );
-
-              for (const [index, link] of links.entries()) {
-                const state =
-                  activeIndex < 0 ? 'future' : index < activeIndex ? 'past' : index > activeIndex ? 'future' : 'active';
-                const isActive = state === 'active';
-
-                link.dataset.state = state;
-                link.classList.toggle('active', isActive);
-                link.classList.toggle('past', state === 'past');
-                link.classList.toggle('future', state === 'future');
-
-                if (isActive) {
-                  link.setAttribute('aria-current', 'true');
-                } else {
-                  link.removeAttribute('aria-current');
-                }
-              }
-            };
-
-            const sections = getSections();
-            let activeHash = '';
-            let ticking = false;
-            let observer = null;
-
-            const computeActiveHash = () => {
-              if (sections.length === 0) {
-                return '';
-              }
-
-              const activationOffset = 120;
-              const current =
-                sections
-                  .filter((section) => section.getBoundingClientRect().top <= activationOffset)
-                  .at(-1) ?? sections[0];
-
-              return normalizeHash(\`#\${current.id}\`);
-            };
-
-            const updateActiveSection = () => {
-              ticking = false;
-
-              const nextActiveHash = computeActiveHash();
-              if (!nextActiveHash || nextActiveHash === activeHash) {
-                return;
-              }
-
-              activeHash = nextActiveHash;
-              setActiveLink(activeHash);
-            };
-
-            const scheduleUpdateActiveSection = () => {
-              if (ticking) {
-                return;
-              }
-
-              ticking = true;
-              window.requestAnimationFrame(updateActiveSection);
-            };
-
-            const scrollToHeading = (id) => {
-              const section = document.getElementById(id);
-              if (!section) {
-                return;
-              }
-
-              const headerOffset = 80;
-              const top = section.getBoundingClientRect().top + window.scrollY - headerOffset;
-
-              window.scrollTo({
-                top,
-                behavior: 'smooth',
-              });
-
-              activeHash = normalizeHash(\`#\${id}\`);
-              setActiveLink(activeHash);
-            };
-
-            for (const link of getTocLinks()) {
-              link.addEventListener('click', (event) => {
-                const normalizedHash = getNormalizedLinkHash(link);
-                const id = normalizedHash.slice(1);
-                if (!id) {
-                  return;
-                }
-
-                event.preventDefault();
-                history.pushState(null, '', link.getAttribute('href') || normalizedHash);
-                scrollToHeading(id);
-              });
-            }
-
-            if ('IntersectionObserver' in window) {
-              observer = new IntersectionObserver(
-                () => {
-                  scheduleUpdateActiveSection();
-                },
-                {
-                  root: null,
-                  rootMargin: '-120px 0px -70% 0px',
-                  threshold: 0,
-                },
-              );
-
-              for (const section of sections) {
-                observer.observe(section);
-              }
-            }
-
-            window.addEventListener('scroll', scheduleUpdateActiveSection, { passive: true });
-            window.addEventListener('resize', scheduleUpdateActiveSection, { passive: true });
-            window.addEventListener('popstate', scheduleUpdateActiveSection);
-            window.addEventListener('hashchange', scheduleUpdateActiveSection);
-            window.addEventListener('pagehide', () => observer?.disconnect(), { once: true });
-
-            scheduleUpdateActiveSection();
-          };
-
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initNavfolioToc, { once: true });
-          } else {
-            initNavfolioToc();
-          }
-        }
-      `}
-    </script>
-  )
-}
+  mountNavfolioTocSpy();
+</script>
 
 <style>
   .toc-card {
@@ -282,15 +120,17 @@ const hasItems = items.length > 0;
 
   a[data-state='past'] {
     color: var(--paper-ink-faint);
+    opacity: 0.62;
   }
 
   a[data-state='past'] span {
     color: var(--paper-ink-faint);
-    opacity: 0.72;
+    opacity: 0.58;
   }
 
   a[data-state='future'] {
     color: var(--paper-ink-soft);
+    opacity: 1;
   }
 
   a[data-state='future'] span {
@@ -329,12 +169,12 @@ const hasItems = items.length > 0;
 
   a[data-state='active'],
   a[aria-current='true'] {
-    background: var(--paper-control);
+    background: rgba(102, 125, 109, 0.24);
     color: var(--paper-accent);
   }
 
-  a[data-state]:not([data-state='active']):hover {
-    background: var(--paper-control-hover);
+  a[data-state]:not([data-state='active']):not([aria-current='true']):hover {
+    background: rgba(102, 125, 109, 0.14);
     color: var(--paper-accent);
   }
 
@@ -347,7 +187,7 @@ const hasItems = items.length > 0;
       0 0 0 3px rgba(102, 125, 109, 0.08);
   }
 
-  a[data-state]:not([data-state='active']):hover::before {
+  a[data-state]:not([data-state='active']):not([aria-current='true']):hover::before {
     border-color: rgba(102, 125, 109, 0.58);
     background: rgba(102, 125, 109, 0.18);
     box-shadow: none;
