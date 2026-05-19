@@ -3,6 +3,7 @@ title: '用 TOML 管理站点信息'
 description: '了解 navfolio 如何把站点标题、个人资料、导航入口和首页模块集中到 src/config/site.toml 中维护。'
 pubDate: '2026-05-19'
 updatedDate: '2026-05-19'
+heroImage: '/src/assets/figure/toml.png'
 draft: false
 tags:
   - Astro

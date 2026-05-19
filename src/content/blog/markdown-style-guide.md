@@ -2,7 +2,7 @@
 title: 'Markdown 语法渲染示例'
 description: '这是一篇用于展示 Astro 中常见 Markdown 语法渲染效果的中文示例文章。'
 pubDate: 'May 19 2025'
-heroImage: '/public/images/blog-sample-picture.png'
+heroImage: '/src/assets/figure/blog-sample-picture.png'
 tags:
   - 'Markdown'
   - '教程'
