@@ -19,9 +19,8 @@ const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
   z.object({
     title: z.string(),
     description: z.string(),
-    // Transform string to Date object
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
+    // Creation date. Accepts ISO 8601 strings and plain dates such as YYYY-MM-DD.
+    date: z.coerce.date(),
     draft: z.boolean().optional().default(false),
     heroImage: z.optional(image()),
     showHeroImage: z.boolean().optional().default(true),
@@ -81,6 +80,12 @@ const siteConfig = defineCollection({
         body: z.array(z.string()).min(1),
         image: z.string(),
       }),
+      latest: z
+        .object({
+          count: z.number().int().positive().default(1),
+        })
+        .optional()
+        .default({ count: 1 }),
       navigation: z.array(navigationItemSchema),
       connect: z.array(linkSchema.required({ icon: true })),
       doing: z.array(

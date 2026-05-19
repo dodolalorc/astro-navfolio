@@ -23,7 +23,7 @@ const { home, profile, site } = await getSiteConfig();
     </Fragment>
 
     <Fragment slot="activity">
-      <BlogHeatmap weeks={24} />
+      <BlogHeatmap weeks={24} latestCount={home.latest.count} />
     </Fragment>
 
     <Fragment slot="links">

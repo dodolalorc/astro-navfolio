@@ -2,12 +2,13 @@
 import { getCollection, render } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
 import BlogArticle from '../../layouts/BlogArticle.astro';
+import { sortByLastmodDesc } from '../../utils/content-dates';
 
 const projectEntries = await getCollection('projects');
 const projectIndex = projectEntries.find((entry) => entry.id === 'index');
-const projects = projectEntries
-  .filter((entry) => entry.id !== 'index' && !entry.data.draft)
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const projects = sortByLastmodDesc(
+  projectEntries.filter((entry) => entry.id !== 'index' && !entry.data.draft),
+);
 
 if (!projectIndex) {
   throw new Error('Missing src/content/projects/index.mdx content entry.');
@@ -15,9 +16,7 @@ if (!projectIndex) {
 
 const { Content, headings } = await render(projectIndex);
 
-const relatedProjects = projects.sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const relatedProjects = projects;
 
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -45,7 +44,7 @@ function withBase(href: string) {
         {relatedProjects.map((project) => (
           <a class="project-card" href={withBase(`/projects/${project.id}/`)}>
             <span class="project-meta">
-              <FormattedDate date={project.data.pubDate} />
+              <FormattedDate date={project.data.date} />
             </span>
             <h2>{project.data.title}</h2>
             <p>{project.data.description}</p>

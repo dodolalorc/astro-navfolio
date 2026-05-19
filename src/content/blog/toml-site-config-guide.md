@@ -1,8 +1,7 @@
 ---
 title: '用 TOML 管理站点信息'
 description: '了解 navfolio 如何把站点标题、个人资料、导航入口和首页模块集中到 src/config/site.toml 中维护。'
-pubDate: '2026-05-19'
-updatedDate: '2026-05-19'
+date: '2026-05-19T18:00:00+08:00'
 heroImage: '/src/assets/figure/toml.png'
 showHeroImage: true
 draft: false
@@ -33,19 +32,19 @@ TOML 适合描述站点级配置，因为它比 JSON 更适合人工编辑，又
 
 站点配置入口是：
 
-```text
+```bash
 src/config/site.toml
 ```
 
 Astro 的集合定义在：
 
-```text
+```bash
 src/content.config.ts
 ```
 
 页面和组件通过这个 helper 读取配置：
 
-```text
+```bash
 src/data/site.ts
 ```
 

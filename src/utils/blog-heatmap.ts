@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import { getContentLastmod, sortByLastmodDesc } from './content-dates';
 
 export interface HeatmapPost {
   title: string;
@@ -19,7 +20,7 @@ export interface HeatmapWindow {
   totalPosts: number;
   activeDays: number;
   currentStreak: number;
-  latestPost?: LatestPost;
+  latestPosts: LatestPost[];
 }
 
 export interface LatestPost {
@@ -29,10 +30,6 @@ export interface LatestPost {
 }
 
 type BlogPost = CollectionEntry<'blog'>;
-
-function getPostDate(post: BlogPost) {
-  return post.data.updatedDate ?? post.data.pubDate;
-}
 
 export function getDateKey(date: Date): string {
   const year = date.getFullYear();
@@ -50,14 +47,14 @@ export function getLevel(count: number): 0 | 1 | 2 | 3 | 4 {
   return 4;
 }
 
-export function getLatestPost(posts: BlogPost[]): LatestPost | undefined {
-  return posts
+export function getLatestPosts(posts: BlogPost[], count = 1): LatestPost[] {
+  return sortByLastmodDesc(posts)
+    .slice(0, Math.max(1, count))
     .map((post) => ({
       title: post.data.title,
       href: `/blog/${post.id}/`,
-      date: getPostDate(post),
-    }))
-    .sort((a, b) => b.date.valueOf() - a.date.valueOf())[0];
+      date: getContentLastmod(post),
+    }));
 }
 
 function getStartOfWeek(date: Date) {
@@ -73,7 +70,7 @@ function getPostsByDate(posts: BlogPost[]) {
   const postsByDate = new Map<string, HeatmapPost[]>();
 
   for (const post of posts) {
-    const key = getDateKey(post.data.pubDate);
+    const key = getDateKey(post.data.date);
     const existingPosts = postsByDate.get(key) ?? [];
     existingPosts.push({
       title: post.data.title,
@@ -85,7 +82,11 @@ function getPostsByDate(posts: BlogPost[]) {
   return postsByDate;
 }
 
-export function createRecentBlogHeatmap(posts: BlogPost[], weeks = 12): HeatmapWindow {
+export function createRecentBlogHeatmap(
+  posts: BlogPost[],
+  weeks = 12,
+  latestCount = 1,
+): HeatmapWindow {
   const safeWeeks = weeks === 24 ? 24 : 12;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -128,6 +129,6 @@ export function createRecentBlogHeatmap(posts: BlogPost[], weeks = 12): HeatmapW
     totalPosts: days.reduce((total, day) => total + day.count, 0),
     activeDays: days.filter((day) => day.count > 0).length,
     currentStreak,
-    latestPost: getLatestPost(posts),
+    latestPosts: getLatestPosts(posts, latestCount),
   };
 }

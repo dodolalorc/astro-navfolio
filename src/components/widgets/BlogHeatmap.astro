@@ -10,13 +10,20 @@ import {
 interface Props {
   weeks?: 12 | 24;
   showLatest?: boolean;
+  latestCount?: number;
   excludeDraft?: boolean;
   dateArchiveBaseHref?: string;
 }
 
-const { weeks = 24, showLatest = true, excludeDraft = true, dateArchiveBaseHref } = Astro.props;
+const {
+  weeks = 24,
+  showLatest = true,
+  latestCount = 1,
+  excludeDraft = true,
+  dateArchiveBaseHref,
+} = Astro.props;
 const posts = await getCollection('blog', ({ data }) => !excludeDraft || !data.draft);
-const heatmap = createRecentBlogHeatmap(posts, weeks);
+const heatmap = createRecentBlogHeatmap(posts, weeks, latestCount);
 const formatDate = new Intl.DateTimeFormat('en', {
   month: 'short',
   day: 'numeric',
@@ -66,22 +73,20 @@ function getTooltipPosts(posts: HeatmapPost[]) {
   </div>
 
   {
-    showLatest && heatmap.latestPost && (
-      <aside class="latest-tip" aria-label="Latest updated post">
+    showLatest && heatmap.latestPosts.length > 0 && (
+      <aside class="latest-tip" aria-label="Latest updated posts">
         <strong>Latest</strong>
-        <a
-          class="latest-link"
-          href={heatmap.latestPost.href}
-          aria-label={`Open latest post: ${heatmap.latestPost.title}`}
-        >
-          <em>{heatmap.latestPost.title}</em>
-          <time datetime={heatmap.latestPost.date.toISOString()}>
-            {formatDate.format(heatmap.latestPost.date)}
-          </time>
-          <span class="latest-icon" aria-hidden="true">
-            <Icon name="external" size={15} />
-          </span>
-        </a>
+        <div class="latest-list">
+          {heatmap.latestPosts.map((post) => (
+            <a class="latest-link" href={post.href} aria-label={`Open latest post: ${post.title}`}>
+              <em>{post.title}</em>
+              <time datetime={post.date.toISOString()}>{formatDate.format(post.date)}</time>
+              <span class="latest-icon" aria-hidden="true">
+                <Icon name="external" size={15} />
+              </span>
+            </a>
+          ))}
+        </div>
       </aside>
     )
   }
@@ -197,6 +202,11 @@ function getTooltipPosts(posts: HeatmapPost[]) {
     border: 1px solid var(--paper-line);
     border-radius: 7px;
     background: var(--paper-surface-muted);
+  }
+
+  .latest-list {
+    display: grid;
+    gap: 4px;
   }
 
   .latest-link {

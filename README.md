@@ -79,8 +79,7 @@ src/content/
 ```yaml
 title: '文章标题'
 description: '用于归档页和元信息的简短摘要。'
-pubDate: '2026-05-18'
-updatedDate: '2026-05-18'
+date: '2026-05-18'
 draft: false
 tags:
   - Astro
@@ -101,6 +100,7 @@ sidebar:
 - `topNav.links`：顶部导航链接。
 - `home.quote` / `home.intro`：首页标语和主介绍文案。
 - `home.navigation` / `home.connect`：首页身份入口、联系方式和站内入口。
+- `home.latest.count`：首页 Latest 最近文章展示条数，按文章文件修改时间排序。
 - `home.doing`：当前关注事项。
 
 首页尽量保持数据驱动。替换 starter 内容时，大多数情况下只需要修改数据和 Markdown / MDX 文件，不需要改组件内部逻辑。

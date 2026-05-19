@@ -2,13 +2,12 @@
 import FormattedDate from '../FormattedDate.astro';
 
 interface Props {
-  pubDate: Date;
-  updatedDate?: Date;
+  date: Date;
   readingTime: string;
   tags: string[];
 }
 
-const { pubDate, updatedDate, readingTime, tags } = Astro.props;
+const { date, readingTime, tags } = Astro.props;
 ---
 
 <aside class="article-info blog-card">
@@ -18,19 +17,9 @@ const { pubDate, updatedDate, readingTime, tags } = Astro.props;
       <dd>{readingTime}</dd>
     </div>
     <div>
-      <dt>Published</dt>
-      <dd><FormattedDate date={pubDate} /></dd>
+      <dt>Created</dt>
+      <dd><FormattedDate date={date} /></dd>
     </div>
-    {
-      updatedDate && (
-        <div>
-          <dt>Updated</dt>
-          <dd>
-            <FormattedDate date={updatedDate} />
-          </dd>
-        </div>
-      )
-    }
   </dl>
 
   <div class="tags" aria-label="Article tags">

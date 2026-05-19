@@ -5,6 +5,7 @@ import BlogTopNav from '../components/blog/BlogTopNav.astro';
 import RelatedPosts from '../components/blog/RelatedPosts.astro';
 import TableOfContents from '../components/blog/TableOfContents.astro';
 import BaseHead from '../components/BaseHead.astro';
+import { sortByLastmodDesc } from '../utils/content-dates';
 
 type SidebarConfig = {
   enable?: boolean;
@@ -19,8 +20,7 @@ interface Props {
     data: {
       title: string;
       description: string;
-      pubDate: Date;
-      updatedDate?: Date;
+      date: Date;
       heroImage?: ImageMetadata;
       showHeroImage?: boolean;
       tags?: string[];
@@ -34,8 +34,7 @@ interface Props {
   headerKicker?: string;
   title?: string;
   description?: string;
-  pubDate?: Date;
-  updatedDate?: Date;
+  date?: Date;
   heroImage?: ImageMetadata;
   showHeroImage?: boolean;
   tags?: string[];
@@ -49,8 +48,7 @@ const post = props.post ?? {
   data: {
     title: props.title ?? 'Untitled',
     description: props.description ?? '',
-    pubDate: props.pubDate ?? new Date(),
-    updatedDate: props.updatedDate,
+    date: props.date ?? new Date(),
     heroImage: props.heroImage,
     showHeroImage: props.showHeroImage ?? true,
     tags: props.tags ?? [],
@@ -58,7 +56,7 @@ const post = props.post ?? {
     sidebar: { enable: true, toc: true, relatedPosts: true },
   },
 };
-const { title, description, pubDate, heroImage, showHeroImage = true } = post.data;
+const { title, description, date, heroImage, showHeroImage = true } = post.data;
 const bodyText = 'body' in post && typeof post.body === 'string' ? post.body : description;
 const englishWords = bodyText.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? [];
 const cjkChars =
@@ -82,9 +80,9 @@ const shouldRenderSidebar = sidebarConfig.enable ?? true;
 const shouldRenderToc = sidebarConfig.toc ?? true;
 const hasToc = shouldRenderToc && tocItems.length > 0;
 
-const relatedPosts = (await getCollection('blog', ({ id, data }) => id !== post.id && !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
+const relatedPosts = sortByLastmodDesc(
+  await getCollection('blog', ({ id, data }) => id !== post.id && !data.draft),
+).slice(0, 3);
 const hasRelatedPosts =
   shouldRenderSidebar && (sidebarConfig.relatedPosts ?? true) && relatedPosts.length > 0;
 const hasSidebar = shouldRenderSidebar && hasToc;
@@ -105,7 +103,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
           <ArticleHeader
             title={title}
             description={description}
-            pubDate={pubDate}
+            date={date}
             wordCount={wordCount}
             readingTime={readingTime}
             tags={tags}

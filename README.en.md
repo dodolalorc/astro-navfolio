@@ -79,8 +79,7 @@ Blog posts and project documents share the same article schema:
 ```yaml
 title: 'Article title'
 description: 'Short summary for archives and metadata.'
-pubDate: '2026-05-18'
-updatedDate: '2026-05-18'
+date: '2026-05-18'
 draft: false
 tags:
   - Astro
@@ -101,6 +100,7 @@ Homepage and site data lives in `src/config/site.toml`:
 - `topNav.links`: top navigation links.
 - `home.quote` / `home.intro`: homepage motto and main introduction.
 - `home.navigation` / `home.connect`: identity links, contact links, and internal entries.
+- `home.latest.count`: number of latest posts shown on the homepage, sorted by file modification time.
 - `home.doing`: current focus list.
 
 The homepage intentionally stays mostly static and data-driven, so replacing starter content does not require editing component internals.

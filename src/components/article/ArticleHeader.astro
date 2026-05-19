@@ -5,7 +5,7 @@ import FormattedDate from '../FormattedDate.astro';
 interface Props {
   title: string;
   description?: string;
-  pubDate?: Date;
+  date?: Date;
   wordCount: number;
   readingTime: string;
   tags?: string[];
@@ -18,7 +18,7 @@ interface Props {
 const {
   title,
   description,
-  pubDate,
+  date,
   wordCount,
   readingTime,
   tags = [],
@@ -45,9 +45,9 @@ const isArchiveHeader = variant === 'archive';
           <p class="archive-kicker">{kicker}</p>
           <h1 class="archive-title">{title}</h1>
           <div class="meta-line" aria-label="Article metadata">
-            {pubDate && (
+            {date && (
               <span class="meta-item">
-                <FormattedDate date={pubDate} />
+                <FormattedDate date={date} />
               </span>
             )}
             <span class="meta-item">{wordCountLabel}</span>
@@ -68,9 +68,9 @@ const isArchiveHeader = variant === 'archive';
         <h1>{title}</h1>
 
         <div class="meta-line" aria-label="Article metadata">
-          {pubDate && (
+          {date && (
             <span class="meta-item">
-              <FormattedDate date={pubDate} />
+              <FormattedDate date={date} />
             </span>
           )}
           <span class="meta-item">{wordCountLabel}</span>
