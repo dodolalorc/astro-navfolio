@@ -1,12 +1,14 @@
 ---
 import Icon from './Icon.astro';
-import { profile } from '../data/profile';
+import { getSiteConfig } from '../data/site';
 
 const today = new Date();
+const { profile, site } = await getSiteConfig();
 ---
 
 <footer>
-  &copy; {today.getFullYear()} navfolio. Released as an open-source starter.
+  &copy; {today.getFullYear()}
+  {site.title}. {site.footerNote}
   <div class="social-links">
     <a href={profile.website} target="_blank" rel="noreferrer">
       <span class="sr-only">Open website</span>

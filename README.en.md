@@ -94,14 +94,14 @@ sidebar:
 
 ## Homepage Configuration
 
-Homepage data lives in `src/data/profile.ts`:
+Homepage and site data lives in `src/config/site.toml`:
 
+- `site`: site title, descriptions, repository URL, and footer note.
 - `profile`: name, handle, role, avatar, website, GitHub, email, and metadata.
-- `navigationLinks`: identity links on the homepage.
-- `quote`: short homepage motto.
-- `intro`: main homepage introduction.
-- `connectLinks`: contact and navigation links.
-- `doingItems`: current focus list.
+- `topNav.links`: top navigation links.
+- `home.quote` / `home.intro`: homepage motto and main introduction.
+- `home.navigation` / `home.connect`: identity links, contact links, and internal entries.
+- `home.doing`: current focus list.
 
 The homepage intentionally stays mostly static and data-driven, so replacing starter content does not require editing component internals.
 
@@ -173,7 +173,8 @@ src/
     blog/                 Blog Markdown / MDX
     projects/             Project index and project documents
     about.mdx             About page content
-  data/profile.ts         Homepage content configuration
+  config/site.toml        Site, profile, navigation, and homepage content configuration
+  data/site.ts            TOML config loading helper
   layouts/                Base and article layouts
   pages/                  Astro routes
   styles/global.css       Global theme, typography, and layout variables

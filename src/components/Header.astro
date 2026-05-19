@@ -1,9 +1,9 @@
 ---
-import { SITE_TITLE } from '../consts';
-import { profile } from '../data/profile';
+import { getSiteConfig } from '../data/site';
 import HeaderLink from './HeaderLink.astro';
 import Icon from './Icon.astro';
 
+const { profile, site, topNav } = await getSiteConfig();
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 function withBase(href: string) {
@@ -17,12 +17,9 @@ function withBase(href: string) {
 
 <header>
   <nav>
-    <h2><a href={withBase('/')}>{SITE_TITLE}</a></h2>
+    <h2><a href={withBase('/')}>{site.title}</a></h2>
     <div class="internal-links">
-      <HeaderLink href="/">Home</HeaderLink>
-      <HeaderLink href="/blog">Blog</HeaderLink>
-      <HeaderLink href="/projects">Projects</HeaderLink>
-      <HeaderLink href="/about">About</HeaderLink>
+      {topNav.links.map((link) => <HeaderLink href={link.href}>{link.label}</HeaderLink>)}
     </div>
     <div class="social-links">
       <a href={profile.website} target="_blank" rel="noreferrer">

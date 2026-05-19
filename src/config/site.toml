@@ -1,0 +1,121 @@
+[config.site]
+title = "navfolio"
+description = "A personal navigation portfolio starter built with Astro."
+pageTitle = "navfolio | Digital Publication Space"
+pageDescription = "A calm AI-native personal publication space for notes, links, and writing."
+repository = "https://github.com/dodolalorc/astro-navfolio"
+footerNote = "Released as an open-source starter."
+
+[config.profile]
+name = "navfolio"
+handle = "@navfolio"
+role = "A Cat Developer"
+company = "Independent Studio"
+location = "Remote"
+email = "hello@navfolio.site"
+website = "https://astro.navfolio.site/"
+github = "https://github.com/navfolio"
+meta = "Open-source maintainer"
+avatar = "/images/logo.png"
+
+[[config.topNav.links]]
+label = "Home"
+href = "/"
+
+[[config.topNav.links]]
+label = "Blog"
+href = "/blog"
+
+[[config.topNav.links]]
+label = "Projects"
+href = "/projects"
+
+[[config.topNav.links]]
+label = "About"
+href = "/about"
+
+[config.home]
+layout = "grid"
+
+[config.home.quote]
+text = ["Navigate your world,", "Showcase your story,", "and keep everything in one place."]
+image = "/images/logo-with-name.png"
+
+[config.home.intro]
+title = "here is navfolio"
+name = "navfolio"
+body = [
+  "The name combines \"Navigation\" and \"Portfolio\".",
+  "Navfolio focuses on lightweight organization, smooth reading experience, and developer-friendly aesthetics.",
+  "It feels less like a resume, and more like a personal operating system for your ideas, projects, notes, and online presence.",
+]
+image = "/images/logo-cat.png"
+
+[[config.home.navigation]]
+icon = "compass"
+title = "Portfolio"
+subtitle = "Selected work and case studies"
+href = "https://astro.navfolio.site/"
+
+[[config.home.navigation]]
+icon = "pen"
+title = "Blog"
+subtitle = "Essays, notes, and field reports"
+href = "/blog"
+
+[[config.home.navigation]]
+icon = "briefcase"
+title = "Resume"
+subtitle = "Career profile and experience"
+href = "https://resume.navfolio.site/"
+
+[[config.home.navigation]]
+icon = "github"
+title = "Open Source"
+subtitle = "Code, experiments, and tools"
+href = "https://github.com/navfolio"
+
+[[config.home.connect]]
+label = "GitHub"
+href = "https://github.com/navfolio"
+icon = "github"
+
+[[config.home.connect]]
+label = "Website"
+href = "https://astro.navfolio.site/"
+icon = "compass"
+
+[[config.home.connect]]
+label = "Blog"
+href = "/blog"
+icon = "book"
+
+[[config.home.connect]]
+label = "Projects"
+href = "/projects"
+icon = "repo"
+
+[[config.home.connect]]
+label = "Email"
+href = "mailto:hello@navfolio.site"
+icon = "mail"
+
+[[config.home.doing]]
+text = "Shipping a personal dashboard template"
+mark = "01"
+
+[[config.home.doing]]
+text = "Writing reusable notes for future projects"
+mark = "02"
+
+[[config.home.doing]]
+text = "Improving static-site publishing workflow"
+mark = "03"
+
+[[config.home.doing]]
+text = "Collecting useful developer resources"
+mark = "04"
+
+[[config.home.doing]]
+text = "Exploring small open-source ideas"
+mark = "05"

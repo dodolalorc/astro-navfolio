@@ -57,15 +57,11 @@ const post = props.post ?? {
 };
 const { title, description, pubDate, heroImage } = post.data;
 const bodyText = 'body' in post && typeof post.body === 'string' ? post.body : description;
-const englishWords =
-  bodyText.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? [];
+const englishWords = bodyText.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? [];
 const cjkChars =
   bodyText.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu) ?? [];
 const wordCount = englishWords.length + cjkChars.length;
-const readingMinutes = Math.max(
-  1,
-  Math.ceil(englishWords.length / 220 + cjkChars.length / 500),
-);
+const readingMinutes = Math.max(1, Math.ceil(englishWords.length / 220 + cjkChars.length / 500));
 const readingTime = `${readingMinutes} min read`;
 const tags = post.data.tags ?? [];
 const renderedTocItems = headings

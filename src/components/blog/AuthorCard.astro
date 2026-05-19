@@ -1,6 +1,8 @@
 ---
 import { Github, Mail, Rss } from 'lucide-astro';
-import { profile } from '../../data/profile';
+import { getSiteConfig } from '../../data/site';
+
+const { profile } = await getSiteConfig();
 ---
 
 <aside class="author-card blog-card">

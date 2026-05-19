@@ -1,17 +1,9 @@
 ---
 import { Github, Moon, Search, Sun } from 'lucide-astro';
+import { getSiteConfig } from '../../data/site';
 
-const links = [
-  { label: 'Home', href: '/' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Projects', href: '/projects' },
-  { label: 'About', href: '/about' },
-] as {
-  label: string;
-  href: string;
-  disabled?: boolean;
-}[];
-
+const { site, topNav } = await getSiteConfig();
+const links = topNav.links;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const currentPathname =
   basePath && Astro.url.pathname.startsWith(basePath)
@@ -45,9 +37,9 @@ function isActive(href: string) {
 ---
 
 <header class="blog-top-nav">
-  <a class="brand" href={withBase('/')} aria-label="Go to navfolio home">
+  <a class="brand" href={withBase('/')} aria-label={`Go to ${site.title} home`}>
     <span class="brand-mark" aria-hidden="true"></span>
-    <span>navfolio</span>
+    <span>{site.title}</span>
   </a>
 
   <nav class="nav-links" aria-label="Article navigation">
@@ -72,7 +64,7 @@ function isActive(href: string) {
 
   <div class="nav-actions" aria-label="Page actions">
     <a
-      href="https://github.com/dodolalorc/astro-navfolio"
+      href={site.repository}
       target="_blank"
       rel="noreferrer"
       aria-label="Open GitHub repository"

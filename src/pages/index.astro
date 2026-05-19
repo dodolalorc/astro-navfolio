@@ -5,15 +5,13 @@ import ProfileCard from '../components/cards/ProfileCard.astro';
 import DashboardFlow from '../components/layout/DashboardFlow.astro';
 import BlogHeatmap from '../components/widgets/BlogHeatmap.astro';
 import DoingCard from '../components/widgets/DoingCard.astro';
-import { doingItems, intro, navigationLinks, profile, quote } from '../data/profile';
+import { getSiteConfig } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const pageTitle = 'navfolio | Digital Publication Space';
-const pageDescription =
-  'A calm AI-native personal publication space for notes, links, and writing.';
+const { home, profile, site } = await getSiteConfig();
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout title={site.pageTitle} description={site.pageDescription}>
   <div class="publication-bg" aria-hidden="true"></div>
   <DashboardFlow>
     <Fragment slot="profile">
@@ -21,7 +19,7 @@ const pageDescription =
     </Fragment>
 
     <Fragment slot="hero">
-      <IntroCard intro={intro} quote={quote} />
+      <IntroCard intro={home.intro} quote={home.quote} />
     </Fragment>
 
     <Fragment slot="activity">
@@ -29,11 +27,11 @@ const pageDescription =
     </Fragment>
 
     <Fragment slot="links">
-      <NavigationCard items={navigationLinks} />
+      <NavigationCard items={home.navigation} />
     </Fragment>
 
     <Fragment slot="recently">
-      <DoingCard items={doingItems} />
+      <DoingCard items={home.doing} />
     </Fragment>
   </DashboardFlow>
 </BaseLayout>

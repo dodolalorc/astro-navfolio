@@ -94,14 +94,14 @@ sidebar:
 
 ## 首页配置
 
-首页内容集中在 `src/data/profile.ts`：
+首页与站点信息集中在 `src/config/site.toml`：
 
+- `site`：站点标题、描述、首页标题、仓库地址和页脚说明。
 - `profile`：名称、账号、身份、头像、网站、GitHub、邮箱等信息。
-- `navigationLinks`：首页 Identity Links 区域。
-- `quote`：首页标语。
-- `intro`：首页主介绍文案。
-- `connectLinks`：联系方式和站内入口。
-- `doingItems`：当前关注事项。
+- `topNav.links`：顶部导航链接。
+- `home.quote` / `home.intro`：首页标语和主介绍文案。
+- `home.navigation` / `home.connect`：首页身份入口、联系方式和站内入口。
+- `home.doing`：当前关注事项。
 
 首页尽量保持数据驱动。替换 starter 内容时，大多数情况下只需要修改数据和 Markdown / MDX 文件，不需要改组件内部逻辑。
 
@@ -173,7 +173,8 @@ src/
     blog/                 博客 Markdown / MDX
     projects/             项目入口和项目文档
     about.mdx             关于页面内容
-  data/profile.ts         首页内容配置
+  config/site.toml        站点、个人资料、导航和首页内容配置
+  data/site.ts            TOML 配置读取 helper
   layouts/                基础布局和文章布局
   pages/                  Astro 路由
   styles/global.css       全局主题、排版和布局变量

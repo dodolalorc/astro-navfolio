@@ -7,22 +7,16 @@ interface Props {
   backgroundImage?: string | null;
 }
 
-const {
-  name,
-  url,
-  bio = "",
-  avatar = null,
-  backgroundImage = null,
-} = Astro.props;
+const { name, url, bio = '', avatar = null, backgroundImage = null } = Astro.props;
 
-const fallbackInitial = (name.trim().charAt(0) || "?").toUpperCase();
+const fallbackInitial = (name.trim().charAt(0) || '?').toUpperCase();
 const summary = bio.trim();
-const backgroundImageUrl = backgroundImage?.trim() ?? "";
+const backgroundImageUrl = backgroundImage?.trim() ?? '';
 const hasBackgroundImage = backgroundImageUrl.length > 0;
 ---
 
 <a
-  class:list={["friend-link-card", hasBackgroundImage && "friend-link-card--with-bg"]}
+  class:list={['friend-link-card', hasBackgroundImage && 'friend-link-card--with-bg']}
   href={url}
   target="_blank"
   rel="noopener noreferrer"
@@ -39,7 +33,7 @@ const hasBackgroundImage = backgroundImageUrl.length > 0;
           decoding="async"
           aria-hidden="true"
         />
-        <span class="friend-link-card__bg-overlay" aria-hidden="true"></span>
+        <span class="friend-link-card__bg-overlay" aria-hidden="true" />
       </>
     ) : null
   }
@@ -73,12 +67,20 @@ const hasBackgroundImage = backgroundImageUrl.length > 0;
     overflow: hidden;
     isolation: isolate;
     background:
-      radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--paper-surface) 82%, transparent) 0%, transparent 72%),
+      radial-gradient(
+        120% 120% at 100% 0%,
+        color-mix(in srgb, var(--paper-surface) 82%, transparent) 0%,
+        transparent 72%
+      ),
       var(--paper-surface);
     box-shadow:
       inset 0 1px 0 color-mix(in srgb, var(--paper-surface) 78%, transparent),
       var(--paper-shadow);
-    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
   .friend-link-card:hover {
@@ -135,7 +137,6 @@ const hasBackgroundImage = backgroundImageUrl.length > 0;
     font-size: 13px;
     line-height: 1.5;
   }
-
 
   .friend-link-card__bg {
     position: absolute;

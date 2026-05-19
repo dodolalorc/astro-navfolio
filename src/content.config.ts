@@ -1,5 +1,5 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 type CollectionSchemaFactory = Extract<
@@ -28,6 +28,70 @@ const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
     sidebar: sidebarSchema,
   });
 
+const linkSchema = z.object({
+  label: z.string(),
+  href: z.string(),
+  icon: z.string().optional(),
+  disabled: z.boolean().optional().default(false),
+});
+
+const navigationItemSchema = z.object({
+  icon: z.string(),
+  title: z.string(),
+  subtitle: z.string(),
+  href: z.string(),
+});
+
+const siteConfig = defineCollection({
+  loader: file('./src/config/site.toml'),
+  schema: z.object({
+    site: z.object({
+      title: z.string(),
+      description: z.string(),
+      pageTitle: z.string(),
+      pageDescription: z.string(),
+      repository: z.string().url(),
+      footerNote: z.string(),
+    }),
+    profile: z.object({
+      name: z.string(),
+      handle: z.string(),
+      role: z.string(),
+      company: z.string(),
+      location: z.string(),
+      email: z.string().email(),
+      website: z.string().url(),
+      github: z.string().url(),
+      meta: z.string(),
+      avatar: z.string(),
+    }),
+    topNav: z.object({
+      links: z.array(linkSchema.omit({ icon: true })),
+    }),
+    home: z.object({
+      layout: z.enum(['grid']),
+      quote: z.object({
+        text: z.array(z.string()).min(1),
+        image: z.string(),
+      }),
+      intro: z.object({
+        title: z.string(),
+        name: z.string(),
+        body: z.array(z.string()).min(1),
+        image: z.string(),
+      }),
+      navigation: z.array(navigationItemSchema),
+      connect: z.array(linkSchema.required({ icon: true })),
+      doing: z.array(
+        z.object({
+          text: z.string(),
+          mark: z.string(),
+        }),
+      ),
+    }),
+  }),
+});
+
 const blog = defineCollection({
   // Load Markdown and MDX files in the `src/content/blog/` directory.
   loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -45,4 +109,4 @@ const projects = defineCollection({
   schema: articleSchema,
 });
 
-export const collections = { about, blog, projects };
+export const collections = { about, blog, projects, siteConfig };
