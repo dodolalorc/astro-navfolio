@@ -9,6 +9,38 @@ footerNote = "Released as an open-source starter."
 [config.vibe]
 showTrail = true
 
+[config.comments]
+enabled = true
+provider = "giscus"
+show_on_posts = true
+
+[config.comments.giscus]
+repo = "dodolalorc/astro-navfolio"
+repo_id = "R_kgDOSaQejw"
+category = "Announcements"
+category_id = "DIC_kwDOSaQej84C9di9"
+mapping = "pathname"
+strict = "0"
+reactions_enabled = "1"
+emit_metadata = "0"
+input_position = "top"
+theme = "preferred_color_scheme"
+lang = "zh-CN"
+loading = "lazy"
+
+[config.comments.utterances]
+repo = ""
+issue_term = "pathname"
+label = "comment"
+theme = "github-light"
+
+[config.comments.waline]
+server_url = ""
+lang = "zh-CN"
+dark = "html.dark"
+pageview = true
+comment = true
+
 [config.profile]
 name = "navfolio"
 handle = "@navfolio"

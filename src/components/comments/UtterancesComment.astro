@@ -1,0 +1,35 @@
+---
+import type { CommentsConfig } from '../../utils/comments';
+
+interface Props {
+  config: CommentsConfig['utterances'];
+}
+
+const { config } = Astro.props;
+---
+
+<div class="comment-provider" data-comment-provider="utterances"></div>
+
+<script type="module" define:vars={{ config }}>
+  const mountUtterances = () => {
+    const container = document.querySelector('[data-comment-provider="utterances"]');
+
+    if (!container) {
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = 'https://utteranc.es/client.js';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.setAttribute('repo', config.repo);
+    script.setAttribute('issue-term', config.issue_term);
+    script.setAttribute('label', config.label);
+    script.setAttribute('theme', config.theme);
+
+    container.replaceChildren(script);
+  };
+
+  mountUtterances();
+  document.addEventListener('astro:page-load', mountUtterances);
+</script>

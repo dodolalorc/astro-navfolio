@@ -4,6 +4,7 @@ description: 'An English rendering of a quiet summer-night walk by a lotus pond,
 date: '2026-05-18'
 heroImage: '/src/assets/figure/lotus.png'
 showHeroImage: true
+comments: true
 tags:
   - 'Essay'
   - 'English'

@@ -1,0 +1,46 @@
+---
+import type { CommentsConfig } from '../../utils/comments';
+
+interface Props {
+  config: CommentsConfig['waline'];
+}
+
+const { config } = Astro.props;
+---
+
+<div id="waline" class="waline-comment-provider"></div>
+
+<script type="module" define:vars={{ config }}>
+  import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+
+  let walineInstance;
+
+  const mountWaline = () => {
+    const container = document.querySelector('#waline');
+
+    if (!container) {
+      return;
+    }
+
+    if (walineInstance) {
+      walineInstance.update({
+        path: window.location.pathname,
+        pageview: config.pageview,
+        comment: config.comment,
+      });
+      return;
+    }
+
+    walineInstance = init({
+      el: '#waline',
+      serverURL: config.server_url,
+      lang: config.lang,
+      dark: config.dark,
+      pageview: config.pageview,
+      comment: config.comment,
+    });
+  };
+
+  mountWaline();
+  document.addEventListener('astro:page-load', mountWaline);
+</script>

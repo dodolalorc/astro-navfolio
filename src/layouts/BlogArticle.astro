@@ -5,6 +5,7 @@ import BlogTopNav from '../components/blog/BlogTopNav.astro';
 import RelatedPosts from '../components/blog/RelatedPosts.astro';
 import TableOfContents from '../components/blog/TableOfContents.astro';
 import BaseHead from '../components/BaseHead.astro';
+import CommentSection from '../components/comments/CommentSection.astro';
 import { sortByLastmodDesc } from '../utils/content-dates';
 
 type SidebarConfig = {
@@ -16,6 +17,7 @@ type SidebarConfig = {
 interface Props {
   post?: {
     id: string;
+    collection?: string;
     body?: string;
     data: {
       title: string;
@@ -24,6 +26,7 @@ interface Props {
       heroImage?: ImageMetadata;
       showHeroImage?: boolean;
       tags?: string[];
+      comments?: boolean;
       draft?: boolean;
       sidebar?: SidebarConfig;
     };
@@ -44,6 +47,7 @@ const props = Astro.props;
 const headings = props.headings ?? [];
 const post = props.post ?? {
   id: 'standalone',
+  collection: 'standalone',
   body: props.description ?? '',
   data: {
     title: props.title ?? 'Untitled',
@@ -56,6 +60,7 @@ const post = props.post ?? {
     sidebar: { enable: true, toc: true, relatedPosts: true },
   },
 };
+const isBlogPost = post.collection === 'blog';
 const { title, description, date, heroImage, showHeroImage = true } = post.data;
 const bodyText = 'body' in post && typeof post.body === 'string' ? post.body : description;
 const englishWords = bodyText.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? [];
@@ -111,11 +116,15 @@ const hasSidebar = shouldRenderSidebar && hasToc;
             showHeroImage={showHeroImage}
             variant={props.headerVariant}
             kicker={props.headerKicker}
+            pathname={Astro.url.pathname}
+            showPageView={isBlogPost}
           />
 
           <section id="article-start" class="article-content">
             <slot />
           </section>
+
+          {isBlogPost && <CommentSection frontmatter={post.data} pathname={Astro.url.pathname} />}
         </article>
 
         {hasRelatedPosts && <RelatedPosts posts={relatedPosts} class="article-after-related" />}

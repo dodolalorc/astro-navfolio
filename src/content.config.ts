@@ -25,8 +25,11 @@ const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
     heroImage: z.optional(image()),
     showHeroImage: z.boolean().optional().default(true),
     tags: z.array(z.string()).optional().default([]),
+    comments: z.boolean().optional().default(true),
     sidebar: sidebarSchema,
   });
+
+const commentProviderSchema = z.enum(['giscus', 'utterances', 'waline', 'none']);
 
 const linkSchema = z.object({
   label: z.string(),
@@ -59,6 +62,50 @@ const siteConfig = defineCollection({
       })
       .optional()
       .default({ showTrail: true }),
+    comments: z
+      .object({
+        enabled: z.boolean().optional().default(true),
+        provider: commentProviderSchema.optional().default('giscus'),
+        show_on_posts: z.boolean().optional().default(true),
+        giscus: z
+          .object({
+            repo: z.string().optional().default(''),
+            repo_id: z.string().optional().default(''),
+            category: z.string().optional().default(''),
+            category_id: z.string().optional().default(''),
+            mapping: z.string().optional().default('pathname'),
+            strict: z.string().optional().default('0'),
+            reactions_enabled: z.string().optional().default('1'),
+            emit_metadata: z.string().optional().default('0'),
+            input_position: z.string().optional().default('bottom'),
+            theme: z.string().optional().default('preferred_color_scheme'),
+            lang: z.string().optional().default('zh-CN'),
+            loading: z.string().optional().default('lazy'),
+          })
+          .optional()
+          .default({}),
+        utterances: z
+          .object({
+            repo: z.string().optional().default(''),
+            issue_term: z.string().optional().default('pathname'),
+            label: z.string().optional().default('comment'),
+            theme: z.string().optional().default('github-light'),
+          })
+          .optional()
+          .default({}),
+        waline: z
+          .object({
+            server_url: z.string().optional().default(''),
+            lang: z.string().optional().default('zh-CN'),
+            dark: z.string().optional().default('html.dark'),
+            pageview: z.boolean().optional().default(true),
+            comment: z.boolean().optional().default(true),
+          })
+          .optional()
+          .default({}),
+      })
+      .optional()
+      .default({}),
     profile: z.object({
       name: z.string(),
       handle: z.string(),

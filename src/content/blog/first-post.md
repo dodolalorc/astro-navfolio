@@ -4,6 +4,7 @@ description: '一篇以夏夜荷塘为中心的中文散文改写：月光、荷
 date: '2026-05-18'
 heroImage: '/src/assets/figure/lotus.png'
 showHeroImage: true
+comments: true
 tags:
   - '散文'
   - '中文'

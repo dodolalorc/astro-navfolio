@@ -1,0 +1,68 @@
+---
+import { getSiteConfig } from '../../data/site';
+import { canRenderProvider, getCommentProvider } from '../../utils/comments';
+import GiscusComment from './GiscusComment.astro';
+import UtterancesComment from './UtterancesComment.astro';
+import WalineComment from './WalineComment.astro';
+
+interface Props {
+  frontmatter: {
+    comments?: boolean;
+  };
+  pathname: string;
+}
+
+const { frontmatter, pathname } = Astro.props;
+const { comments } = await getSiteConfig();
+const provider = frontmatter.comments === false ? null : getCommentProvider(comments);
+const shouldRender = provider ? canRenderProvider(comments, provider) : false;
+---
+
+{
+  shouldRender && provider && (
+    <section class="comment-section" aria-label="Comments" data-comment-path={pathname}>
+      <div class="comment-section-heading">
+        <p>Comments</p>
+        <span>Quiet notes for this article.</span>
+      </div>
+
+      {provider === 'giscus' && <GiscusComment config={comments.giscus} />}
+      {provider === 'utterances' && <UtterancesComment config={comments.utterances} />}
+      {provider === 'waline' && <WalineComment config={comments.waline} />}
+    </section>
+  )
+}
+
+<style>
+  .comment-section {
+    width: min(100%, var(--article-content-max, 720px));
+    margin-top: 42px;
+    padding-top: 28px;
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .comment-section-heading {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 18px;
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .comment-section-heading p {
+    margin: 0;
+    color: var(--paper-ink);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .comment-section-heading span {
+    display: block;
+  }
+
+  :global(.blog-layout-centered .comment-section) {
+    width: 100%;
+  }
+</style>

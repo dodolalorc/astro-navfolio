@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import PageView from '../comments/PageView.astro';
 import FormattedDate from '../FormattedDate.astro';
 
 interface Props {
@@ -13,6 +14,8 @@ interface Props {
   showHeroImage?: boolean;
   variant?: 'default' | 'archive';
   kicker?: string;
+  pathname?: string;
+  showPageView?: boolean;
 }
 
 const {
@@ -26,6 +29,8 @@ const {
   showHeroImage = true,
   variant = 'default',
   kicker = 'Notebook entry',
+  pathname = Astro.url.pathname,
+  showPageView = false,
 } = Astro.props;
 const wordCountLabel = `${wordCount.toLocaleString('en-US')} words`;
 const hasTags = tags.length > 0;
@@ -52,6 +57,7 @@ const isArchiveHeader = variant === 'archive';
             )}
             <span class="meta-item">{wordCountLabel}</span>
             <span class="meta-item">{readingTime}</span>
+            {showPageView && <PageView pathname={pathname} />}
             {hasTags && (
               <span class="meta-item tag-list">
                 {tags.map((tag) => (
@@ -75,6 +81,7 @@ const isArchiveHeader = variant === 'archive';
           )}
           <span class="meta-item">{wordCountLabel}</span>
           <span class="meta-item">{readingTime}</span>
+          {showPageView && <PageView pathname={pathname} />}
           {hasTags && (
             <span class="meta-item tag-list">
               {tags.map((tag) => (

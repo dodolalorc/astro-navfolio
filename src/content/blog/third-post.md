@@ -4,6 +4,7 @@ description: '夏の夜、蓮池のほとりをひとり歩く心のゆらぎを
 date: '2026-05-18'
 heroImage: '/src/assets/figure/lotus.png'
 showHeroImage: true
+comments: true
 tags:
   - '随筆'
   - '日本語'

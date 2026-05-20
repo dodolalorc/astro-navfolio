@@ -83,6 +83,7 @@ date: '2026-05-18'
 draft: false
 tags:
   - Astro
+comments: true
 sidebar:
   enable: false
   toc: false
@@ -104,6 +105,46 @@ Homepage and site data lives in `src/config/site.toml`:
 - `home.doing`: current focus list.
 
 The homepage intentionally stays mostly static and data-driven, so replacing starter content does not require editing component internals.
+
+## Comment System
+
+Navfolio supports configurable comment providers:
+
+- giscus
+- utterances
+- Waline
+- none
+
+Configure comments in `src/config/site.toml`:
+
+```toml
+[config.comments]
+enabled = true
+provider = "giscus"
+show_on_posts = true
+```
+
+For giscus, fill in the repository and discussion category fields:
+
+```toml
+[config.comments.giscus]
+repo = "owner/repo"
+repo_id = "..."
+category = "Announcements"
+category_id = "..."
+mapping = "pathname"
+input_position = "top"
+theme = "preferred_color_scheme"
+lang = "zh-CN"
+```
+
+A single post can disable comments in frontmatter:
+
+```yaml
+comments: false
+```
+
+When using Waline with `pageview = true`, the article page can display page views in the post meta area. giscus and utterances only render comments; they do not provide pageview counts.
 
 ## Features
 

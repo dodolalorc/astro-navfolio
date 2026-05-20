@@ -1,0 +1,47 @@
+---
+import { getSiteConfig } from '../../data/site';
+import { shouldRenderWalinePageView } from '../../utils/comments';
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+const { comments } = await getSiteConfig();
+const showPageView = shouldRenderWalinePageView(comments);
+---
+
+{
+  showPageView && (
+    <span class="meta-item page-view">
+      Pageviews{' '}
+      <span class="waline-pageview-count" data-path={pathname} aria-live="polite">
+        --
+      </span>
+    </span>
+  )
+}
+
+<script
+  type="module"
+  define:vars={{
+    showPageView,
+    serverURL: comments.waline.server_url,
+    selector: '.waline-pageview-count',
+  }}
+>
+  if (showPageView) {
+    const { pageviewCount } = await import('https://unpkg.com/@waline/client@v3/dist/pageview.js');
+
+    const updatePageViews = () => {
+      pageviewCount({
+        serverURL,
+        selector,
+        path: window.location.pathname,
+      });
+    };
+
+    updatePageViews();
+    document.addEventListener('astro:page-load', updatePageViews);
+  }
+</script>

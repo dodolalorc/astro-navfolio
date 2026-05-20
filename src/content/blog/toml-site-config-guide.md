@@ -5,6 +5,7 @@ date: '2026-05-19T18:00:00+08:00'
 heroImage: '/src/assets/figure/toml.png'
 showHeroImage: true
 draft: false
+comments: true
 tags:
   - Astro
   - TOML

@@ -105,6 +105,32 @@ sidebar:
 
 首页尽量保持数据驱动。替换 starter 内容时，大多数情况下只需要修改数据和 Markdown / MDX 文件，不需要改组件内部逻辑。
 
+## Comment System
+
+Navfolio supports configurable comment providers:
+
+- giscus
+- utterances
+- Waline
+- none
+
+Configure comments in `src/config/site.toml`:
+
+```toml
+[config.comments]
+enabled = true
+provider = "giscus"
+show_on_posts = true
+```
+
+A single post can disable comments in frontmatter:
+
+```yaml
+comments: false
+```
+
+When using Waline with `pageview = true`, the article page can display page views in the post meta area. giscus and utterances only render comments; they do not provide pageview counts.
+
 ## 功能
 
 - Astro 6 静态站点架构。
