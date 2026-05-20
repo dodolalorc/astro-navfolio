@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogArticle from '../../layouts/BlogArticle.astro';
+import ZoomableImage from '../../components/mdx/ZoomableImage.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -16,5 +17,6 @@ const { Content, headings } = await render(post);
 ---
 
 <BlogArticle post={post} headings={headings}>
-  <Content />
+  <Content components={{ img: ZoomableImage }} />
+  <ZoomableImage />
 </BlogArticle>

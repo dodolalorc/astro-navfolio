@@ -1,0 +1,279 @@
+---
+import { ZoomIn } from 'lucide-astro';
+import type { ImageMetadata } from 'astro';
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'img'>, 'src'> & {
+  className?: string;
+  src?: string | ImageMetadata;
+};
+
+const { class: classAttr, className, alt = '', src, width, height, ...imageProps } = Astro.props;
+const imageMetadata = src && typeof src === 'object' && 'src' in src ? src : undefined;
+const resolvedSrc = imageMetadata ? imageMetadata.src : src;
+const resolvedWidth = width ?? imageMetadata?.width;
+const resolvedHeight = height ?? imageMetadata?.height;
+const imageClass = [classAttr, className].filter(Boolean).join(' ');
+const altText = typeof alt === 'string' ? alt : '';
+const previewLabel = altText.trim() ? `Open image preview: ${altText}` : 'Open image preview';
+const hasImageSource = resolvedSrc !== undefined && resolvedSrc !== null;
+---
+
+{
+  hasImageSource && (
+    <span class="zoomable-image" data-zoomable-image data-preview-label={previewLabel}>
+      <img
+        {...imageProps}
+        src={resolvedSrc}
+        alt={alt}
+        width={resolvedWidth}
+        height={resolvedHeight}
+        class={imageClass || undefined}
+        data-zoomable-image-target
+      />
+      <span class="zoomable-image__veil" aria-hidden="true">
+        <span class="zoomable-image__icon">
+          <ZoomIn size={20} strokeWidth={1.8} />
+        </span>
+      </span>
+    </span>
+  )
+}
+
+<script>
+  import { initZoomableImages } from '../../utils/zoomable-images';
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initZoomableImages, { once: true });
+  } else {
+    initZoomableImages();
+  }
+</script>
+
+<style>
+  :global(.zoomable-image) {
+    position: relative;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 30px auto;
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-surface-muted);
+    cursor: pointer;
+  }
+
+  :global(.zoomable-image:focus-visible) {
+    outline: 2px solid color-mix(in srgb, var(--paper-accent) 36%, transparent);
+    outline-offset: 4px;
+  }
+
+  :global(.zoomable-image img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  :global(.zoomable-image__veil) {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: color-mix(in srgb, var(--paper-ink) 28%, transparent);
+    opacity: 0;
+    transition: opacity 160ms ease;
+    pointer-events: none;
+  }
+
+  :global(.zoomable-image__icon) {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--paper-surface) 72%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-surface) 86%, transparent);
+    color: var(--paper-ink);
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--paper-ink) 12%, transparent);
+    transform: translateY(2px) scale(0.98);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+
+  :global(.zoomable-image:hover .zoomable-image__veil),
+  :global(.zoomable-image:focus-visible .zoomable-image__veil) {
+    opacity: 1;
+  }
+
+  :global(.zoomable-image:hover .zoomable-image__icon),
+  :global(.zoomable-image:focus-visible .zoomable-image__icon) {
+    transform: translateY(0) scale(1);
+  }
+
+  :global(.article-content a .zoomable-image) {
+    cursor: pointer;
+  }
+
+  :global(.article-content a .zoomable-image__veil) {
+    display: none;
+  }
+
+  :global(.article-content > p:has(> img):not(:has(a[href]))) {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    margin: 30px auto;
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-surface-muted);
+    cursor: pointer;
+  }
+
+  :global(.article-content figure:has(> img):not(:has(a[href]))) {
+    position: relative;
+    cursor: pointer;
+  }
+
+  :global(.article-content > p:has(> img):not(:has(a[href])) > img),
+  :global(.article-content figure:has(> img):not(:has(a[href])) > img) {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  :global(.article-content > p:has(> img):not(:has(a[href]))::before),
+  :global(.article-content figure:has(> img):not(:has(a[href]))::before) {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: color-mix(in srgb, var(--paper-ink) 28%, transparent);
+    opacity: 0;
+    transition: opacity 160ms ease;
+    pointer-events: none;
+    content: '';
+  }
+
+  :global(.article-content > p:has(> img):not(:has(a[href]))::after),
+  :global(.article-content figure:has(> img):not(:has(a[href]))::after) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--paper-surface) 72%, transparent);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--paper-surface) 86%, transparent);
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23343c35' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3M11 8v6M8 11h6'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: 0 10px 26px color-mix(in srgb, var(--paper-ink) 12%, transparent);
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 2px)) scale(0.98);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+    pointer-events: none;
+    content: '';
+  }
+
+  :global(.article-content > p:has(> img):not(:has(a[href])):hover::before),
+  :global(.article-content figure:has(> img):not(:has(a[href])):hover::before),
+  :global(.article-content > p:has(> img):not(:has(a[href])):focus-within::before),
+  :global(.article-content figure:has(> img):not(:has(a[href])):focus-within::before),
+  :global(.article-content > p:has(> img):not(:has(a[href])):hover::after),
+  :global(.article-content figure:has(> img):not(:has(a[href])):hover::after),
+  :global(.article-content > p:has(> img):not(:has(a[href])):focus-within::after),
+  :global(.article-content figure:has(> img):not(:has(a[href])):focus-within::after) {
+    opacity: 1;
+  }
+
+  :global(.article-content > p:has(> img):not(:has(a[href])):hover::after),
+  :global(.article-content figure:has(> img):not(:has(a[href])):hover::after),
+  :global(.article-content > p:has(> img):not(:has(a[href])):focus-within::after),
+  :global(.article-content figure:has(> img):not(:has(a[href])):focus-within::after) {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  :global(.zoomable-image-lightbox) {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 28px;
+    background: color-mix(in srgb, var(--paper-ink) 72%, transparent);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 180ms ease,
+      visibility 180ms ease;
+  }
+
+  :global(.zoomable-image-lightbox.is-open) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  :global(.zoomable-image-lightbox__image) {
+    display: block;
+    max-width: min(100%, 1180px);
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 18px 56px color-mix(in srgb, #000 32%, transparent);
+  }
+
+  :global(.zoomable-image-lightbox__close) {
+    position: fixed;
+    top: max(18px, env(safe-area-inset-top));
+    right: max(18px, env(safe-area-inset-right));
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--paper-surface) 34%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-surface) 90%, transparent);
+    color: var(--paper-ink);
+    cursor: pointer;
+  }
+
+  :global(.zoomable-image-lightbox__close:focus-visible) {
+    outline: 2px solid color-mix(in srgb, var(--paper-accent) 46%, transparent);
+    outline-offset: 3px;
+  }
+
+  @media (hover: none) {
+    :global(.zoomable-image__veil) {
+      display: none;
+    }
+
+    :global(.article-content > p:has(> img):not(:has(a[href]))::before),
+    :global(.article-content > p:has(> img):not(:has(a[href]))::after),
+    :global(.article-content figure:has(> img):not(:has(a[href]))::before),
+    :global(.article-content figure:has(> img):not(:has(a[href]))::after) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    :global(.zoomable-image) {
+      width: 100%;
+      margin: 24px 0;
+    }
+
+    :global(.zoomable-image-lightbox) {
+      padding: 16px;
+    }
+
+    :global(.zoomable-image-lightbox__image) {
+      max-height: 82vh;
+    }
+  }
+</style>
