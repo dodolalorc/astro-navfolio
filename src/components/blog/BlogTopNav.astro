@@ -4,9 +4,10 @@ import { getSiteConfig } from '../../data/site';
 
 interface Props {
   showTocIcon?: boolean;
+  tocItems?: { href: string; label: string }[];
 }
 
-const { showTocIcon = false } = Astro.props;
+const { showTocIcon = false, tocItems = [] } = Astro.props;
 const { site, topNav } = await getSiteConfig();
 const links = topNav.links;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -51,6 +52,7 @@ const activeRoute = Object.entries(routeLabels).find(
   ([route]) => currentPath === route || currentPath.startsWith(`${route}/`),
 );
 const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.title;
+const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 ---
 
 <header class="blog-top-nav">
@@ -133,11 +135,13 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
       <Search size={17} stroke-width={2} />
     </button>
     {
-      showTocIcon && (
+      shouldShowTocAction && (
         <button
           class="toc-action"
           type="button"
           aria-label="Open table of contents"
+          aria-expanded="false"
+          aria-controls="mobile-toc-menu"
           title="Table of contents"
           data-mobile-toc-trigger
         >
@@ -146,6 +150,30 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
       )
     }
   </div>
+
+  {
+    shouldShowTocAction && (
+      <nav
+        class="mobile-toc-panel"
+        id="mobile-toc-menu"
+        aria-label="Article table of contents"
+        data-nav-toc-menu
+        data-toc-root
+      >
+        <p>Table of contents</p>
+        <ol>
+          {tocItems.map((item, index) => (
+            <li>
+              <a href={item.href} data-nav-toc-link data-toc-link data-toc-hash={item.href}>
+                <span>{index + 1}</span>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
 </header>
 
 <script>
@@ -154,6 +182,7 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
       const toggle = header.querySelector<HTMLButtonElement>('[data-mobile-menu-toggle]');
       const menu = header.querySelector<HTMLElement>('[data-mobile-menu]');
       const tocTrigger = header.querySelector<HTMLButtonElement>('[data-mobile-toc-trigger]');
+      const tocMenu = header.querySelector<HTMLElement>('[data-nav-toc-menu]');
 
       if (toggle && menu && !header.dataset.mobileMenuReady) {
         header.dataset.mobileMenuReady = 'true';
@@ -166,9 +195,25 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
             open ? 'Close navigation menu' : 'Open navigation menu',
           );
         };
+        const setTocOpen = (open: boolean) => {
+          if (!tocTrigger || !tocMenu) {
+            return;
+          }
+
+          header.dataset.mobileTocOpen = open ? 'true' : 'false';
+          tocTrigger.setAttribute('aria-expanded', String(open));
+          tocTrigger.setAttribute(
+            'aria-label',
+            open ? 'Close table of contents' : 'Open table of contents',
+          );
+        };
 
         toggle.addEventListener('click', () => {
-          setMenuOpen(header.dataset.mobileMenuOpen !== 'true');
+          const nextOpen = header.dataset.mobileMenuOpen !== 'true';
+          setMenuOpen(nextOpen);
+          if (nextOpen) {
+            setTocOpen(false);
+          }
         });
 
         menu.addEventListener('click', (event) => {
@@ -177,36 +222,32 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
           }
         });
 
+        tocTrigger?.addEventListener('click', () => {
+          const nextOpen = header.dataset.mobileTocOpen !== 'true';
+          setTocOpen(nextOpen);
+          if (nextOpen) {
+            setMenuOpen(false);
+          }
+        });
+
+        tocMenu?.addEventListener('click', (event) => {
+          if ((event.target as Element).closest?.('[data-nav-toc-link]')) {
+            setTocOpen(false);
+          }
+        });
+
         document.addEventListener('click', (event) => {
           if (!header.contains(event.target as Node)) {
             setMenuOpen(false);
+            setTocOpen(false);
           }
         });
 
         document.addEventListener('keydown', (event) => {
           if (event.key === 'Escape') {
             setMenuOpen(false);
+            setTocOpen(false);
           }
-        });
-      }
-
-      if (tocTrigger && !tocTrigger.dataset.tocTriggerReady) {
-        tocTrigger.dataset.tocTriggerReady = 'true';
-        tocTrigger.addEventListener('click', () => {
-          const mobileToc = document.querySelector<HTMLElement>('[data-mobile-toc]');
-          const expandButton = mobileToc?.querySelector<HTMLButtonElement>('[data-toc-expand]');
-          const expandLabel = mobileToc?.querySelector<HTMLElement>('[data-expand-label]');
-
-          if (mobileToc && mobileToc.dataset.expanded !== 'true') {
-            mobileToc.dataset.expanded = 'true';
-            expandButton?.setAttribute('aria-expanded', 'true');
-            expandButton?.setAttribute('aria-label', 'Collapse table of contents');
-            if (expandLabel) {
-              expandLabel.textContent = 'Collapse';
-            }
-          }
-
-          mobileToc?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
       }
     }
@@ -237,13 +278,15 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
   }
 
   .mobile-menu-toggle,
-  .mobile-menu-panel {
+  .mobile-menu-panel,
+  .mobile-toc-panel {
     display: none;
   }
 
   .brand,
   a.nav-link,
-  a.mobile-menu-link {
+  a.mobile-menu-link,
+  .mobile-toc-panel a {
     color: var(--paper-ink);
     text-decoration: none;
   }
@@ -325,7 +368,7 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
   }
 
   .mobile-menu-toggle,
-  .toc-action {
+  .nav-actions .toc-action {
     display: none;
   }
 
@@ -387,7 +430,7 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
       border-radius: 7px;
     }
 
-    .toc-action {
+    .nav-actions .toc-action {
       display: inline-grid;
     }
 
@@ -411,7 +454,35 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
         transform 160ms ease;
     }
 
+    .mobile-toc-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      display: grid;
+      width: min(300px, calc(100vw - 20px));
+      max-height: min(52vh, 420px);
+      gap: 8px;
+      overflow: auto;
+      padding: 10px;
+      border: 1px solid var(--paper-line);
+      border-radius: 8px;
+      background: var(--paper-nav);
+      box-shadow: var(--paper-shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
     .blog-top-nav[data-mobile-menu-open='true'] .mobile-menu-panel {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .blog-top-nav[data-mobile-toc-open='true'] .mobile-toc-panel {
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0);
@@ -437,10 +508,56 @@ const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.tit
     .mobile-menu-placeholder {
       color: var(--paper-ink-faint);
     }
+
+    .mobile-toc-panel p {
+      margin: 0;
+      padding: 2px 2px 4px;
+      color: var(--paper-ink-faint);
+      font-family: var(--font-ui-label);
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .mobile-toc-panel ol {
+      display: grid;
+      gap: 4px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .mobile-toc-panel a {
+      display: grid;
+      grid-template-columns: 22px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      min-height: 36px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      color: var(--paper-ink-soft);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .mobile-toc-panel a:hover,
+    .mobile-toc-panel a[aria-current='true'],
+    .mobile-toc-panel a[data-state='active'] {
+      background: var(--paper-control-hover);
+      color: var(--paper-accent);
+    }
+
+    .mobile-toc-panel span {
+      color: var(--paper-ink-faint);
+      font-family: var(--font-ui-label);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
   }
 
   @media (min-width: 721px) {
-    .toc-action {
+    .nav-actions .toc-action {
       display: none;
     }
   }

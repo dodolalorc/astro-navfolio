@@ -99,7 +99,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     <BaseHead title={title} description={description} />
   </head>
   <body class="blog-detail-page">
-    <BlogTopNav showTocIcon={hasToc} />
+    <BlogTopNav showTocIcon={hasToc} tocItems={tocItems} />
     <div class="blog-background" aria-hidden="true"></div>
 
     <main class:list={['blog-layout', { 'blog-layout-centered': !hasSidebar }]}>

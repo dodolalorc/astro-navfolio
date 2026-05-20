@@ -115,10 +115,21 @@ function withBase(href: string) {
     }
 
     .nav-item {
-      grid-template-columns: 28px minmax(0, 1fr);
+      grid-template-columns: 24px minmax(0, max-content);
       gap: 10px;
+      justify-content: center;
       min-width: 0;
       padding: 9px 0;
+    }
+
+    .nav-icon {
+      display: grid;
+      place-items: center;
+    }
+
+    strong {
+      max-width: 100%;
+      text-align: center;
     }
 
     small,
