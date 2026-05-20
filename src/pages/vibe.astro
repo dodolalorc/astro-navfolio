@@ -7,7 +7,8 @@ import FormattedDate from '../components/FormattedDate.astro';
 import BlogTopNav from '../components/blog/BlogTopNav.astro';
 import { getSiteConfig } from '../data/site';
 
-const { site, vibe: vibeConfig } = await getSiteConfig();
+const { site, vibe: vibeConfig, theme } = await getSiteConfig();
+const palette = theme.palette;
 const showTrail = vibeConfig.showTrail;
 
 const vibeEntries = (await getCollection('vibe'))
@@ -25,7 +26,7 @@ const vibes = await Promise.all(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-palette={palette}>
   <head>
     <BaseHead title={`vibe | ${site.title}`} description="Small fragments of life and coding." />
     <style>

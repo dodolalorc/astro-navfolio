@@ -1,6 +1,7 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
 import BlogTopNav from '../components/blog/BlogTopNav.astro';
+import { getThemePalette } from '../data/site';
 
 interface Props {
   title: string;
@@ -8,10 +9,11 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const palette = await getThemePalette();
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-palette={palette}>
   <head>
     <BaseHead title={title} description={description} />
   </head>

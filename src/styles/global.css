@@ -7,6 +7,7 @@
 @import '@fontsource/maple-mono/800.css';
 
 @import 'lxgw-wenkai-webfont/style.css';
+@import './palettes.css';
 /*
   The CSS in this style tag is based off of Bear Blog's default CSS.
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
@@ -14,8 +15,6 @@
  */
 
 :root {
-  --accent: #6b7d70;
-  --accent-dark: #3f5348;
   --black: 35, 39, 35;
   --gray: 112, 119, 111;
   --gray-light: 226, 231, 224;
@@ -30,10 +29,6 @@
   --paper-ink: #272d28;
   --paper-ink-soft: #667066;
   --paper-ink-faint: #90998f;
-  --paper-accent: #667d6d;
-  --paper-accent-soft: #edf3ed;
-  --paper-fog: #dfe8e8;
-  --paper-dust: #e9e2eb;
   --paper-control: rgba(246, 248, 245, 0.76);
   --paper-control-hover: rgba(238, 243, 237, 0.92);
   --paper-nav: rgba(255, 255, 252, 0.92);
@@ -41,9 +36,7 @@
   --paper-card-wash-bottom: rgba(247, 248, 243, 0.52);
   --paper-page-bg: #fdfdf9;
   --paper-detail-bg: #fdfdf9;
-  --paper-texture-ink: rgba(73, 88, 75, 0.012);
   --paper-texture-light: rgba(255, 255, 255, 0.18);
-  --paper-rule: rgba(73, 88, 75, 0.026);
   --paper-theme-color: #fdfdf9;
   --paper-shadow: 0 1px 2px rgba(31, 35, 40, 0.03), 0 4px 12px rgba(31, 35, 40, 0.02);
   --paper-shadow-lift: 0 1px 2px rgba(31, 35, 40, 0.04), 0 6px 14px rgba(31, 35, 40, 0.025);
@@ -70,8 +63,6 @@
 }
 
 :root[data-theme='dark'] {
-  --accent: #a8baa9;
-  --accent-dark: #d3dfd2;
   --black: 234, 235, 229;
   --gray: 166, 175, 164;
   --gray-light: 56, 64, 56;
@@ -86,10 +77,6 @@
   --paper-ink: #eaebe5;
   --paper-ink-soft: #b5beb1;
   --paper-ink-faint: #899487;
-  --paper-accent: #a8baa9;
-  --paper-accent-soft: #2b372d;
-  --paper-fog: #293737;
-  --paper-dust: #352d38;
   --paper-control: rgba(42, 51, 43, 0.72);
   --paper-control-hover: rgba(52, 64, 53, 0.88);
   --paper-nav: rgba(32, 38, 32, 0.92);
@@ -101,9 +88,7 @@
     rgba(23, 27, 24, 0.98) 0%,
     rgba(17, 20, 17, 0.98) 100%
   );
-  --paper-texture-ink: rgba(217, 229, 213, 0.032);
   --paper-texture-light: rgba(255, 255, 255, 0.035);
-  --paper-rule: rgba(217, 229, 213, 0.028);
   --paper-shadow: 0 1px 2px rgba(0, 0, 0, 0.14), 0 4px 12px rgba(0, 0, 0, 0.08);
   --paper-shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.16), 0 6px 14px rgba(0, 0, 0, 0.1);
   --paper-theme-color: #171b18;

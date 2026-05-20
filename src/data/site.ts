@@ -10,7 +10,14 @@ export async function getSiteConfig() {
   return entry.data;
 }
 
+export async function getThemePalette() {
+  const { theme } = await getSiteConfig();
+
+  return theme.palette;
+}
+
 export type SiteConfig = Awaited<ReturnType<typeof getSiteConfig>>;
+export type ThemePalette = SiteConfig['theme']['palette'];
 export type SiteProfile = SiteConfig['profile'];
 export type SiteLink = SiteConfig['topNav']['links'][number];
 export type SiteVibe = SiteConfig['vibe'];

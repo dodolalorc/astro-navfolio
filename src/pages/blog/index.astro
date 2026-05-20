@@ -8,7 +8,8 @@ import BlogTopNav from '../../components/blog/BlogTopNav.astro';
 import { getSiteConfig } from '../../data/site';
 import { sortByDateDesc } from '../../utils/content-dates';
 
-const { site } = await getSiteConfig();
+const { site, theme } = await getSiteConfig();
+const palette = theme.palette;
 const posts = sortByDateDesc(await getCollection('blog'));
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
@@ -22,7 +23,7 @@ function withBase(href: string) {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-palette={palette}>
   <head>
     <BaseHead title={site.title} description={site.description} />
     <style>

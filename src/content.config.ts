@@ -30,6 +30,16 @@ const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
   });
 
 const commentProviderSchema = z.enum(['giscus', 'utterances', 'waline', 'none']);
+const paletteSchema = z.enum([
+  'green-soft',
+  'green-vivid',
+  'rose-soft',
+  'pink-soft',
+  'purple-soft',
+  'blue-soft',
+  'orange-soft',
+  'brown-soft',
+]);
 
 const linkSchema = z.object({
   label: z.string(),
@@ -62,6 +72,14 @@ const siteConfig = defineCollection({
       })
       .optional()
       .default({ showTrail: true }),
+    theme: z
+      .object({
+        palette: paletteSchema.optional().default('green-soft'),
+      })
+      .optional()
+      .default({
+        palette: 'green-soft',
+      }),
     comments: z
       .object({
         enabled: z.boolean().optional().default(true),

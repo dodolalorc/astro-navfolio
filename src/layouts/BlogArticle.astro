@@ -6,6 +6,7 @@ import RelatedPosts from '../components/blog/RelatedPosts.astro';
 import TableOfContents from '../components/blog/TableOfContents.astro';
 import BaseHead from '../components/BaseHead.astro';
 import CommentSection from '../components/comments/CommentSection.astro';
+import { getThemePalette } from '../data/site';
 import { sortByDateDesc } from '../utils/content-dates';
 
 type SidebarConfig = {
@@ -44,6 +45,7 @@ interface Props {
 }
 
 const props = Astro.props;
+const palette = await getThemePalette();
 const headings = props.headings ?? [];
 const post = props.post ?? {
   id: 'standalone',
@@ -94,7 +96,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-palette={palette}>
   <head>
     <BaseHead title={title} description={description} />
   </head>

@@ -9,6 +9,11 @@ footerNote = "Released as an open-source starter."
 [config.vibe]
 showTrail = true
 
+[config.theme]
+# Available palettes:
+# green-soft, green-vivid, rose-soft, pink-soft, purple-soft, blue-soft, orange-soft, brown-soft
+palette = "green-soft"
+
 [config.comments]
 enabled = true
 provider = "giscus"
