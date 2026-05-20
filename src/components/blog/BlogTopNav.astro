@@ -1,7 +1,12 @@
 ---
-import { Github, Moon, Search, Sun } from 'lucide-astro';
+import { Github, ListTree, Menu, Moon, Search, Sun } from 'lucide-astro';
 import { getSiteConfig } from '../../data/site';
 
+interface Props {
+  showTocIcon?: boolean;
+}
+
+const { showTocIcon = false } = Astro.props;
 const { site, topNav } = await getSiteConfig();
 const links = topNav.links;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -34,12 +39,35 @@ function isActive(href: string) {
 
   return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
 }
+
+const routeLabels: Record<string, string> = {
+  '/blog': 'blog',
+  '/projects': 'projects',
+  '/vibe': 'vibe',
+  '/archive': 'archive',
+  '/about': 'about',
+};
+const activeRoute = Object.entries(routeLabels).find(
+  ([route]) => currentPath === route || currentPath.startsWith(`${route}/`),
+);
+const brandTitle = activeRoute ? `${site.title} · ${activeRoute[1]}` : site.title;
 ---
 
 <header class="blog-top-nav">
+  <button
+    class="mobile-menu-toggle"
+    type="button"
+    aria-label="Open navigation menu"
+    aria-expanded="false"
+    aria-controls="mobile-nav-menu"
+    data-mobile-menu-toggle
+  >
+    <Menu size={18} stroke-width={2} />
+  </button>
+
   <a class="brand" href={withBase('/')} aria-label={`Go to ${site.title} home`}>
     <span class="brand-mark" aria-hidden="true"></span>
-    <span>{site.title}</span>
+    <span>{brandTitle}</span>
   </a>
 
   <nav class="nav-links" aria-label="Article navigation">
@@ -55,6 +83,31 @@ function isActive(href: string) {
           </span>
         ) : (
           <a class:list={['nav-link', { active: isActive(link.href) }]} href={withBase(link.href)}>
+            {link.label}
+          </a>
+        ),
+      )
+    }
+  </nav>
+
+  <nav
+    class="mobile-menu-panel"
+    id="mobile-nav-menu"
+    aria-label="Mobile navigation"
+    data-mobile-menu
+  >
+    {
+      links.map((link) =>
+        link.disabled ? (
+          <span class="mobile-menu-link mobile-menu-placeholder" aria-disabled="true">
+            {link.label}
+          </span>
+        ) : (
+          <a
+            class:list={['mobile-menu-link', { active: isActive(link.href) }]}
+            href={withBase(link.href)}
+            data-mobile-menu-link
+          >
             {link.label}
           </a>
         ),
@@ -79,8 +132,89 @@ function isActive(href: string) {
     <button type="button" aria-label="Search">
       <Search size={17} stroke-width={2} />
     </button>
+    {
+      showTocIcon && (
+        <button
+          class="toc-action"
+          type="button"
+          aria-label="Open table of contents"
+          title="Table of contents"
+          data-mobile-toc-trigger
+        >
+          <ListTree size={17} stroke-width={2} />
+        </button>
+      )
+    }
   </div>
 </header>
+
+<script>
+  const initMobileTopNav = () => {
+    for (const header of document.querySelectorAll<HTMLElement>('.blog-top-nav')) {
+      const toggle = header.querySelector<HTMLButtonElement>('[data-mobile-menu-toggle]');
+      const menu = header.querySelector<HTMLElement>('[data-mobile-menu]');
+      const tocTrigger = header.querySelector<HTMLButtonElement>('[data-mobile-toc-trigger]');
+
+      if (toggle && menu && !header.dataset.mobileMenuReady) {
+        header.dataset.mobileMenuReady = 'true';
+
+        const setMenuOpen = (open: boolean) => {
+          header.dataset.mobileMenuOpen = open ? 'true' : 'false';
+          toggle.setAttribute('aria-expanded', String(open));
+          toggle.setAttribute(
+            'aria-label',
+            open ? 'Close navigation menu' : 'Open navigation menu',
+          );
+        };
+
+        toggle.addEventListener('click', () => {
+          setMenuOpen(header.dataset.mobileMenuOpen !== 'true');
+        });
+
+        menu.addEventListener('click', (event) => {
+          if ((event.target as Element).closest?.('[data-mobile-menu-link]')) {
+            setMenuOpen(false);
+          }
+        });
+
+        document.addEventListener('click', (event) => {
+          if (!header.contains(event.target as Node)) {
+            setMenuOpen(false);
+          }
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            setMenuOpen(false);
+          }
+        });
+      }
+
+      if (tocTrigger && !tocTrigger.dataset.tocTriggerReady) {
+        tocTrigger.dataset.tocTriggerReady = 'true';
+        tocTrigger.addEventListener('click', () => {
+          const mobileToc = document.querySelector<HTMLElement>('[data-mobile-toc]');
+          const expandButton = mobileToc?.querySelector<HTMLButtonElement>('[data-toc-expand]');
+          const expandLabel = mobileToc?.querySelector<HTMLElement>('[data-expand-label]');
+
+          if (mobileToc && mobileToc.dataset.expanded !== 'true') {
+            mobileToc.dataset.expanded = 'true';
+            expandButton?.setAttribute('aria-expanded', 'true');
+            expandButton?.setAttribute('aria-label', 'Collapse table of contents');
+            if (expandLabel) {
+              expandLabel.textContent = 'Collapse';
+            }
+          }
+
+          mobileToc?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+  };
+
+  initMobileTopNav();
+  document.addEventListener('astro:page-load', initMobileTopNav);
+</script>
 
 <style>
   .blog-top-nav {
@@ -102,8 +236,14 @@ function isActive(href: string) {
     transform: translateX(-50%);
   }
 
+  .mobile-menu-toggle,
+  .mobile-menu-panel {
+    display: none;
+  }
+
   .brand,
-  a.nav-link {
+  a.nav-link,
+  a.mobile-menu-link {
     color: var(--paper-ink);
     text-decoration: none;
   }
@@ -170,7 +310,8 @@ function isActive(href: string) {
   }
 
   .nav-actions a,
-  .nav-actions button {
+  .nav-actions button,
+  .mobile-menu-toggle {
     display: inline-grid;
     place-items: center;
     width: 38px;
@@ -183,15 +324,21 @@ function isActive(href: string) {
     cursor: pointer;
   }
 
+  .mobile-menu-toggle,
+  .toc-action {
+    display: none;
+  }
+
   .nav-actions a:hover,
-  .nav-actions button:hover {
+  .nav-actions button:hover,
+  .mobile-menu-toggle:hover {
     background: var(--paper-control-hover);
     color: var(--paper-accent);
   }
 
   @media (max-width: 720px) {
     .blog-top-nav {
-      grid-template-columns: 1fr auto;
+      grid-template-columns: auto minmax(0, 1fr) auto;
       gap: 10px;
       top: 10px;
       width: min(calc(100% - 20px), 520px);
@@ -201,6 +348,99 @@ function isActive(href: string) {
     }
 
     .nav-links {
+      display: none;
+    }
+
+    .mobile-menu-toggle {
+      display: inline-grid;
+    }
+
+    .brand {
+      min-width: 0;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .brand span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      flex: 0 0 auto;
+    }
+
+    .nav-actions {
+      gap: 6px;
+    }
+
+    .nav-actions a {
+      display: none;
+    }
+
+    .nav-actions a,
+    .nav-actions button,
+    .mobile-menu-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 7px;
+    }
+
+    .toc-action {
+      display: inline-grid;
+    }
+
+    .mobile-menu-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      display: grid;
+      min-width: min(260px, calc(100vw - 20px));
+      gap: 4px;
+      padding: 8px;
+      border: 1px solid var(--paper-line);
+      border-radius: 8px;
+      background: var(--paper-nav);
+      box-shadow: var(--paper-shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
+    .blog-top-nav[data-mobile-menu-open='true'] .mobile-menu-panel {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .mobile-menu-link {
+      display: flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 8px 10px;
+      border-radius: 7px;
+      color: var(--paper-ink-soft);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .mobile-menu-link:hover,
+    .mobile-menu-link.active {
+      background: var(--paper-control-hover);
+      color: var(--paper-accent);
+    }
+
+    .mobile-menu-placeholder {
+      color: var(--paper-ink-faint);
+    }
+  }
+
+  @media (min-width: 721px) {
+    .toc-action {
       display: none;
     }
   }
