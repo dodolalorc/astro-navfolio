@@ -196,6 +196,29 @@ Preview the production build:
 bun run preview
 ```
 
+## Creating Content
+
+Create a new blog post:
+
+```sh
+bun run post:new my-first-post
+```
+
+Create a new vibe note:
+
+```sh
+bun run vibe:new today-cloud
+```
+
+Create MDX content:
+
+```sh
+bun run post:new my-interactive-post --mdx
+bun run vibe:new photo-note --mdx
+```
+
+The command argument is the file slug, not the final article title. Blog files are created in `src/content/blog/`; vibe files are created in `src/content/vibe/` with the existing date-prefixed filename convention.
+
 ## Project Structure
 
 ```text

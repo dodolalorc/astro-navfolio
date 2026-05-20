@@ -10,6 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "post:new": "bun scripts/new-content.ts blog",
+    "vibe:new": "bun scripts/new-content.ts vibe",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

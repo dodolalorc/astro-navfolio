@@ -181,6 +181,29 @@ bun run build
 bun run preview
 ```
 
+## 创建内容
+
+创建一篇新的博客文章：
+
+```sh
+bun run post:new my-first-post
+```
+
+创建一条新的 vibe 短记录：
+
+```sh
+bun run vibe:new today-cloud
+```
+
+创建 MDX 内容：
+
+```sh
+bun run post:new my-interactive-post --mdx
+bun run vibe:new photo-note --mdx
+```
+
+命令参数是文件 slug，不是最终文章标题。博客文件会生成到 `src/content/blog/`，vibe 文件会按现有约定生成到 `src/content/vibe/` 并带日期前缀。
+
 ## 项目结构
 
 ```text
