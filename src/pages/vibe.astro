@@ -7,7 +7,8 @@ import FormattedDate from '../components/FormattedDate.astro';
 import BlogTopNav from '../components/blog/BlogTopNav.astro';
 import { getSiteConfig } from '../data/site';
 
-const { site } = await getSiteConfig();
+const { site, vibe: vibeConfig } = await getSiteConfig();
+const showTrail = vibeConfig.showTrail;
 
 const vibeEntries = (await getCollection('vibe'))
   .filter((item) => !item.data.draft)
@@ -33,7 +34,7 @@ const vibes = await Promise.all(
       }
 
       main {
-        width: min(100%, 1080px);
+        width: min(100%, var(--layout-shell-width));
         padding-top: 126px;
       }
 
@@ -41,24 +42,30 @@ const vibes = await Promise.all(
         position: relative;
       }
 
-      .vibe-shell::before {
+      .vibe-hero::after {
         position: absolute;
-        top: 18px;
-        right: clamp(8px, 8vw, 108px);
-        width: 0.58rem;
-        height: 0.58rem;
-        border-radius: 999px;
-        background: var(--paper-accent);
+        top: clamp(0.3rem, 1.4vw, 0.72rem);
+        right: clamp(0.2rem, 2vw, 1.2rem);
+        width: clamp(3.9rem, 7.8vw, 5.4rem);
+        height: clamp(2.6rem, 5.2vw, 3.6rem);
+        background: currentColor;
+        color: color-mix(in srgb, var(--paper-accent) 64%, var(--paper-ink-faint));
         content: '';
-        opacity: 0.38;
+        -webkit-mask: url('../assets/icons/flight.svg') center / contain no-repeat;
+        mask: url('../assets/icons/flight.svg') center / contain no-repeat;
+        opacity: 0.34;
+        pointer-events: none;
+        transform: rotate(-9deg);
       }
 
       .vibe-hero {
-        max-width: 560px;
+        position: relative;
+        width: 100%;
         margin-bottom: clamp(72px, 10vw, 132px);
       }
 
       .vibe-title {
+        max-width: 560px;
         margin: 0;
         color: var(--paper-ink);
         font-size: clamp(2.32rem, 6.6vw, 4.35rem);
@@ -324,8 +331,11 @@ const vibes = await Promise.all(
           padding-top: 94px;
         }
 
-        .vibe-shell::before {
-          right: 20px;
+        .vibe-hero::after {
+          top: 0.2rem;
+          right: 0.4rem;
+          width: 3.18rem;
+          height: 2.12rem;
         }
 
         .vibe-hero {
@@ -350,6 +360,7 @@ const vibes = await Promise.all(
         }
 
         .vibe-dot {
+          display: none;
           top: 0.58rem;
         }
 
@@ -401,34 +412,39 @@ const vibes = await Promise.all(
         </header>
 
         <section class="vibe-stream" aria-label="Vibe notes">
-          <svg class="vibe-thread" aria-hidden="true">
-            <defs>
-              <linearGradient id="vibe-pencil-fade" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="var(--paper-ink-faint)" stop-opacity="0"></stop>
-                <stop offset="16%" stop-color="var(--paper-ink-faint)" stop-opacity="0.52"></stop>
-                <stop offset="84%" stop-color="var(--paper-ink-faint)" stop-opacity="0.52"></stop>
-                <stop offset="100%" stop-color="var(--paper-ink-faint)" stop-opacity="0"></stop>
-              </linearGradient>
-              <filter id="vibe-pencil-texture" x="-12%" y="-12%" width="124%" height="124%">
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.9"
-                  numOctaves="2"
-                  seed="8"
-                  result="grain"></feTurbulence>
-                <feDisplacementMap in="SourceGraphic" in2="grain" scale="0.65"></feDisplacementMap>
-              </filter>
-            </defs>
-            <path class="vibe-thread-path" data-vibe-thread-path></path>
-            <path class="vibe-thread-grain" data-vibe-thread-grain></path>
-          </svg>
+          {
+            showTrail && (
+              <svg class="vibe-thread" aria-hidden="true">
+                <defs>
+                  <linearGradient id="vibe-pencil-fade" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stop-color="var(--paper-ink-faint)" stop-opacity="0" />
+                    <stop offset="16%" stop-color="var(--paper-ink-faint)" stop-opacity="0.52" />
+                    <stop offset="84%" stop-color="var(--paper-ink-faint)" stop-opacity="0.52" />
+                    <stop offset="100%" stop-color="var(--paper-ink-faint)" stop-opacity="0" />
+                  </linearGradient>
+                  <filter id="vibe-pencil-texture" x="-12%" y="-12%" width="124%" height="124%">
+                    <feTurbulence
+                      type="fractalNoise"
+                      baseFrequency="0.9"
+                      numOctaves="2"
+                      seed="8"
+                      result="grain"
+                    />
+                    <feDisplacementMap in="SourceGraphic" in2="grain" scale="0.65" />
+                  </filter>
+                </defs>
+                <path class="vibe-thread-path" data-vibe-thread-path />
+                <path class="vibe-thread-grain" data-vibe-thread-grain />
+              </svg>
+            )
+          }
           {
             vibes.map(({ entry, Content, align }, index) => (
               <article
                 class:list={['vibe-item', align, entry.data.size, entry.data.type]}
                 style={`--vibe-index: ${index}`}
               >
-                <span class="vibe-dot" data-vibe-dot aria-hidden="true" />
+                {showTrail && <span class="vibe-dot" data-vibe-dot aria-hidden="true" />}
                 <div class="vibe-meta">
                   {entry.data.mood && <span>{entry.data.mood}</span>}
                   {entry.data.location && <span>{entry.data.location}</span>}
@@ -469,69 +485,10 @@ const vibes = await Promise.all(
       </div>
     </main>
     <Footer />
-    <script>
-      const stream = document.querySelector('.vibe-stream');
-      const svg = stream?.querySelector('.vibe-thread');
-      const path = svg?.querySelector('[data-vibe-thread-path]');
-      const grain = svg?.querySelector('[data-vibe-thread-grain]');
-
-      function drawVibeThread() {
-        if (!(stream instanceof HTMLElement) || !(svg instanceof SVGSVGElement)) return;
-        if (!(path instanceof SVGPathElement) || !(grain instanceof SVGPathElement)) return;
-
-        const streamBox = stream.getBoundingClientRect();
-        const dots = [...stream.querySelectorAll('[data-vibe-dot]')]
-          .filter((dot) => dot instanceof HTMLElement)
-          .map((dot) => {
-            const dotBox = dot.getBoundingClientRect();
-
-            return {
-              x: dotBox.left + dotBox.width / 2 - streamBox.left,
-              y: dotBox.top + dotBox.height / 2 - streamBox.top + 28,
-            };
-          });
-
-        svg.setAttribute('viewBox', `0 0 ${streamBox.width} ${streamBox.height + 52}`);
-
-        if (dots.length < 2) {
-          path.setAttribute('d', '');
-          grain.setAttribute('d', '');
-          return;
-        }
-
-        const commands = [`M ${dots[0].x.toFixed(2)} ${dots[0].y.toFixed(2)}`];
-
-        for (let index = 0; index < dots.length - 1; index += 1) {
-          const previous = dots[index - 1] ?? dots[index];
-          const current = dots[index];
-          const next = dots[index + 1];
-          const after = dots[index + 2] ?? next;
-          const segmentGap = Math.max(44, Math.abs(next.y - current.y));
-          const smoothness = Math.min(0.24, 34 / segmentGap);
-          const c1x = current.x + (next.x - previous.x) * smoothness;
-          const c1y = current.y + (next.y - previous.y) * smoothness;
-          const c2x = next.x - (after.x - current.x) * smoothness;
-          const c2y = next.y - (after.y - current.y) * smoothness;
-
-          commands.push(
-            `C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${next.x.toFixed(2)} ${next.y.toFixed(2)}`,
-          );
-        }
-
-        const line = commands.join(' ');
-        path.setAttribute('d', line);
-        grain.setAttribute('d', line);
-      }
-
-      const scheduleDraw = () => window.requestAnimationFrame(drawVibeThread);
-
-      scheduleDraw();
-      window.addEventListener('load', scheduleDraw, { once: true });
-      window.addEventListener('resize', scheduleDraw);
-
-      if ('ResizeObserver' in window && stream) {
-        new ResizeObserver(scheduleDraw).observe(stream);
-      }
-    </script>
+    {
+      showTrail && (
+        <script>import {mountVibeThread} from '../utils/vibe-thread'; mountVibeThread();</script>
+      )
+    }
   </body>
 </html>

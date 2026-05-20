@@ -2,7 +2,9 @@ type TocLink = HTMLAnchorElement;
 type TocRoot = HTMLElement;
 
 type TocWindow = Window & {
-  __navfolioTocSpy?: boolean;
+  __navfolioTocSpyCleanup?: () => void;
+  __navfolioTocSpyEvents?: boolean;
+  __navfolioTocSpyPageKey?: string;
 };
 
 import { buildHashIdCandidates, normalizeHash, normalizeIdValue } from './toc-hash';
@@ -105,11 +107,13 @@ const setActiveLink = (activeHash: string): void => {
   }
 };
 
-const initNavfolioToc = (): void => {
+const initNavfolioToc = (): (() => void) | null => {
   if (getTocLinks().length === 0) {
-    return;
+    return null;
   }
 
+  const controller = new AbortController();
+  const { signal } = controller;
   const sections = getSections();
   let activeHash = '';
   let ticking = false;
@@ -218,17 +222,21 @@ const initNavfolioToc = (): void => {
   };
 
   for (const link of getTocLinks()) {
-    link.addEventListener('click', (event: MouseEvent) => {
-      const normalizedHash = getNormalizedLinkHash(link);
-      if (!normalizedHash) {
-        return;
-      }
+    link.addEventListener(
+      'click',
+      (event: MouseEvent) => {
+        const normalizedHash = getNormalizedLinkHash(link);
+        if (!normalizedHash) {
+          return;
+        }
 
-      event.preventDefault();
-      history.pushState(null, '', normalizedHash);
-      freezeActiveFromScroll = true;
-      scrollToHeading(normalizedHash);
-    });
+        event.preventDefault();
+        history.pushState(null, '', normalizedHash);
+        freezeActiveFromScroll = true;
+        scrollToHeading(normalizedHash);
+      },
+      { signal },
+    );
   }
 
   if ('IntersectionObserver' in window) {
@@ -248,50 +256,72 @@ const initNavfolioToc = (): void => {
     }
   }
 
-  window.addEventListener('scroll', scheduleUpdateActiveSection, { passive: true });
-  window.addEventListener('resize', scheduleUpdateActiveSection, { passive: true });
-  window.addEventListener('wheel', unlockActiveFromScroll, { passive: true });
-  window.addEventListener('touchstart', unlockActiveFromScroll, { passive: true });
-  window.addEventListener('keydown', onKeydownUnlock);
-  window.addEventListener('popstate', () => {
+  const onPopstate = () => {
     freezeActiveFromScroll = false;
 
     if (!setActiveByHash(window.location.hash)) {
       scheduleUpdateActiveSection();
     }
-  });
-  window.addEventListener('hashchange', () => {
+  };
+  const onHashchange = () => {
     freezeActiveFromScroll = false;
 
     if (!setActiveByHash(window.location.hash)) {
       scheduleUpdateActiveSection();
     }
-  });
-  window.addEventListener(
-    'pagehide',
-    () => {
-      observer?.disconnect();
-      window.removeEventListener('keydown', onKeydownUnlock);
-    },
-    { once: true },
-  );
+  };
+
+  window.addEventListener('scroll', scheduleUpdateActiveSection, { passive: true, signal });
+  window.addEventListener('resize', scheduleUpdateActiveSection, { passive: true, signal });
+  window.addEventListener('wheel', unlockActiveFromScroll, { passive: true, signal });
+  window.addEventListener('touchstart', unlockActiveFromScroll, { passive: true, signal });
+  window.addEventListener('keydown', onKeydownUnlock, { signal });
+  window.addEventListener('popstate', onPopstate, { signal });
+  window.addEventListener('hashchange', onHashchange, { signal });
 
   if (!setActiveByHash(window.location.hash)) {
     scheduleUpdateActiveSection();
   }
+
+  return () => {
+    observer?.disconnect();
+    controller.abort();
+  };
 };
 
 export const mountNavfolioTocSpy = (): void => {
   const tocWindow = window as TocWindow;
-  if (tocWindow.__navfolioTocSpy) {
-    return;
+  const cleanupCurrent = () => {
+    tocWindow.__navfolioTocSpyCleanup?.();
+    tocWindow.__navfolioTocSpyCleanup = undefined;
+    tocWindow.__navfolioTocSpyPageKey = undefined;
+  };
+
+  const mountCurrentPage = () => {
+    const pageKey = `${window.location.pathname}${window.location.search}`;
+    if (tocWindow.__navfolioTocSpyPageKey === pageKey) {
+      return;
+    }
+
+    cleanupCurrent();
+
+    const cleanup = initNavfolioToc();
+    if (cleanup) {
+      tocWindow.__navfolioTocSpyCleanup = cleanup;
+      tocWindow.__navfolioTocSpyPageKey = pageKey;
+    }
+  };
+
+  if (!tocWindow.__navfolioTocSpyEvents) {
+    tocWindow.__navfolioTocSpyEvents = true;
+    document.addEventListener('astro:page-load', mountCurrentPage);
+    document.addEventListener('astro:before-swap', cleanupCurrent);
+    window.addEventListener('pagehide', cleanupCurrent);
   }
 
-  tocWindow.__navfolioTocSpy = true;
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNavfolioToc, { once: true });
+    document.addEventListener('DOMContentLoaded', mountCurrentPage, { once: true });
   } else {
-    initNavfolioToc();
+    mountCurrentPage();
   }
 };

@@ -53,6 +53,12 @@ const siteConfig = defineCollection({
       repository: z.string().url(),
       footerNote: z.string(),
     }),
+    vibe: z
+      .object({
+        showTrail: z.boolean().optional().default(true),
+      })
+      .optional()
+      .default({ showTrail: true }),
     profile: z.object({
       name: z.string(),
       handle: z.string(),

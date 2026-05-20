@@ -6,6 +6,7 @@ import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { getSiteConfig } from '../data/site';
 import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -23,6 +24,7 @@ const { site } = await getSiteConfig();
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
+<ClientRouter />
 <script is:inline>
   (() => {
     const storageKey = 'navfolio-theme';
@@ -44,33 +46,45 @@ const { site } = await getSiteConfig();
     };
     const applyTheme = (theme, persist = true) => {
       const nextTheme = theme === 'dark' ? 'dark' : 'light';
+      const toggleLabel = nextTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+
       root.dataset.theme = nextTheme;
       root.style.colorScheme = nextTheme;
       themeMeta()?.setAttribute('content', nextTheme === 'dark' ? '#171b18' : '#fdfdf9');
       for (const button of document.querySelectorAll('[data-theme-toggle]')) {
-        const label = nextTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
-        button.setAttribute('aria-label', label);
-        button.setAttribute('title', label);
+        button.setAttribute('aria-label', toggleLabel);
+        button.setAttribute('title', toggleLabel);
       }
       if (persist) setStoredTheme(nextTheme);
+    };
+    const syncThemeControls = () => {
+      applyTheme(root.dataset.theme || storedTheme() || systemTheme(), false);
     };
 
     applyTheme(storedTheme() || systemTheme(), false);
 
-    window.__navfolioTheme = {
-      toggle() {
-        applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
-      },
-    };
+    if (!window.__navfolioTheme) {
+      window.__navfolioTheme = {
+        toggle() {
+          applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+        },
+      };
+    }
+
+    if (window.__navfolioThemeInitialized) {
+      syncThemeControls();
+      return;
+    }
+
+    window.__navfolioThemeInitialized = true;
 
     document.addEventListener('click', (event) => {
       const toggle = event.target.closest?.('[data-theme-toggle]');
       if (toggle) window.__navfolioTheme.toggle();
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      applyTheme(root.dataset.theme, false);
-    });
+    document.addEventListener('DOMContentLoaded', syncThemeControls, { once: true });
+    document.addEventListener('astro:page-load', syncThemeControls);
 
     window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
       if (!storedTheme()) applyTheme(event.matches ? 'dark' : 'light', false);

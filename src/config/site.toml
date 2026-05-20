@@ -6,6 +6,9 @@ pageDescription = "A calm AI-native personal publication space for notes, links,
 repository = "https://github.com/dodolalorc/astro-navfolio"
 footerNote = "Released as an open-source starter."
 
+[config.vibe]
+showTrail = true
+
 [config.profile]
 name = "navfolio"
 handle = "@navfolio"
@@ -27,12 +30,12 @@ label = "Blog"
 href = "/blog"
 
 [[config.topNav.links]]
-label = "Vibe"
-href = "/vibe"
-
-[[config.topNav.links]]
 label = "Projects"
 href = "/projects"
+
+[[config.topNav.links]]
+label = "Vibe"
+href = "/vibe"
 
 [[config.topNav.links]]
 label = "About"
