@@ -1,15 +1,19 @@
 ---
 title: '为 Navfolio 接入可配置评论系统'
 description: '记录一次为 Astro 博客主题添加 giscus、utterances 和 Waline 评论系统的过程。'
-date: '2026-05-20'
-showHeroImage: false
-heroImage: '/src/assets/figure/comment-hero.png'
+date: '2026-05-20T00:00:00+08:00'
 draft: false
-comments: true
+heroImage: '/src/assets/figure/comment-hero.png'
+showHeroImage: false
 tags:
   - Astro
   - Navfolio
   - Comment
+comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
 ---
 
 一个安静的个人博客不一定需要评论区，但它需要给读者留下继续说话的可能。Navfolio 的评论系统因此做成了可配置模块：默认服务于文章页，又允许站点维护者按自己的内容节奏关闭它。

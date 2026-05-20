@@ -1,8 +1,12 @@
 ---
 title: after work
-date: 2026-05-21
+date: '2026-05-21T00:00:00+08:00'
+updatedDate: '2026-05-21T00:00:00+08:00'
+draft: false
 type: mixed
 mood: after work
+location: ''
+images: []
 tags: [blog, idea]
 align: center
 size: sm

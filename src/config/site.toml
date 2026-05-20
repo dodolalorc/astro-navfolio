@@ -92,6 +92,11 @@ image = "/images/logo-cat.png"
 
 [config.home.latest]
 count = 1
+heatmapWeeks = 24
+showHeatmapLatest = true
+excludeDraft = true
+startDate = ""
+dateArchiveBaseHref = ""
 
 [[config.home.navigation]]
 icon = "compass"

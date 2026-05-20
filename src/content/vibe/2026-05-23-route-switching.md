@@ -1,8 +1,12 @@
 ---
 title: route switching
-date: 2026-05-23
+date: '2026-05-23T00:00:00+08:00'
+updatedDate: '2026-05-23T00:00:00+08:00'
+draft: false
 type: text
 mood: tiny motion
+location: ''
+images: []
 tags: [dev, astro]
 align: right
 size: sm

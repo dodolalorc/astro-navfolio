@@ -1,9 +1,12 @@
 ---
 title: window light
-date: 2026-05-22
+date: '2026-05-22T00:00:00+08:00'
+updatedDate: '2026-05-22T00:00:00+08:00'
+draft: false
 type: text
 mood: soft focus
 location: Desk
+images: []
 tags: [daily, writing]
 align: left
 size: md

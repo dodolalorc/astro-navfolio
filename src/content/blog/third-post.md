@@ -1,14 +1,19 @@
 ---
 title: '蓮池の月明かり'
 description: '夏の夜、蓮池のほとりをひとり歩く心のゆらぎを、日本語で静かに綴った散文。'
-date: '2026-05-18'
+date: '2026-05-18T00:00:00+08:00'
+draft: false
 heroImage: '/src/assets/figure/lotus.png'
 showHeroImage: true
-comments: true
 tags:
   - '随筆'
   - '日本語'
   - '月明かり'
+comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
 ---
 
 ここ数日、心がどうにも落ち着かなかった。部屋の中に座っていても、空気が少し重く感じられ、考えごとばかりが窓辺にたまっていくようだった。妻は奥で子どもを寝かしつけている。庭はしだいに静まり、夜の気配だけが残った。私は薄い上着を羽織り、蓮池の方へ歩いてみることにした。

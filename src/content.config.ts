@@ -136,9 +136,21 @@ const siteConfig = defineCollection({
       latest: z
         .object({
           count: z.number().int().positive().default(1),
+          heatmapWeeks: z.number().int().positive().default(24),
+          showHeatmapLatest: z.boolean().optional().default(true),
+          excludeDraft: z.boolean().optional().default(true),
+          startDate: z.string().optional().default(''),
+          dateArchiveBaseHref: z.string().optional().default(''),
         })
         .optional()
-        .default({ count: 1 }),
+        .default({
+          count: 1,
+          heatmapWeeks: 24,
+          showHeatmapLatest: true,
+          excludeDraft: true,
+          startDate: '',
+          dateArchiveBaseHref: '',
+        }),
       navigation: z.array(navigationItemSchema),
       connect: z.array(linkSchema.required({ icon: true })),
       doing: z.array(

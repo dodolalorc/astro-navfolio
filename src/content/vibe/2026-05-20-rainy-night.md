@@ -1,5 +1,8 @@
 ---
-date: 2026-05-20
+title: 'rainy night'
+date: '2026-05-20T00:00:00+08:00'
+updatedDate: '2026-05-20T00:00:00+08:00'
+draft: false
 type: photo
 mood: rainy
 location: Tokyo

@@ -1,13 +1,18 @@
 ---
 title: 'Markdown 语法渲染示例'
 description: '这是一篇用于展示 Astro 中常见 Markdown 语法渲染效果的中文示例文章。'
-date: '2026-05-19'
+date: '2026-05-19T00:00:00+08:00'
+draft: false
 heroImage: '/src/assets/figure/blog-sample-picture.png'
 showHeroImage: true
-comments: true
 tags:
   - 'Markdown'
   - '教程'
+comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
 ---
 
 这篇文章用于集中展示常见 Markdown 语法在 Astro 中的渲染效果，便于你写作时快速对照。

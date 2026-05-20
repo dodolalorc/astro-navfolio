@@ -116,16 +116,26 @@ title: "${escapeYamlString(title)}"
 description: ""
 date: "${isoDate}"
 draft: true
+showHeroImage: false
 tags: []
 comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
 ---`;
 }
 
-function createVibeFrontmatter(_title: string, isoDate: string): string {
+function createVibeFrontmatter(title: string, isoDate: string): string {
   return `---
+title: "${escapeYamlString(title)}"
 date: "${isoDate}"
+updatedDate: "${isoDate}"
 draft: true
 type: text
+mood: ""
+location: ""
+images: []
 tags: []
 align: left
 size: md

@@ -1,14 +1,19 @@
 ---
 title: '荷塘月色'
 description: '一篇以夏夜荷塘为中心的中文散文改写：月光、荷叶、微风与独行的心绪，在静夜里缓慢铺开。'
-date: '2026-05-18'
+date: '2026-05-18T00:00:00+08:00'
+draft: false
 heroImage: '/src/assets/figure/lotus.png'
 showHeroImage: true
-comments: true
 tags:
   - '散文'
   - '中文'
   - '荷塘月色'
+comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
 ---
 
 这几天心里颇不宁静。夜里坐在屋中，总觉得四周的空气有些沉，像有许多细小的念头堆在窗前，挥不开，也说不清。妻在屋里拍着孩子入睡，轻轻的声响一下一下落下去，院子渐渐静了。我披了衣衫，推门出去，想着到荷塘边走走。

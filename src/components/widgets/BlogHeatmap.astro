@@ -8,11 +8,12 @@ import {
 } from '../../utils/blog-heatmap';
 
 interface Props {
-  weeks?: 12 | 24;
+  weeks?: number;
   showLatest?: boolean;
   latestCount?: number;
   excludeDraft?: boolean;
   dateArchiveBaseHref?: string;
+  startDate?: Date | string | null;
 }
 
 const {
@@ -21,9 +22,13 @@ const {
   latestCount = 1,
   excludeDraft = true,
   dateArchiveBaseHref,
+  startDate,
 } = Astro.props;
 const posts = await getCollection('blog', ({ data }) => !excludeDraft || !data.draft);
-const heatmap = createRecentBlogHeatmap(posts, weeks, latestCount);
+const heatmap = createRecentBlogHeatmap(posts, weeks, latestCount, startDate);
+const heatmapLabel = startDate
+  ? `Writing activity since ${heatmap.startDate}`
+  : `Recent ${heatmap.weeks} weeks writing activity`;
 const formatDate = new Intl.DateTimeFormat('en', {
   month: 'short',
   day: 'numeric',
@@ -91,7 +96,7 @@ function getTooltipPosts(posts: HeatmapPost[]) {
     )
   }
 
-  <div class="rhythm-grid" aria-label={`Recent ${heatmap.weeks} weeks writing activity`}>
+  <div class="rhythm-grid" aria-label={heatmapLabel}>
     <div class="weekday-column" aria-hidden="true">
       <span>Mon</span>
       <span>Wed</span>

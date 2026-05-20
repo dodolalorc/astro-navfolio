@@ -1,7 +1,12 @@
 ---
-date: 2026-05-19
+title: 'font loading'
+date: '2026-05-19T00:00:00+08:00'
+updatedDate: '2026-05-19T00:00:00+08:00'
+draft: false
 type: text
 mood: quiet
+location: ''
+images: []
 tags: [dev, daily]
 align: left
 size: md

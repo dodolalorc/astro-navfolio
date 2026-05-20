@@ -1,14 +1,19 @@
 ---
 title: 'Moonlight over the Lotus Pond'
 description: 'An English rendering of a quiet summer-night walk by a lotus pond, where moonlight softens the world and solitude becomes briefly spacious.'
-date: '2026-05-18'
+date: '2026-05-18T00:00:00+08:00'
+draft: false
 heroImage: '/src/assets/figure/lotus.png'
 showHeroImage: true
-comments: true
 tags:
   - 'Essay'
   - 'English'
   - 'Moonlight'
+comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
 ---
 
 For several days my mind had not been at ease. The room felt too close, and the small sounds of the evening seemed to gather around me without meaning. My wife was inside, coaxing the child to sleep. The courtyard had settled into silence. I put on a light coat and stepped out, thinking I might walk by the lotus pond for a while.
