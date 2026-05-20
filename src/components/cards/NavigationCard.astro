@@ -45,6 +45,7 @@ function withBase(href: string) {
 
 <style>
   .nav-card {
+    width: 100%;
     padding: 20px 0;
     border: 0;
     background: transparent;
@@ -53,6 +54,7 @@ function withBase(href: string) {
 
   nav {
     display: grid;
+    width: 100%;
     gap: 8px;
   }
 
@@ -115,9 +117,10 @@ function withBase(href: string) {
     }
 
     .nav-item {
-      grid-template-columns: 24px minmax(0, max-content);
+      width: 100%;
+      grid-template-columns: 24px minmax(0, 1fr);
       gap: 10px;
-      justify-content: center;
+      justify-content: start;
       min-width: 0;
       padding: 9px 0;
     }
@@ -129,7 +132,7 @@ function withBase(href: string) {
 
     strong {
       max-width: 100%;
-      text-align: center;
+      text-align: left;
     }
 
     small,
