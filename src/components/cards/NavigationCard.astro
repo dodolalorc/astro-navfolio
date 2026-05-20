@@ -103,4 +103,27 @@ function withBase(href: string) {
     color: var(--paper-ink-soft);
     font-size: 0.82rem;
   }
+
+  @media (max-width: 820px) {
+    .nav-card {
+      padding: 0;
+    }
+
+    nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px;
+    }
+
+    .nav-item {
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      min-width: 0;
+      padding: 9px 0;
+    }
+
+    small,
+    .nav-item > svg {
+      display: none;
+    }
+  }
 </style>

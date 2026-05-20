@@ -82,14 +82,54 @@
       padding: 96px 18px 42px;
     }
 
-    .flow-grid,
+    .flow-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .main-column,
     .side-column {
-      grid-template-columns: 1fr;
+      display: contents;
     }
 
     .flow-grid :global(.intro-card) {
+      order: 4;
       min-height: auto;
       padding: 0;
+      scroll-margin-top: 88px;
+      scroll-snap-align: start;
+      scroll-snap-stop: normal;
+    }
+
+    .flow-grid :global(.profile-card) {
+      order: 1;
+    }
+
+    .flow-grid :global(.nav-card) {
+      order: 2;
+    }
+
+    .flow-grid :global(.heatmap-card) {
+      order: 3;
+    }
+
+    .flow-grid :global(.doing-card) {
+      order: 5;
+    }
+
+    :global(html) {
+      scroll-snap-type: y proximity;
+    }
+  }
+
+  @media (max-width: 820px) and (prefers-reduced-motion: reduce) {
+    .flow-grid :global(.intro-card) {
+      scroll-snap-align: none;
+    }
+
+    :global(html) {
+      scroll-snap-type: none;
     }
   }
 </style>

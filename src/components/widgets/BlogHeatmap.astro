@@ -434,14 +434,28 @@ function getTooltipPosts(posts: HeatmapPost[]) {
 
   @media (max-width: 820px) {
     .heatmap-card {
-      padding: 20px;
+      gap: 14px;
+      padding: 0;
+      overflow: hidden;
     }
 
     .rhythm-grid {
-      --cell-size: 8px;
+      --cell-size: clamp(6px, 2.08vw, 8px);
       --cell-gap: 2px;
-      overflow: visible;
+      grid-template-columns: 22px minmax(0, 1fr);
+      overflow: hidden;
       width: 100%;
+    }
+
+    .heatmap-cells {
+      width: min(
+        100%,
+        calc((var(--cell-size) * var(--week-count)) + (var(--cell-gap) * (var(--week-count) - 1)))
+      );
+    }
+
+    .weekday-column {
+      font-size: 0.58rem;
     }
   }
 </style>

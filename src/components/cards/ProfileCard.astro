@@ -98,7 +98,19 @@ const { profile } = Astro.props as { profile: Profile };
 
   @media (max-width: 820px) {
     .profile-card {
+      justify-items: center;
       min-height: auto;
+      padding: 4px 0 0;
+      text-align: center;
+    }
+
+    .avatar-wrap {
+      margin-right: auto;
+      margin-left: auto;
+    }
+
+    .profile-heading span {
+      justify-content: center;
     }
   }
 </style>

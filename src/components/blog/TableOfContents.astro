@@ -7,9 +7,10 @@ interface Item {
 interface Props {
   items: Item[];
   compact?: boolean;
+  collapsible?: boolean;
 }
 
-const { items, compact = false } = Astro.props;
+const { items, compact = false, collapsible = false } = Astro.props;
 import { normalizeHash } from '../../utils/toc-hash';
 
 const normalizedItems = items.map((item) => {
@@ -23,17 +24,21 @@ const normalizedItems = items.map((item) => {
 });
 
 const hasItems = items.length > 0;
+const canCollapse = collapsible && items.length > 3;
+const listId = collapsible ? 'mobile-article-toc-list' : undefined;
 ---
 
 {
   hasItems && (
     <nav
-      class:list={['toc-card', 'blog-card', { compact }]}
+      class:list={['toc-card', 'blog-card', { compact, collapsible, 'can-collapse': canCollapse }]}
       aria-label="Table of contents"
       data-toc-root
+      data-mobile-toc={collapsible ? '' : undefined}
+      data-expanded={collapsible ? 'false' : undefined}
     >
       <h2>Table of contents</h2>
-      <ol>
+      <ol id={listId}>
         {normalizedItems.map((item, index) => (
           <li>
             <a href={item.href} data-toc-link data-toc-hash={item.normalizedHref}>
@@ -43,6 +48,19 @@ const hasItems = items.length > 0;
           </li>
         ))}
       </ol>
+      {canCollapse && (
+        <button
+          class="toc-expand"
+          type="button"
+          aria-label="Expand table of contents"
+          aria-expanded="false"
+          aria-controls={listId}
+          data-toc-expand
+        >
+          <span data-expand-label>Show all</span>
+          <i aria-hidden="true" />
+        </button>
+      )}
     </nav>
   )
 }
@@ -51,6 +69,36 @@ const hasItems = items.length > 0;
   import { mountNavfolioTocSpy } from '../../utils/toc-spy';
 
   mountNavfolioTocSpy();
+
+  const initMobileTocToggle = () => {
+    for (const toc of document.querySelectorAll<HTMLElement>('[data-mobile-toc]')) {
+      const button = toc.querySelector<HTMLButtonElement>('[data-toc-expand]');
+      const label = toc.querySelector<HTMLElement>('[data-expand-label]');
+
+      if (!button || button.dataset.tocToggleReady) {
+        continue;
+      }
+
+      button.dataset.tocToggleReady = 'true';
+      button.addEventListener('click', () => {
+        const expanded = toc.dataset.expanded === 'true';
+        const nextExpanded = !expanded;
+
+        toc.dataset.expanded = String(nextExpanded);
+        button.setAttribute('aria-expanded', String(nextExpanded));
+        button.setAttribute(
+          'aria-label',
+          nextExpanded ? 'Collapse table of contents' : 'Expand table of contents',
+        );
+        if (label) {
+          label.textContent = nextExpanded ? 'Collapse' : 'Show all';
+        }
+      });
+    }
+  };
+
+  initMobileTocToggle();
+  document.addEventListener('astro:page-load', initMobileTocToggle);
 </script>
 
 <style>
@@ -228,5 +276,75 @@ const hasItems = items.length > 0;
 
   .compact {
     padding: 18px;
+  }
+
+  .toc-expand {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .collapsible {
+      padding: 16px;
+      border: 1px solid var(--paper-line);
+      background: var(--paper-surface);
+      box-shadow: var(--paper-shadow);
+      scroll-margin-top: 78px;
+    }
+
+    .can-collapse ol {
+      max-height: 129px;
+      overflow: hidden;
+      transition: max-height 180ms ease;
+    }
+
+    .can-collapse[data-expanded='true'] ol {
+      max-height: none;
+    }
+
+    .can-collapse .toc-expand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px 10px;
+      border: 1px solid var(--paper-line);
+      border-radius: 7px;
+      background: var(--paper-control);
+      color: var(--paper-ink-soft);
+      font-family: var(--font-ui-label);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition:
+        background-color 160ms ease,
+        color 160ms ease;
+    }
+
+    .can-collapse .toc-expand:hover {
+      background: var(--paper-control-hover);
+      color: var(--paper-accent);
+    }
+
+    .toc-expand i {
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: translateY(-2px) rotate(45deg);
+      transition: transform 160ms ease;
+    }
+
+    .can-collapse[data-expanded='true'] .toc-expand i {
+      transform: translateY(2px) rotate(225deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collapsible ol,
+    .toc-expand i {
+      transition: none;
+    }
   }
 </style>

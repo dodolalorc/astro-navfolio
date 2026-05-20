@@ -99,7 +99,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     <BaseHead title={title} description={description} />
   </head>
   <body class="blog-detail-page">
-    <BlogTopNav />
+    <BlogTopNav showTocIcon={hasToc} />
     <div class="blog-background" aria-hidden="true"></div>
 
     <main class:list={['blog-layout', { 'blog-layout-centered': !hasSidebar }]}>
@@ -120,6 +120,14 @@ const hasSidebar = shouldRenderSidebar && hasToc;
             showPageView={isBlogPost}
           />
 
+          {
+            hasToc && (
+              <section class="mobile-article-toc" aria-label="Article table of contents">
+                <TableOfContents items={tocItems} compact collapsible />
+              </section>
+            )
+          }
+
           <section id="article-start" class="article-content">
             <slot />
           </section>
@@ -128,14 +136,6 @@ const hasSidebar = shouldRenderSidebar && hasToc;
         </article>
 
         {hasRelatedPosts && <RelatedPosts posts={relatedPosts} class="article-after-related" />}
-
-        {
-          hasSidebar && (
-            <section class="mobile-after-article" aria-label="More article tools">
-              {hasToc && <TableOfContents items={tocItems} compact />}
-            </section>
-          )
-        }
       </div>
 
       {
@@ -212,8 +212,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     max-width: none;
   }
 
-  .right-sidebar-inner,
-  .mobile-after-article {
+  .right-sidebar-inner {
     display: grid;
     gap: 18px;
     align-content: start;
@@ -344,7 +343,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     font-size: 0.9rem;
   }
 
-  .mobile-after-article {
+  .mobile-article-toc {
     display: none;
   }
 
@@ -372,9 +371,11 @@ const hasSidebar = shouldRenderSidebar && hasToc;
       display: none;
     }
 
-    .mobile-after-article {
-      display: grid;
-      margin-top: 18px;
+    .mobile-article-toc {
+      display: block;
+      width: min(100%, var(--article-content-max));
+      max-width: var(--article-content-max);
+      margin: -10px 0 28px;
     }
 
     :global(.article-after-related .related-list) {
