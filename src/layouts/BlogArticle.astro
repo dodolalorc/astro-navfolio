@@ -133,11 +133,9 @@ const hasSidebar = shouldRenderSidebar && hasToc;
           <section id="article-start" class="article-content">
             <slot />
           </section>
-
-          {isBlogPost && <CommentSection frontmatter={post.data} pathname={Astro.url.pathname} />}
         </article>
-
         {hasRelatedPosts && <RelatedPosts posts={relatedPosts} class="article-after-related" />}
+        {isBlogPost && <CommentSection frontmatter={post.data} pathname={Astro.url.pathname} />}
       </div>
 
       {

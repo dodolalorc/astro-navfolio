@@ -241,7 +241,7 @@ src/styles/global.css
 
 切换色盘后，至少检查这些页面：
 
-```text
+```bash
 /
 /blog
 /projects
