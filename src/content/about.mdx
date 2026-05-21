@@ -1,6 +1,6 @@
 ---
 title: '关于 navfolio'
-description: '一个安静的个人发布起点，用于整合链接、笔记、写作与个人资料内容。'
+description: '一个安静的 Astro 个人发布空间，用于整合主页、博客、项目文档、Vibe 短记录、搜索和评论系统。'
 date: '2026-05-01T00:00:00+08:00'
 draft: false
 showHeroImage: false
@@ -15,18 +15,62 @@ sidebar:
   relatedPosts: false
 ---
 
-navfolio 是一个轻量的个人发布起点，适合想把个人资料、常用链接、项目笔记和长文写作集中到同一处的人。
+import FriendLinkCard from '../components/mdx/FriendLinkCard.astro';
+
+navfolio 是一个轻量的个人发布起点，适合想把个人资料、常用链接、项目笔记、长文写作和短记录集中到同一处的人。
 
 它把个人网站从“静态简历页”转向“可阅读的内容操作面板”：既是公开思考的笔记本，也是身份入口的轻量索引，同时还是可长期积累的写作归档空间。
 
+如果这个项目对你有帮助，欢迎在 GitHub 仓库点一个 star：[dodolalorc/astro-navfolio](https://github.com/dodolalorc/astro-navfolio)。
+
 ## 这个空间适合做什么
 
-你可以在这里沉淀长期笔记、文章草稿、项目记录，以及那些原本会分散在多个主页与仓库里的上下文信息。
+你可以在这里沉淀长期笔记、文章草稿、项目记录、生活片段，以及那些原本会分散在多个主页与仓库里的上下文信息。
 
-默认内容是示例数据。你可以把示例个人资料、链接、GitHub 用户名与博客文章替换为自己的真实内容，主要位置在 `src/config/site.toml`、`src/content/blog/`，以及后续可扩展的 `src/content/projects/`。
+默认内容是示例数据。替换 starter 内容时，通常优先编辑这些位置：
+
+- `src/config/site.toml`：站点标题、作者资料、导航、首页、主题、搜索和评论配置。
+- `src/content/blog/`：长文、教程和模块使用手册。
+- `src/content/projects/`：项目入口和项目文档。
+- `src/content/vibe/`：更短、更即时的记录。
+- `src/content/about.mdx`：当前这个关于页面。
 
 ## 它是如何构建的
 
 项目采用 Astro-first、内容驱动、默认静态输出的方式。你可以直接编辑 Markdown 和 MDX 内容，将其渲染为文章页面，并部署到 GitHub Pages、Vercel、Netlify、Cloudflare Pages，或任何支持 Astro 构建的平台。
 
 视觉语言刻意保持克制：结构柔和、界面低噪、排版可读，交互也以轻量为主，服务阅读而不打断阅读。
+
+## 当前支持的模块
+
+- 内容集合：博客、项目、About 和 Vibe 都由 Astro Content Collection 管理。
+- 全文搜索：Pagefind 负责构建静态搜索索引，支持 `Ctrl+K` / `Cmd+K`。
+- 评论系统：可在 giscus、utterances、Waline 和关闭状态之间切换。
+- 主题色盘：站点维护者可以在 `site.toml` 中选择内置色盘。
+- MDX 组件：支持友链卡片、长图、轮播和可缩放图片等内容组件。
+- RSS / Sitemap：构建时自动生成，适合静态站点发布。
+
+## 相关链接
+
+<FriendLinkCard
+  name="作者"
+  url="https://dodolalorc.cn/"
+  bio="项目作者的个人主页"
+  avatar="/images/logo-cat.png"
+/>
+
+<FriendLinkCard name="Astro" url="https://astro.build/" bio="Navfolio 的静态站点框架" />
+
+<FriendLinkCard name="Bun" url="https://bun.com/" bio="项目使用的运行时和包管理工具" />
+
+<FriendLinkCard
+  name="Starlight"
+  url="https://starlight.astro.build/"
+  bio="Astro 官方文档主题，也是搜索方案的重要参考"
+/>
+
+<FriendLinkCard
+  name="giscus"
+  url="https://giscus.app/zh-CN"
+  bio="基于 GitHub Discussions 的评论系统"
+/>

@@ -104,7 +104,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     <BlogTopNav showTocIcon={hasToc} tocItems={tocItems} />
     <div class="blog-background" aria-hidden="true"></div>
 
-    <main class:list={['blog-layout', { 'blog-layout-centered': !hasSidebar }]}>
+    <main class:list={['blog-layout', { 'blog-layout-centered': !hasSidebar }]} data-pagefind-body>
       <div class="article-column">
         <article class="article-card">
           <ArticleHeader

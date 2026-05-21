@@ -1,0 +1,5 @@
+site: dist
+output_subdir: pagefind
+root_selector: main
+exclude_selectors:
+  - '[data-pagefind-ignore]'

@@ -1,5 +1,6 @@
 ---
-import { Github, ListTree, Menu, Moon, Search, Sun } from 'lucide-astro';
+import { Github, ListTree, Menu, Moon, Sun } from 'lucide-astro';
+import SiteSearch from './SiteSearch.astro';
 import { getSiteConfig } from '../../data/site';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const { showTocIcon = false, tocItems = [] } = Astro.props;
-const { site, topNav } = await getSiteConfig();
+const { site, topNav, search } = await getSiteConfig();
 const links = topNav.links;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const currentPathname =
@@ -55,7 +56,7 @@ const brandRouteLabel = activeRoute?.[1];
 const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 ---
 
-<header class="blog-top-nav">
+<header class="blog-top-nav" data-pagefind-ignore>
   <button
     class="mobile-menu-toggle"
     type="button"
@@ -134,9 +135,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       <Moon class="theme-icon-moon" size={17} stroke-width={2} />
       <Sun class="theme-icon-sun" size={17} stroke-width={2} />
     </button>
-    <!-- <button type="button" aria-label="Search">
-      <Search size={17} stroke-width={2} />
-    </button> -->
+    {search.enabled && <SiteSearch search={search} />}
     {
       shouldShowTocAction && (
         <button
@@ -264,7 +263,8 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
   .blog-top-nav {
     position: fixed;
     top: 18px;
-    left: 50%;
+    right: 0;
+    left: 0;
     z-index: 50;
     display: grid;
     grid-template-columns: auto 1fr auto;
@@ -273,11 +273,11 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     width: min(calc(100% - 32px), 900px);
     min-height: 56px;
     padding: 10px 14px 10px 18px;
+    margin: 0 auto;
     border: 1px solid var(--paper-line);
     border-radius: 8px;
     background: var(--paper-nav);
     box-shadow: var(--paper-shadow);
-    transform: translateX(-50%);
   }
 
   .mobile-menu-toggle,

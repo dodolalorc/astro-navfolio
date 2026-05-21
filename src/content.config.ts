@@ -139,6 +139,20 @@ const siteConfig = defineCollection({
     topNav: z.object({
       links: z.array(linkSchema.omit({ icon: true })),
     }),
+    search: z
+      .object({
+        enabled: z.boolean().optional().default(true),
+        shortcut: z.enum(['mod+k']).optional().default('mod+k'),
+        placeholder: z.string().optional().default('Search notes...'),
+        maxResults: z.number().int().positive().optional().default(6),
+      })
+      .optional()
+      .default({
+        enabled: true,
+        shortcut: 'mod+k',
+        placeholder: 'Search notes...',
+        maxResults: 6,
+      }),
     home: z.object({
       layout: z.enum(['grid']),
       quote: z.object({

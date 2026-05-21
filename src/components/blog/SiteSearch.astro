@@ -1,0 +1,285 @@
+---
+import { Search, X } from 'lucide-astro';
+import type { SiteSearch as SiteSearchConfig } from '../../data/site';
+
+interface Props {
+  search: SiteSearchConfig;
+}
+
+const { search } = Astro.props;
+const shortcutLabel = search.shortcut === 'mod+k' ? 'Ctrl K / Cmd K' : search.shortcut;
+---
+
+<div
+  class="site-search"
+  data-site-search-root
+  data-search-max-results={search.maxResults}
+  data-search-idle-label="Start typing to search."
+  data-search-loading-label="Searching..."
+  data-search-empty-label="No notes found."
+  data-search-unavailable-label="Search index is not available yet. Run a production build first."
+  data-pagefind-ignore
+>
+  <button
+    class="site-search-trigger"
+    type="button"
+    aria-label="Search site"
+    aria-expanded="false"
+    aria-controls="site-search-dialog"
+    title={`Search (${shortcutLabel})`}
+    data-site-search-trigger
+  >
+    <Search size={17} stroke-width={2} />
+  </button>
+
+  <div class="site-search-layer" data-site-search-backdrop>
+    <section
+      class="site-search-dialog"
+      id="site-search-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="site-search-title"
+      data-site-search-dialog
+    >
+      <header class="site-search-head">
+        <div>
+          <p id="site-search-title">Search</p>
+          <span>{shortcutLabel}</span>
+        </div>
+        <button
+          class="site-search-close"
+          type="button"
+          aria-label="Close search"
+          title="Close search"
+          data-site-search-close
+        >
+          <X size={17} stroke-width={2} />
+        </button>
+      </header>
+
+      <label class="site-search-input-wrap">
+        <Search size={16} stroke-width={2} aria-hidden="true" />
+        <input
+          type="search"
+          placeholder={search.placeholder}
+          autocomplete="off"
+          spellcheck="false"
+          data-site-search-input
+        />
+      </label>
+
+      <p class="site-search-status" data-site-search-status>Start typing to search.</p>
+      <ol class="site-search-results" data-site-search-results></ol>
+    </section>
+  </div>
+</div>
+
+<script>
+  import { initSiteSearch } from '../../utils/site-search';
+
+  initSiteSearch();
+</script>
+
+<style>
+  .site-search {
+    display: contents;
+  }
+
+  .site-search-trigger,
+  .site-search-close {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-control);
+    color: var(--paper-ink);
+    cursor: pointer;
+  }
+
+  .site-search-trigger:hover,
+  .site-search-trigger:focus-visible,
+  .site-search-close:hover,
+  .site-search-close:focus-visible {
+    background: var(--paper-control-hover);
+    color: var(--paper-accent);
+    outline: none;
+  }
+
+  .site-search-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: grid;
+    place-items: start center;
+    padding: 96px 18px 24px;
+    background: rgba(17, 20, 17, 0.24);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+
+  :root[data-theme='dark'] .site-search-layer {
+    background: rgba(0, 0, 0, 0.42);
+  }
+
+  .site-search[data-search-open='true'] .site-search-layer {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .site-search-dialog {
+    display: grid;
+    width: min(100%, 620px);
+    max-height: min(72vh, 620px);
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-nav);
+    box-shadow: var(--paper-shadow-lift);
+    color: var(--paper-ink);
+    transform: translateY(-6px) scale(0.992);
+    transition:
+      transform 160ms ease,
+      opacity 160ms ease;
+  }
+
+  .site-search[data-search-open='true'] .site-search-dialog {
+    transform: translateY(0) scale(1);
+  }
+
+  .site-search-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 12px 10px 16px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+
+  .site-search-head p,
+  .site-search-head span,
+  .site-search-status {
+    font-family: var(--font-ui-label);
+  }
+
+  .site-search-head p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .site-search-head span {
+    display: inline-block;
+    margin-top: 2px;
+    color: var(--paper-ink-faint);
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+
+  .site-search-input-wrap {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    margin: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-control);
+    color: var(--paper-ink-soft);
+  }
+
+  .site-search-input-wrap:focus-within {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-surface);
+    color: var(--paper-accent);
+  }
+
+  .site-search-input-wrap input {
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--paper-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .site-search-input-wrap input::placeholder {
+    color: var(--paper-ink-faint);
+  }
+
+  .site-search-status {
+    min-height: 20px;
+    margin: 0;
+    padding: 0 16px 10px;
+    color: var(--paper-ink-faint);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .site-search-results {
+    display: grid;
+    gap: 2px;
+    max-height: min(46vh, 430px);
+    margin: 0;
+    overflow: auto;
+    padding: 0 8px 10px;
+    list-style: none;
+  }
+
+  .site-search-results a {
+    display: grid;
+    gap: 4px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    color: var(--paper-ink);
+    text-decoration: none;
+  }
+
+  .site-search-results a:hover,
+  .site-search-results a:focus-visible {
+    background: var(--paper-control-hover);
+    outline: none;
+  }
+
+  .site-search-result-title {
+    font-size: 0.96rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .site-search-result-excerpt {
+    color: var(--paper-ink-soft);
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .site-search-result-excerpt :global(mark) {
+    border-radius: 4px;
+    background: var(--paper-control-hover);
+    color: var(--paper-accent);
+  }
+
+  @media (max-width: 720px) {
+    .site-search-trigger {
+      width: 36px;
+      height: 36px;
+      border-radius: 7px;
+    }
+
+    .site-search-layer {
+      align-items: start;
+      padding-top: 74px;
+    }
+
+    .site-search-dialog {
+      max-height: calc(100vh - 96px);
+    }
+  }
+</style>

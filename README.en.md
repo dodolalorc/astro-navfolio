@@ -3,174 +3,44 @@
 </p>
 
 <p align="center">
-  A calm Astro starter for a personal publishing space: homepage, blog, project notes, and a small digital-garden structure in one maintainable site.
+  A quiet Astro starter for a personal publishing space: homepage, blog, project notes, Vibe fragments, full-text search, comments, and theme palettes in one maintainable static site.
   <br />
-  <sub>Built for writing-first personal websites with quiet visuals, lightweight motion, and content collections.</sub>
+  <sub>Built for writing-first personal websites with restrained visuals, lightweight interaction, and Markdown / MDX content management.</sub>
 </p>
 
 <p align="center">
   <a href="./README.en.md">English</a>
   ·
   <a href="./README.md">简体中文</a>
+  ·
+  <a href="https://astro.navfolio.site/">Live site</a>
+  ·
+  <a href="https://astro.navfolio.site/blog/">Module guides</a>
 </p>
 
 <p align="center">
-  <img src="./public/images/logo.png" alt="Navfolio logo" width="72" />
-  &nbsp;&nbsp;
-  <img src="./public/images/logo-cat.png" alt="Navfolio cat logo" width="72" />
-  &nbsp;&nbsp;
-  <img src="./public/images/logo-in-one.png" alt="Navfolio compact logo" width="72" />
+  <img src="./public/images/site-in-devices.png" alt="Navfolio device preview" />
 </p>
 
-## Preview
-
-<p align="center">
-  <img src="./public/images/homepage-light.png" alt="Navfolio homepage light theme preview" width="49%" />
-  <img src="./public/images/homepage-dark.png" alt="Navfolio homepage dark theme preview" width="49%" />
-</p>
+_Preview image made with @Lruihao's [device preview page](https://github.com/Lruihao/vue-el-demo)._
 
 ## What Navfolio Is
 
-Navfolio combines navigation, portfolio, blog, and project documentation into a single Astro site. It is designed for people who want a personal homepage that can also grow into a readable notebook, a writing archive, and a lightweight project shelf.
+Navfolio combines navigation, portfolio, blog, project documentation, and a lightweight digital garden into a single Astro static site. It is not a resume page and not just a blog archive; it is a publishing system that can grow with your notes, projects, and public identity.
 
-The current version focuses on:
+- The homepage explains who you are, what you are doing, and where people can find you.
+- Blog stores long-form writing, tutorials, project notes, and module guides.
+- Projects stores project documentation and work notes.
+- Vibe stores shorter life fragments and development logs.
+- About introduces the site, the author, and friend links.
 
-- a quiet homepage with profile, identity links, intro copy, writing activity, and current focus cards;
-- a `/blog` archive with article thumbnails, dates, and tags;
-- Markdown / MDX article pages with optional table of contents and related posts;
-- a `/projects` shelf powered by content collections;
-- project detail pages for repository notes, design records, and implementation documents;
-- an `/about` page rendered with the same calm article layout;
-- GitHub Pages friendly base-path handling.
+Useful links:
 
-The visual direction is intentionally restrained: soft structure, minimal shadows, notebook-like typography, subtle active states, and images that stay readable in both light and dark themes.
+- Homepage: https://astro.navfolio.site/
+- Blog archive: https://astro.navfolio.site/blog/
+- GitHub repository: https://github.com/dodolalorc/astro-navfolio
 
-## Routes
-
-```text
-/                 Personal dashboard homepage
-/blog             Writing archive
-/blog/[slug]      Blog article pages
-/projects         Project shelf and project index
-/projects/[slug]  Project documentation pages
-/about            About page
-/rss.xml          RSS feed
-```
-
-## Content Model
-
-Most content is stored as Markdown or MDX:
-
-```text
-src/content/
-  about.mdx
-  blog/
-    first-post.md
-    second-post.md
-    third-post.md
-    ...
-  projects/
-    index.mdx
-    astro-navfolio.mdx
-```
-
-Blog posts and project documents share the same article schema:
-
-```yaml
-title: 'Article title'
-description: 'Short summary for archives and metadata.'
-date: '2026-05-18'
-draft: false
-tags:
-  - Astro
-comments: true
-sidebar:
-  enable: false
-  toc: false
-  relatedPosts: false
-```
-
-`sidebar` is the single source of truth for article utility areas: `enable` toggles the sidebar area, `toc` toggles heading navigation, and `relatedPosts` toggles related-post cards. Blog articles default to showing reading tools when available; `/about` and project pages default to a centered, no-sidebar article layout.
-
-## Homepage Configuration
-
-Homepage and site data lives in `src/config/site.toml`:
-
-- `site`: site title, descriptions, repository URL, and footer note.
-- `profile`: name, handle, role, avatar, website, GitHub, email, and metadata.
-- `topNav.links`: top navigation links.
-- `home.quote` / `home.intro`: homepage motto and main introduction.
-- `home.navigation` / `home.connect`: identity links, contact links, and internal entries.
-- `home.latest.count`: number of latest posts shown on the homepage, sorted by file modification time.
-- `home.doing`: current focus list.
-
-The homepage intentionally stays mostly static and data-driven, so replacing starter content does not require editing component internals.
-
-## Comment System
-
-Navfolio supports configurable comment providers:
-
-- giscus
-- utterances
-- Waline
-- none
-
-Configure comments in `src/config/site.toml`:
-
-```toml
-[config.comments]
-enabled = true
-provider = "giscus"
-show_on_posts = true
-```
-
-For giscus, fill in the repository and discussion category fields:
-
-```toml
-[config.comments.giscus]
-repo = "owner/repo"
-repo_id = "..."
-category = "Announcements"
-category_id = "..."
-mapping = "pathname"
-input_position = "top"
-theme = "preferred_color_scheme"
-lang = "zh-CN"
-```
-
-A single post can disable comments in frontmatter:
-
-```yaml
-comments: false
-```
-
-When using Waline with `pageview = true`, the article page can display page views in the post meta area. giscus and utterances only render comments; they do not provide pageview counts.
-
-## Features
-
-- Astro 6 static site architecture.
-- Markdown and MDX content collections.
-- Article layout with optional TOC, tags, reading time, and related posts.
-- Dedicated project shelf and project document routes.
-- Calm top navigation with theme toggle and repository link.
-- Responsive homepage dashboard.
-- RSS and Sitemap support.
-- GitHub Pages deployment workflow with project-page base path support.
-- Shared icon adapter using `lucide-astro`.
-- Local font configuration and global CSS variables.
-
-## Stack
-
-- Astro 6
-- Bun
-- Tailwind CSS 4 through Vite
-- `@astrojs/mdx`
-- `@astrojs/rss`
-- `@astrojs/sitemap`
-- `lucide-astro`
-- `sharp`
-
-## Getting Started
+## Quick Start
 
 Install dependencies:
 
@@ -178,7 +48,7 @@ Install dependencies:
 bun install
 ```
 
-Start the development server:
+Start the dev server:
 
 ```sh
 bun run dev
@@ -196,66 +66,189 @@ Preview the production build:
 bun run preview
 ```
 
-## Creating Content
+## First Edits
 
-Create a new blog post:
+Most personal content can be replaced without editing components. Start here:
+
+```text
+src/config/site.toml        Site title, profile, navigation, homepage modules, comments, search, theme
+src/content/about.mdx       About page
+src/content/blog/           Blog posts and module guides
+src/content/projects/       Project shelf and project documents
+src/content/vibe/           Short notes and life fragments
+public/images/              Logos, avatars, previews, and static images
+```
+
+Create content with the built-in scripts:
 
 ```sh
 bun run post:new my-first-post
-```
-
-Create a new vibe note:
-
-```sh
-bun run vibe:new today-cloud
-```
-
-Create MDX content:
-
-```sh
 bun run post:new my-interactive-post --mdx
+bun run vibe:new today-cloud
 bun run vibe:new photo-note --mdx
 ```
 
-The command argument is the file slug, not the final article title. Blog files are created in `src/content/blog/`; vibe files are created in `src/content/vibe/` with the existing date-prefixed filename convention.
+The command argument is the file slug, not the final title. Blog files are created in `src/content/blog/`; Vibe files are created in `src/content/vibe/` with the existing date-prefixed filename convention.
 
-## Project Structure
+## Routes
 
 ```text
-public/
-  images/                 Logos, previews, and homepage images
-src/
-  assets/                 Blog placeholder images and local fonts
-  components/
-    article/              Article header components
-    blog/                 Blog navigation, TOC, and related posts
-    cards/                Homepage cards
-    layout/               Dashboard layout
-    widgets/              Writing activity and utility widgets
-    Icon.astro            Shared icon adapter
-  content/
-    blog/                 Blog Markdown / MDX
-    projects/             Project index and project documents
-    about.mdx             About page content
-  config/site.toml        Site, profile, navigation, and homepage content configuration
-  data/site.ts            TOML config loading helper
-  layouts/                Base and article layouts
-  pages/                  Astro routes
-  styles/global.css       Global theme, typography, and layout variables
-astro.config.mjs          Astro, sitemap, MDX, fonts, and base-path config
+/                 Personal dashboard homepage
+/blog             Writing archive and module guides
+/blog/[slug]      Blog article pages
+/projects         Project shelf
+/projects/[slug]  Project documentation pages
+/vibe             Short-note timeline
+/about            About page
+/rss.xml          RSS feed
+```
+
+## Module Guides
+
+Navfolio's module documentation is written as real blog content under `src/content/blog/`, so it is available both in the repository and on the live blog archive.
+
+| Module                        | Local content                                        | Live guide                                                       |
+| ----------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
+| Site config and homepage data | `src/content/blog/toml-site-config-guide.md`         | https://astro.navfolio.site/blog/toml-site-config-guide/         |
+| Theme palettes                | `src/content/blog/theme-palettes.mdx`                | https://astro.navfolio.site/blog/theme-palettes/                 |
+| Full-text search              | `src/content/blog/site-search-module-guide.md`       | https://astro.navfolio.site/blog/site-search-module-guide/       |
+| Comments                      | `src/content/blog/add-comment-system-to-navfolio.md` | https://astro.navfolio.site/blog/add-comment-system-to-navfolio/ |
+| Vibe notes                    | `src/content/blog/vibe-content-guide.mdx`            | https://astro.navfolio.site/blog/vibe-content-guide/             |
+| Friend link cards             | `src/content/blog/friend-link-card.mdx`              | https://astro.navfolio.site/blog/friend-link-card/               |
+| Markdown rendering            | `src/content/blog/markdown-style-guide.md`           | https://astro.navfolio.site/blog/markdown-style-guide/           |
+
+## Site Configuration
+
+Site-level data lives in `src/config/site.toml`:
+
+- `[config.site]`: site title, descriptions, repository URL, and footer note.
+- `[config.profile]`: author name, handle, role, avatar, website, GitHub, email, and metadata.
+- `[[config.topNav.links]]`: top navigation links.
+- `[config.theme]`: built-in palette selection.
+- `[config.search]`: search entry, shortcut, placeholder, and result count.
+- `[config.comments]`: comment switch and provider.
+- `[config.vibe]`: Vibe timeline behavior.
+- `[config.home]`: homepage quote, introduction, navigation cards, contact links, and current focus list.
+
+The config shape is validated by the Zod schema in `src/content.config.ts`. Missing or invalid fields fail during `bun run build`, which keeps configuration errors easy to locate.
+
+## Content Model
+
+Blog posts, project documents, and the About page share the article schema:
+
+```yaml
+title: 'Article title'
+description: 'Short summary for archives and metadata.'
+date: '2026-05-18'
+draft: false
+heroImage: '/src/assets/figure/example.png'
+showHeroImage: true
+tags:
+  - Astro
+comments: true
+sidebar:
+  enable: true
+  toc: true
+  relatedPosts: true
+```
+
+`sidebar` controls article utility areas:
+
+- `enable`: toggles the sidebar area.
+- `toc`: toggles heading navigation.
+- `relatedPosts`: toggles related posts.
+
+Regular blog posts usually benefit from reading tools. `/about` and selected project pages can use a centered no-sidebar layout.
+
+## Search
+
+Navfolio uses Pagefind to generate a static full-text search index. The top navigation search button opens a quiet modal, and `Ctrl+K` / `Cmd+K` opens it from anywhere on the site.
+
+```toml
+[config.search]
+enabled = true
+shortcut = "mod+k"
+placeholder = "Search notes..."
+maxResults = 6
+```
+
+`bun run build` runs Astro first, then writes the Pagefind bundle to `dist/pagefind`. In development, the modal shows an unavailable-index note until a production build has generated the index. Use `bun run preview` after building to test the complete search flow.
+
+## Comments
+
+Navfolio supports configurable comment providers:
+
+- `giscus`
+- `utterances`
+- `waline`
+- `none`
+
+Configure comments in `src/config/site.toml`:
+
+```toml
+[config.comments]
+enabled = true
+provider = "giscus"
+show_on_posts = true
+```
+
+A single post can disable comments in frontmatter:
+
+```yaml
+comments: false
 ```
 
 ## Deployment
 
-The site builds to static files in `dist`.
+The site builds to static files in `dist` and can be deployed to GitHub Pages, Vercel, Netlify, Cloudflare Pages, or any platform that supports Astro static output.
 
-For GitHub Pages, the included workflow uses Astro's `site` and `base` configuration. The config automatically supports repository project pages when running in GitHub Actions, and can also be overridden:
+For GitHub Pages project sites, the included workflow can be used directly. `astro.config.mjs` automatically handles the project-page `base` in GitHub Actions, and it can also be overridden manually:
 
 ```sh
 SITE_URL=https://example.com SITE_BASE=/astro-navfolio bun run build
 ```
 
-## Design Notes
+## Project Structure
+
+```text
+public/
+  images/                 Logos, previews, and static images
+src/
+  assets/                 Content images and local fonts
+  components/
+    article/              Article header components
+    blog/                 Top nav, search, TOC, and related posts
+    cards/                Homepage cards
+    comments/             Comment provider components
+    layout/               Homepage dashboard layout
+    mdx/                  MDX content components
+    widgets/              Writing activity and utility widgets
+    Icon.astro            Shared icon adapter
+  content/
+    about.mdx             About page content
+    blog/                 Blog Markdown / MDX and module guides
+    projects/             Project shelf and project documents
+    vibe/                 Short notes
+  config/site.toml        Site configuration
+  data/site.ts            TOML config loading helper
+  layouts/                Base and article layouts
+  pages/                  Astro routes
+  styles/                 Global theme, palettes, typography, and layout variables
+```
+
+## Stack
+
+- Astro 6
+- Bun
+- Tailwind CSS 4 through Vite
+- Pagefind
+- `@astrojs/mdx`
+- `@astrojs/rss`
+- `@astrojs/sitemap`
+- `lucide-astro`
+- `sharp`
+
+## Design Direction
 
 Navfolio is meant to feel like a calm developer notebook:
 
@@ -264,7 +257,7 @@ Navfolio is meant to feel like a calm developer notebook:
 - restrained shadows and borders;
 - readable article rhythm;
 - subtle motion;
-- no heavy marketing layout;
+- no marketing-style landing page;
 - no visual noise around long-form reading.
 
-The project is also organized for AI-assisted iteration. The `.agents/skills` and `.agents/reviewers` folders describe the local visual language and review standards used while evolving the interface.
+If this starter helps you, a star on the repository is warmly appreciated: <https://github.com/dodolalorc/astro-navfolio>.
