@@ -25,6 +25,9 @@ shortcut = "mod+k"
 placeholder = "Search notes..."
 maxResults = 6
 
+[config.blog]
+postsPerPage = 6
+
 [config.comments.giscus]
 repo = "dodolalorc/astro-navfolio"
 repo_id = "R_kgDOSaQejw"

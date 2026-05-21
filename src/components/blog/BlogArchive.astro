@@ -1,0 +1,377 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from '../FormattedDate.astro';
+
+type BlogPost = CollectionEntry<'blog'>;
+
+interface PaginationState {
+  currentPage: number;
+  lastPage: number;
+  total: number;
+  size: number;
+  url: {
+    current: string;
+    prev?: string;
+    next?: string;
+  };
+}
+
+interface Props {
+  page: PaginationState & {
+    data: BlogPost[];
+  };
+  postOffset?: number;
+}
+
+const { page, postOffset = 0 } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const hasPagination = page.lastPage > 1;
+
+function withBase(href: string) {
+  if (href === '/') {
+    return `${basePath}/` || '/';
+  }
+
+  return `${basePath}${href.startsWith('/') ? href : `/${href}`}`;
+}
+
+function getPageHref(pageNumber: number) {
+  return pageNumber === 1 ? '/blog/' : `/blog/page/${pageNumber}/`;
+}
+---
+
+<header class="archive-hero archive-header-shared page-header-spacing">
+  <div class="archive-header-main">
+    <p class="archive-kicker">Notebook archive</p>
+    <h1 class="archive-title">Writing notes</h1>
+  </div>
+  <p class="archive-note">
+    Loose pages, technical margins, and small notes gathered into a readable stack.
+  </p>
+</header>
+<section>
+  <ul class="post-stack">
+    {
+      page.data.map((post, index) => (
+        <li class="post-item">
+          <a class="post-link" href={withBase(`/blog/${post.id}/`)}>
+            <div class="post-copy">
+              <div>
+                <span class="post-index">{String(postOffset + index + 1).padStart(2, '0')}</span>
+                <h2 class="title">{post.data.title}</h2>
+                <p class="date">
+                  <FormattedDate date={post.data.date} />
+                  {post.data.tags.length > 0 && (
+                    <span class="post-tags">
+                      {post.data.tags.map((tag) => (
+                        <span class="post-tag">#{tag}</span>
+                      ))}
+                    </span>
+                  )}
+                </p>
+              </div>
+              <p class="post-excerpt">{post.data.description}</p>
+            </div>
+            {post.data.heroImage && (
+              <span class="thumb-wrap">
+                <Image width={520} height={360} src={post.data.heroImage} alt="" />
+              </span>
+            )}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+{
+  hasPagination && (
+    <nav class="archive-pagination" aria-label="Blog pagination">
+      <a
+        class:list={['pagination-link', { disabled: !page.url.prev }]}
+        href={page.url.prev ? withBase(page.url.prev) : undefined}
+        aria-disabled={!page.url.prev}
+      >
+        Previous
+      </a>
+      <div class="pagination-pages" aria-label={`Page ${page.currentPage} of ${page.lastPage}`}>
+        {Array.from({ length: page.lastPage }, (_, index) => {
+          const pageNumber = index + 1;
+          const isCurrent = pageNumber === page.currentPage;
+
+          return (
+            <a
+              class:list={['pagination-number', { current: isCurrent }]}
+              href={withBase(getPageHref(pageNumber))}
+              aria-current={isCurrent ? 'page' : undefined}
+            >
+              {pageNumber}
+            </a>
+          );
+        })}
+      </div>
+      <a
+        class:list={['pagination-link', { disabled: !page.url.next }]}
+        href={page.url.next ? withBase(page.url.next) : undefined}
+        aria-disabled={!page.url.next}
+      >
+        Next
+      </a>
+    </nav>
+  )
+}
+
+<style>
+  .post-stack {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post-item {
+    position: relative;
+  }
+
+  .post-link {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 210px;
+    gap: 30px;
+    align-items: center;
+    min-height: 132px;
+    padding: 26px 0;
+    overflow: visible;
+    border: 1px solid var(--paper-line);
+    border-width: 1px 0 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--paper-ink);
+    text-decoration: none;
+    transform: translateY(0);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .post-link::before,
+  .post-link::after {
+    content: none;
+  }
+
+  .post-link:hover {
+    border-color: var(--paper-line);
+    box-shadow: none;
+    transform: translateY(-1px);
+  }
+
+  .post-copy {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    align-content: space-between;
+    gap: 0;
+  }
+
+  .post-index {
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.76rem;
+    letter-spacing: 0.1em;
+  }
+
+  .title {
+    margin: 0;
+    max-width: 680px;
+    color: var(--paper-ink);
+    font-size: clamp(1.28rem, 2vw, 1.72rem);
+    line-height: 1.24;
+  }
+
+  .date {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    align-items: center;
+    margin: 10px 0 0;
+    color: var(--paper-ink-soft);
+    font-family: var(--font-meta);
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  .post-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+  }
+
+  .post-tags::before {
+    margin: 0 9px;
+    color: var(--paper-ink-faint);
+    content: '\00b7';
+  }
+
+  .post-tag {
+    color: var(--paper-accent);
+  }
+
+  .post-tag + .post-tag::before {
+    margin: 0 6px;
+    color: var(--paper-ink-faint);
+    content: '\00b7';
+  }
+
+  .post-excerpt {
+    max-width: 58ch;
+    margin: 0;
+    color: var(--paper-ink-soft);
+    font-size: 0.98rem;
+    line-height: 1.78;
+  }
+
+  .thumb-wrap {
+    position: relative;
+    z-index: 1;
+    align-self: center;
+    width: 210px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    border-radius: 6px;
+    background: var(--paper-surface-muted);
+    filter: saturate(0.86) contrast(0.98);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  }
+
+  .thumb-wrap img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+    mix-blend-mode: normal;
+    opacity: 0.92;
+  }
+
+  :root[data-theme='dark'] .thumb-wrap {
+    background: transparent;
+    filter: none;
+  }
+
+  :root[data-theme='dark'] .thumb-wrap img {
+    opacity: 1;
+    mix-blend-mode: normal;
+  }
+
+  .post-item:first-child .post-link {
+    grid-template-columns: minmax(0, 1fr) 210px;
+    min-height: 132px;
+    padding: 26px 0;
+  }
+
+  .post-item:first-child .title {
+    font-size: clamp(1.36rem, 2.2vw, 1.9rem);
+  }
+
+  .archive-pagination {
+    display: grid;
+    grid-template-columns: minmax(98px, auto) minmax(0, 1fr) minmax(98px, auto);
+    gap: 16px;
+    align-items: center;
+    margin-top: 34px;
+    padding-top: 20px;
+    border-top: 1px solid var(--paper-line);
+    font-family: var(--font-meta);
+    font-size: 0.82rem;
+  }
+
+  .pagination-pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .pagination-link,
+  .pagination-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    border: 1px solid var(--paper-line);
+    border-radius: 6px;
+    background: var(--paper-control);
+    color: var(--paper-ink-soft);
+    text-decoration: none;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .pagination-link {
+    padding: 0 14px;
+  }
+
+  .pagination-number {
+    min-width: 36px;
+    padding: 0 10px;
+  }
+
+  .pagination-link:hover,
+  .pagination-number:hover {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-control-hover);
+    color: var(--paper-ink);
+    transform: translateY(-1px);
+  }
+
+  .pagination-number.current {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-surface);
+    color: var(--paper-accent);
+  }
+
+  .pagination-link.disabled {
+    pointer-events: none;
+    opacity: 0.45;
+  }
+
+  @media (max-width: 720px) {
+    .post-link,
+    .post-item:first-child .post-link {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 22px 0;
+    }
+
+    .thumb-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      order: -1;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    }
+
+    .title,
+    .post-item:first-child .title {
+      font-size: 1.45rem;
+      line-height: 1.22;
+    }
+
+    .archive-pagination {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .pagination-link,
+    .pagination-pages {
+      width: 100%;
+    }
+  }
+</style>

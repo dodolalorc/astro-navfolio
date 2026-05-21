@@ -22,6 +22,7 @@ export type SiteProfile = SiteConfig['profile'];
 export type SiteLink = SiteConfig['topNav']['links'][number];
 export type SiteVibe = SiteConfig['vibe'];
 export type SiteSearch = SiteConfig['search'];
+export type SiteBlog = SiteConfig['blog'];
 export type HomeNavigationItem = SiteConfig['home']['navigation'][number];
 export type HomeConnectItem = SiteConfig['home']['connect'][number];
 export type HomeDoingItem = SiteConfig['home']['doing'][number];

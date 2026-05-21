@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import BlogArchive from '../../../components/blog/BlogArchive.astro';
+import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
+import { getSiteConfig } from '../../../data/site';
+import { sortByDateDesc } from '../../../utils/content-dates';
+
+export async function getStaticPaths() {
+  const { blog } = await getSiteConfig();
+  const posts = sortByDateDesc(await getCollection('blog'));
+  const postsPerPage = blog.postsPerPage;
+  const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+    const currentPage = index + 2;
+    const start = (currentPage - 1) * postsPerPage;
+    const end = start + postsPerPage;
+
+    return {
+      params: { page: String(currentPage) },
+      props: {
+        page: {
+          data: posts.slice(start, end),
+          currentPage,
+          lastPage: totalPages,
+          total: posts.length,
+          size: postsPerPage,
+          url: {
+            current: `/blog/page/${currentPage}/`,
+            prev: currentPage === 2 ? '/blog/' : `/blog/page/${currentPage - 1}/`,
+            next: currentPage < totalPages ? `/blog/page/${currentPage + 1}/` : undefined,
+          },
+        },
+        postOffset: start,
+      },
+    };
+  });
+}
+
+const { site, theme } = await getSiteConfig();
+const palette = theme.palette;
+const { page, postOffset } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-palette={palette}>
+  <head>
+    <BaseHead
+      title={`${site.title} | Blog page ${page.currentPage}`}
+      description={site.description}
+    />
+    <style>
+      main {
+        width: min(100%, var(--layout-shell-width));
+        max-width: none;
+        padding: 118px var(--layout-page-gutter) var(--layout-page-bottom);
+      }
+
+      @media (max-width: 720px) {
+        main {
+          padding-top: 88px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <BlogTopNav />
+    <main data-pagefind-body>
+      <BlogArchive page={page} postOffset={postOffset} />
+    </main>
+    <Footer />
+  </body>
+</html>

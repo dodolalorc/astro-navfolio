@@ -153,6 +153,14 @@ const siteConfig = defineCollection({
         placeholder: 'Search notes...',
         maxResults: 6,
       }),
+    blog: z
+      .object({
+        postsPerPage: z.number().int().positive().optional().default(6),
+      })
+      .optional()
+      .default({
+        postsPerPage: 6,
+      }),
     home: z.object({
       layout: z.enum(['grid']),
       quote: z.object({
