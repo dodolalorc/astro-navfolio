@@ -16,6 +16,57 @@ sidebar:
   relatedPosts: true
 ---
 
+import { Image } from 'astro:assets';
+import Carousel from '../../components/mdx/Carousel.astro';
+import blueSoftArticleDark from '../../assets/figure/theme-preview/blue-soft/article-dark.png';
+import blueSoftArticleLight from '../../assets/figure/theme-preview/blue-soft/article-light.png';
+import blueSoftBlogDark from '../../assets/figure/theme-preview/blue-soft/blog-dark.png';
+import blueSoftBlogLight from '../../assets/figure/theme-preview/blue-soft/blog-light.png';
+import blueSoftHomeDark from '../../assets/figure/theme-preview/blue-soft/home-dark.png';
+import blueSoftHomeLight from '../../assets/figure/theme-preview/blue-soft/home-light.png';
+import brownSoftArticleDark from '../../assets/figure/theme-preview/brown-soft/article-dark.png';
+import brownSoftArticleLight from '../../assets/figure/theme-preview/brown-soft/article-light.png';
+import brownSoftBlogDark from '../../assets/figure/theme-preview/brown-soft/blog-dark.png';
+import brownSoftBlogLight from '../../assets/figure/theme-preview/brown-soft/blog-light.png';
+import brownSoftHomeDark from '../../assets/figure/theme-preview/brown-soft/home-dark.png';
+import brownSoftHomeLight from '../../assets/figure/theme-preview/brown-soft/home-light.png';
+import greenSoftArticleDark from '../../assets/figure/theme-preview/green-soft/article-dark.png';
+import greenSoftArticleLight from '../../assets/figure/theme-preview/green-soft/article-light.png';
+import greenSoftBlogDark from '../../assets/figure/theme-preview/green-soft/blog-dark.png';
+import greenSoftBlogLight from '../../assets/figure/theme-preview/green-soft/blog-light.png';
+import greenSoftHomeDark from '../../assets/figure/theme-preview/green-soft/home-dark.png';
+import greenSoftHomeLight from '../../assets/figure/theme-preview/green-soft/home-light.png';
+import greenVividArticleDark from '../../assets/figure/theme-preview/green-vivid/article-dark.png';
+import greenVividArticleLight from '../../assets/figure/theme-preview/green-vivid/article-light.png';
+import greenVividBlogDark from '../../assets/figure/theme-preview/green-vivid/blog-dark.png';
+import greenVividBlogLight from '../../assets/figure/theme-preview/green-vivid/blog-light.png';
+import greenVividHomeDark from '../../assets/figure/theme-preview/green-vivid/home-dark.png';
+import greenVividHomeLight from '../../assets/figure/theme-preview/green-vivid/home-light.png';
+import orangeSoftArticleDark from '../../assets/figure/theme-preview/orange-soft/article-dark.png';
+import orangeSoftArticleLight from '../../assets/figure/theme-preview/orange-soft/article-light.png';
+import orangeSoftBlogDark from '../../assets/figure/theme-preview/orange-soft/blog-dark.png';
+import orangeSoftBlogLight from '../../assets/figure/theme-preview/orange-soft/blog-light.png';
+import orangeSoftHomeDark from '../../assets/figure/theme-preview/orange-soft/home-dark.png';
+import orangeSoftHomeLight from '../../assets/figure/theme-preview/orange-soft/home-light.png';
+import pinkSoftArticleDark from '../../assets/figure/theme-preview/pink-soft/article-dark.png';
+import pinkSoftArticleLight from '../../assets/figure/theme-preview/pink-soft/article-light.png';
+import pinkSoftBlogDark from '../../assets/figure/theme-preview/pink-soft/blog-dark.png';
+import pinkSoftBlogLight from '../../assets/figure/theme-preview/pink-soft/blog-light.png';
+import pinkSoftHomeDark from '../../assets/figure/theme-preview/pink-soft/home-dark.png';
+import pinkSoftHomeLight from '../../assets/figure/theme-preview/pink-soft/home-light.png';
+import purpleSoftArticleDark from '../../assets/figure/theme-preview/purple-soft/article-dark.png';
+import purpleSoftArticleLight from '../../assets/figure/theme-preview/purple-soft/article-light.png';
+import purpleSoftBlogDark from '../../assets/figure/theme-preview/purple-soft/blog-dark.png';
+import purpleSoftBlogLight from '../../assets/figure/theme-preview/purple-soft/blog-light.png';
+import purpleSoftHomeDark from '../../assets/figure/theme-preview/purple-soft/home-dark.png';
+import purpleSoftHomeLight from '../../assets/figure/theme-preview/purple-soft/home-light.png';
+import roseSoftArticleDark from '../../assets/figure/theme-preview/rose-soft/article-dark.png';
+import roseSoftArticleLight from '../../assets/figure/theme-preview/rose-soft/article-light.png';
+import roseSoftBlogDark from '../../assets/figure/theme-preview/rose-soft/blog-dark.png';
+import roseSoftBlogLight from '../../assets/figure/theme-preview/rose-soft/blog-light.png';
+import roseSoftHomeDark from '../../assets/figure/theme-preview/rose-soft/home-dark.png';
+import roseSoftHomeLight from '../../assets/figure/theme-preview/rose-soft/home-light.png';
+
 Navfolio 的视觉系统现在拆成了两个互不干扰的维度：
 
 - `data-theme`：控制明暗模式，也就是页面亮度、背景深浅、文字对比度和基础表面层次。
@@ -69,55 +120,279 @@ palette = "green-soft"
 
 ## 色盘预览
 
-下面的截图分别展示同一色盘在首页和博客列表页中的效果。首页更容易观察整体背景、卡片和导航氛围，博客页更容易观察文字、图片边界、列表分隔和强调色是否舒适。
+下面的截图分别展示同一色盘在首页、博客列表页和文章页中的效果。每组轮播先展示浅色模式，再展示暗色模式，顺序都是首页、博客列表、文章详情。
 
 ### green-soft
 
-![green-soft 首页预览](../../assets/figure/theme-preview/green-soft-home.png)
+<Carousel label="green-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={greenSoftHomeLight} alt="green-soft 浅色首页预览" loading="lazy" />
+    <figcaption>green-soft 浅色首页预览</figcaption>
+  </figure>
 
-![green-soft 博客页预览](../../assets/figure/theme-preview/green-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={greenSoftBlogLight} alt="green-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>green-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={greenSoftArticleLight} alt="green-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>green-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={greenSoftHomeDark} alt="green-soft 暗色首页预览" loading="lazy" />
+  <figcaption>green-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={greenSoftBlogDark} alt="green-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>green-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={greenSoftArticleDark} alt="green-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>green-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### green-vivid
 
-![green-vivid 首页预览](../../assets/figure/theme-preview/green-vivid-home.png)
+<Carousel label="green-vivid 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={greenVividHomeLight} alt="green-vivid 浅色首页预览" loading="lazy" />
+    <figcaption>green-vivid 浅色首页预览</figcaption>
+  </figure>
 
-![green-vivid 博客页预览](../../assets/figure/theme-preview/green-vivid-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={greenVividBlogLight} alt="green-vivid 浅色博客页预览" loading="lazy" />
+  <figcaption>green-vivid 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={greenVividArticleLight} alt="green-vivid 浅色文章页预览" loading="lazy" />
+  <figcaption>green-vivid 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={greenVividHomeDark} alt="green-vivid 暗色首页预览" loading="lazy" />
+  <figcaption>green-vivid 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={greenVividBlogDark} alt="green-vivid 暗色博客页预览" loading="lazy" />
+  <figcaption>green-vivid 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={greenVividArticleDark} alt="green-vivid 暗色文章页预览" loading="lazy" />
+    <figcaption>green-vivid 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### rose-soft
 
-![rose-soft 首页预览](../../assets/figure/theme-preview/rose-soft-home.png)
+<Carousel label="rose-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={roseSoftHomeLight} alt="rose-soft 浅色首页预览" loading="lazy" />
+    <figcaption>rose-soft 浅色首页预览</figcaption>
+  </figure>
 
-![rose-soft 博客页预览](../../assets/figure/theme-preview/rose-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={roseSoftBlogLight} alt="rose-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>rose-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={roseSoftArticleLight} alt="rose-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>rose-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={roseSoftHomeDark} alt="rose-soft 暗色首页预览" loading="lazy" />
+  <figcaption>rose-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={roseSoftBlogDark} alt="rose-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>rose-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={roseSoftArticleDark} alt="rose-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>rose-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### pink-soft
 
-![pink-soft 首页预览](../../assets/figure/theme-preview/pink-soft-home.png)
+<Carousel label="pink-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={pinkSoftHomeLight} alt="pink-soft 浅色首页预览" loading="lazy" />
+    <figcaption>pink-soft 浅色首页预览</figcaption>
+  </figure>
 
-![pink-soft 博客页预览](../../assets/figure/theme-preview/pink-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={pinkSoftBlogLight} alt="pink-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>pink-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={pinkSoftArticleLight} alt="pink-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>pink-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={pinkSoftHomeDark} alt="pink-soft 暗色首页预览" loading="lazy" />
+  <figcaption>pink-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={pinkSoftBlogDark} alt="pink-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>pink-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={pinkSoftArticleDark} alt="pink-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>pink-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### purple-soft
 
-![purple-soft 首页预览](../../assets/figure/theme-preview/purple-soft-home.png)
+<Carousel label="purple-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={purpleSoftHomeLight} alt="purple-soft 浅色首页预览" loading="lazy" />
+    <figcaption>purple-soft 浅色首页预览</figcaption>
+  </figure>
 
-![purple-soft 博客页预览](../../assets/figure/theme-preview/purple-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={purpleSoftBlogLight} alt="purple-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>purple-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={purpleSoftArticleLight} alt="purple-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>purple-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={purpleSoftHomeDark} alt="purple-soft 暗色首页预览" loading="lazy" />
+  <figcaption>purple-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={purpleSoftBlogDark} alt="purple-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>purple-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={purpleSoftArticleDark} alt="purple-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>purple-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### blue-soft
 
-![blue-soft 首页预览](../../assets/figure/theme-preview/blue-soft-home.png)
+<Carousel label="blue-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={blueSoftHomeLight} alt="blue-soft 浅色首页预览" loading="lazy" />
+    <figcaption>blue-soft 浅色首页预览</figcaption>
+  </figure>
 
-![blue-soft 博客页预览](../../assets/figure/theme-preview/blue-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={blueSoftBlogLight} alt="blue-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>blue-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={blueSoftArticleLight} alt="blue-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>blue-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={blueSoftHomeDark} alt="blue-soft 暗色首页预览" loading="lazy" />
+  <figcaption>blue-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={blueSoftBlogDark} alt="blue-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>blue-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={blueSoftArticleDark} alt="blue-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>blue-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### orange-soft
 
-![orange-soft 首页预览](../../assets/figure/theme-preview/orange-soft-home.png)
+<Carousel label="orange-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={orangeSoftHomeLight} alt="orange-soft 浅色首页预览" loading="lazy" />
+    <figcaption>orange-soft 浅色首页预览</figcaption>
+  </figure>
 
-![orange-soft 博客页预览](../../assets/figure/theme-preview/orange-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={orangeSoftBlogLight} alt="orange-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>orange-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={orangeSoftArticleLight} alt="orange-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>orange-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={orangeSoftHomeDark} alt="orange-soft 暗色首页预览" loading="lazy" />
+  <figcaption>orange-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={orangeSoftBlogDark} alt="orange-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>orange-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={orangeSoftArticleDark} alt="orange-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>orange-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 ### brown-soft
 
-![brown-soft 首页预览](../../assets/figure/theme-preview/brown-soft-home.png)
+<Carousel label="brown-soft 色盘预览" class="theme-palette-carousel">
+  <figure data-carousel-slide data-carousel-label="浅色首页预览">
+    <Image src={brownSoftHomeLight} alt="brown-soft 浅色首页预览" loading="lazy" />
+    <figcaption>brown-soft 浅色首页预览</figcaption>
+  </figure>
 
-![brown-soft 博客页预览](../../assets/figure/theme-preview/brown-soft-blog.png)
+<figure data-carousel-slide data-carousel-label="浅色博客页预览">
+  <Image src={brownSoftBlogLight} alt="brown-soft 浅色博客页预览" loading="lazy" />
+  <figcaption>brown-soft 浅色博客页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="浅色文章页预览">
+  <Image src={brownSoftArticleLight} alt="brown-soft 浅色文章页预览" loading="lazy" />
+  <figcaption>brown-soft 浅色文章页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色首页预览">
+  <Image src={brownSoftHomeDark} alt="brown-soft 暗色首页预览" loading="lazy" />
+  <figcaption>brown-soft 暗色首页预览</figcaption>
+</figure>
+
+<figure data-carousel-slide data-carousel-label="暗色博客页预览">
+  <Image src={brownSoftBlogDark} alt="brown-soft 暗色博客页预览" loading="lazy" />
+  <figcaption>brown-soft 暗色博客页预览</figcaption>
+</figure>
+
+  <figure data-carousel-slide data-carousel-label="暗色文章页预览">
+    <Image src={brownSoftArticleDark} alt="brown-soft 暗色文章页预览" loading="lazy" />
+    <figcaption>brown-soft 暗色文章页预览</figcaption>
+  </figure>
+</Carousel>
 
 默认值是：
 

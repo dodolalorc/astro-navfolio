@@ -1,0 +1,293 @@
+---
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-astro';
+
+interface Props {
+  label?: string;
+  id?: string;
+  autoplay?: boolean;
+  interval?: number;
+  loop?: boolean;
+  showDots?: boolean;
+  showControls?: boolean;
+  startIndex?: number;
+  class?: string;
+  aspectRatio?: string;
+  roleDescription?: string;
+  slideRoleDescription?: string;
+}
+
+const {
+  label = '轮播图',
+  id = `carousel-${crypto.randomUUID()}`,
+  autoplay = false,
+  interval = 5000,
+  loop = true,
+  showDots = true,
+  showControls = true,
+  startIndex = 0,
+  class: className,
+  aspectRatio,
+  roleDescription = '轮播图',
+  slideRoleDescription = '幻灯片',
+} = Astro.props;
+---
+
+<astro-carousel
+  id={id}
+  class:list={['mdx-carousel', className]}
+  role="region"
+  aria-roledescription={roleDescription}
+  aria-label={label}
+  data-autoplay={autoplay ? 'true' : 'false'}
+  data-interval={interval}
+  data-loop={loop ? 'true' : 'false'}
+  data-start-index={startIndex}
+  data-show-dots={showDots ? 'true' : 'false'}
+  data-show-controls={showControls ? 'true' : 'false'}
+  data-slide-role-description={slideRoleDescription}
+  style={aspectRatio ? `--carousel-aspect-ratio: ${aspectRatio};` : undefined}
+>
+  <div class="mdx-carousel__viewport">
+    <div class="mdx-carousel__track" data-carousel-track aria-live={autoplay ? 'off' : 'polite'}>
+      <slot />
+    </div>
+  </div>
+
+  <div class="mdx-carousel__bar" data-carousel-bar>
+    {
+      showControls && (
+        <div class="mdx-carousel__controls" data-carousel-controls>
+          <button type="button" class="mdx-carousel__button" data-carousel-prev aria-label="上一张">
+            <ChevronLeft size={18} strokeWidth={1.8} aria-hidden="true" />
+          </button>
+          <button type="button" class="mdx-carousel__button" data-carousel-next aria-label="下一张">
+            <ChevronRight size={18} strokeWidth={1.8} aria-hidden="true" />
+          </button>
+        </div>
+      )
+    }
+
+    {showDots && <div class="mdx-carousel__dots" data-carousel-dots aria-label="选择幻灯片" />}
+
+    {
+      autoplay && (
+        <button
+          type="button"
+          class="mdx-carousel__button mdx-carousel__toggle"
+          data-carousel-toggle
+          aria-label="暂停自动播放"
+        >
+          <Pause
+            class="mdx-carousel__toggle-pause"
+            size={16}
+            strokeWidth={1.8}
+            aria-hidden="true"
+          />
+          <Play class="mdx-carousel__toggle-play" size={16} strokeWidth={1.8} aria-hidden="true" />
+        </button>
+      )
+    }
+  </div>
+</astro-carousel>
+
+<script>
+  import { defineAstroCarousel } from '../../utils/carousel';
+
+  defineAstroCarousel();
+</script>
+
+<style>
+  .mdx-carousel {
+    display: block;
+    width: 100%;
+    margin: 30px 0 34px;
+  }
+
+  .mdx-carousel__viewport {
+    overflow: hidden;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-surface-muted);
+    box-shadow: inset 0 1px 0 color-mix(in srgb, var(--paper-surface) 82%, transparent);
+  }
+
+  .mdx-carousel__track {
+    display: grid;
+    grid-auto-columns: 100%;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mdx-carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mdx-carousel :global([data-carousel-slide]) {
+    min-width: 0;
+    margin: 0;
+    padding: 14px;
+    scroll-snap-align: center;
+  }
+
+  .mdx-carousel[style*='--carousel-aspect-ratio'] :global([data-carousel-slide]) {
+    aspect-ratio: var(--carousel-aspect-ratio);
+  }
+
+  .mdx-carousel :global([data-carousel-slide] img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--paper-line);
+    border-radius: 7px;
+    background: var(--paper-surface);
+  }
+
+  .mdx-carousel :global([data-carousel-slide] figcaption) {
+    margin-top: 12px;
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.78rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .mdx-carousel :global(.theme-palette-preview) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+
+  .mdx-carousel__bar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .mdx-carousel__controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mdx-carousel__button {
+    display: inline-grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-control);
+    color: var(--paper-ink-soft);
+    cursor: pointer;
+    transition:
+      border-color 160ms ease,
+      background 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .mdx-carousel__button:hover {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-control-hover);
+    color: var(--paper-ink);
+    transform: translateY(-1px);
+  }
+
+  .mdx-carousel__button:disabled {
+    cursor: not-allowed;
+    opacity: 0.42;
+    transform: none;
+  }
+
+  .mdx-carousel__button:focus-visible,
+  .mdx-carousel :global(.mdx-carousel__dot:focus-visible) {
+    outline: 2px solid color-mix(in srgb, var(--paper-accent) 42%, transparent);
+    outline-offset: 3px;
+  }
+
+  .mdx-carousel__dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .mdx-carousel :global(.mdx-carousel__dot) {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--paper-ink-faint) 32%, transparent);
+    cursor: pointer;
+    transition:
+      background 160ms ease,
+      transform 160ms ease,
+      width 160ms ease;
+  }
+
+  .mdx-carousel :global(.mdx-carousel__dot[aria-current='true']) {
+    width: 22px;
+    background: color-mix(in srgb, var(--paper-accent) 72%, var(--paper-ink-faint));
+  }
+
+  .mdx-carousel__toggle [data-icon],
+  .mdx-carousel__toggle :global(svg) {
+    grid-area: 1 / 1;
+  }
+
+  .mdx-carousel__toggle .mdx-carousel__toggle-play {
+    display: none;
+  }
+
+  .mdx-carousel__toggle[data-playing='false'] .mdx-carousel__toggle-play {
+    display: block;
+  }
+
+  .mdx-carousel__toggle[data-playing='false'] .mdx-carousel__toggle-pause {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mdx-carousel__track {
+      scroll-behavior: auto;
+    }
+
+    .mdx-carousel__button,
+    .mdx-carousel :global(.mdx-carousel__dot) {
+      transition: none;
+    }
+
+    .mdx-carousel__button:hover {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mdx-carousel {
+      margin: 26px 0 30px;
+    }
+
+    .mdx-carousel :global([data-carousel-slide]) {
+      padding: 10px;
+    }
+
+    .mdx-carousel :global(.theme-palette-preview) {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .mdx-carousel__bar {
+      grid-template-columns: 1fr;
+      justify-items: center;
+    }
+  }
+</style>
