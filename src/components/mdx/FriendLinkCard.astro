@@ -1,5 +1,5 @@
 ---
-interface Props {
+interface FriendLinkItem {
   name: string;
   url: string;
   bio?: string;
@@ -7,60 +7,82 @@ interface Props {
   backgroundImage?: string | null;
 }
 
-const { name, url, bio = '', avatar = null, backgroundImage = null } = Astro.props;
+interface Props {
+  items: FriendLinkItem[];
+}
 
-const fallbackInitial = (name.trim().charAt(0) || '?').toUpperCase();
-const summary = bio.trim();
-const backgroundImageUrl = backgroundImage?.trim() ?? '';
-const hasBackgroundImage = backgroundImageUrl.length > 0;
+const { items } = Astro.props;
+
+const normalizedItems = items.map((item) => {
+  const name = item.name.trim();
+  const summary = item.bio?.trim() ?? '';
+  const backgroundImageUrl = item.backgroundImage?.trim() ?? '';
+
+  return {
+    ...item,
+    name,
+    summary,
+    backgroundImageUrl,
+    hasBackgroundImage: backgroundImageUrl.length > 0,
+    fallbackInitial: (name.charAt(0) || '?').toUpperCase(),
+  };
+});
 ---
 
-<a
-  class:list={['friend-link-card', hasBackgroundImage && 'friend-link-card--with-bg']}
-  href={url}
-  target="_blank"
-  rel="noopener noreferrer"
-  title={name}
->
+<div class="friend-link-list">
   {
-    hasBackgroundImage ? (
-      <>
-        <img
-          class="friend-link-card__bg"
-          src={backgroundImageUrl}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          aria-hidden="true"
-        />
-        <span class="friend-link-card__bg-overlay" aria-hidden="true" />
-      </>
-    ) : null
+    normalizedItems.map((item) => (
+      <a
+        class:list={['friend-link-card', item.hasBackgroundImage && 'friend-link-card--with-bg']}
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={item.name}
+      >
+        {item.hasBackgroundImage ? (
+          <>
+            <img
+              class="friend-link-card__bg"
+              src={item.backgroundImageUrl}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              aria-hidden="true"
+            />
+            <span class="friend-link-card__bg-overlay" aria-hidden="true" />
+          </>
+        ) : null}
+        <span class="friend-link-card__avatar" aria-hidden="true">
+          {item.avatar ? (
+            <img src={item.avatar} alt="" loading="lazy" decoding="async" />
+          ) : (
+            <span class="friend-link-card__fallback">{item.fallbackInitial}</span>
+          )}
+        </span>
+        <span class="friend-link-card__meta">
+          <strong class="friend-link-card__name">{item.name}</strong>
+          {item.summary ? <span class="friend-link-card__bio">{item.summary}</span> : null}
+        </span>
+      </a>
+    ))
   }
-  <span class="friend-link-card__avatar" aria-hidden="true">
-    {
-      avatar ? (
-        <img src={avatar} alt="" loading="lazy" decoding="async" />
-      ) : (
-        <span class="friend-link-card__fallback">{fallbackInitial}</span>
-      )
-    }
-  </span>
-  <span class="friend-link-card__meta">
-    <strong class="friend-link-card__name">{name}</strong>
-    {summary ? <span class="friend-link-card__bio">{summary}</span> : null}
-  </span>
-</a>
+</div>
 
 <style>
+  .friend-link-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+
   .friend-link-card {
     position: relative;
     display: grid;
     grid-template-columns: 58px minmax(0, 1fr);
-    width: min(100%, calc(50% - 8px));
     align-items: center;
     gap: 12px;
-    margin: 12px 0;
+    min-width: 0;
     padding: 12px;
     border: 1px solid var(--paper-line-strong);
     border-radius: 12px;
@@ -180,8 +202,8 @@ const hasBackgroundImage = backgroundImageUrl.length > 0;
   }
 
   @media (max-width: 720px) {
-    .friend-link-card {
-      width: 100%;
+    .friend-link-list {
+      grid-template-columns: 1fr;
     }
   }
 </style>

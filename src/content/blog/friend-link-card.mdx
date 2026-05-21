@@ -41,30 +41,52 @@ import FriendLinkCard from '../../components/mdx/FriendLinkCard.astro';
 
 ## 基础示例
 
-下面是一个仅使用名称、链接、简介和头像的示例。
+下面是一个使用数组批量渲染友链列表的示例。组件会按照数组顺序展示，并在桌面宽度下一行排列两个卡片。
 
 <FriendLinkCard
-  name="Navfolio"
-  url="https://astro.navfolio.site/"
-  bio="AI-native personal blog and digital garden"
-  avatar="/images/logo-cat.png"
+  items={[
+    {
+      name: 'Navfolio',
+      url: 'https://astro.navfolio.site/',
+      bio: 'AI-native personal blog and digital garden',
+      avatar: '/images/logo-cat.png',
+    },
+    {
+      name: 'Astro',
+      url: 'https://astro.build/',
+      bio: 'Static site framework for content-driven websites',
+    },
+  ]}
 />
 
 ## 带背景图示例
 
-如果你希望卡片更有视觉识别，可以加上 backgroundImage。
+如果你希望某一张卡片更有视觉识别，可以在对应数组项里加上 `backgroundImage`。
 
 <FriendLinkCard
-  name="Navfolio"
-  url="https://astro.navfolio.site/"
-  bio="AI-native personal blog and digital garden"
-  avatar="/images/logo-cat.png"
-  backgroundImage="/images/sample-bg.png"
+  items={[
+    {
+      name: 'Navfolio',
+      url: 'https://astro.navfolio.site/',
+      bio: 'AI-native personal blog and digital garden',
+      avatar: '/images/logo-cat.png',
+      backgroundImage: '/images/sample-bg.png',
+    },
+    {
+      name: 'Bun',
+      url: 'https://bun.com/',
+      bio: 'Fast JavaScript runtime and package manager',
+    },
+  ]}
 />
 
 ## 可用属性
 
 组件支持以下属性：
+
+- items: 友链数组（必填），会按照数组顺序渲染为列表
+
+每个 `items` 数组项支持以下字段：
 
 - name: 友链名称（必填）
 - url: 跳转链接（必填）
