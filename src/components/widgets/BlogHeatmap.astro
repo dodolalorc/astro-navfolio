@@ -1,11 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Icon from '../Icon.astro';
-import {
-  createRecentBlogHeatmap,
-  type HeatmapDay,
-  type HeatmapPost,
-} from '../../utils/blog-heatmap';
+import { createRecentBlogHeatmap, type HeatmapDay } from '../../utils/blog-heatmap';
 
 interface Props {
   weeks?: number;
@@ -54,10 +50,6 @@ function getDayHref(day: HeatmapDay) {
   }
 
   return day.posts[0]?.href;
-}
-
-function getTooltipPosts(posts: HeatmapPost[]) {
-  return posts.slice(0, 5);
 }
 ---
 
@@ -118,30 +110,14 @@ function getTooltipPosts(posts: HeatmapPost[]) {
               aria-hidden="true"
             />
           );
-          const tooltip = (
-            <span class="tooltip" role="tooltip">
-              <strong>{formatDate.format(new Date(day.date))}</strong>
-              <span>{getPostLabel(day.count)}</span>
-              {day.posts.length > 0 && (
-                <ul>
-                  {getTooltipPosts(day.posts).map((post) => (
-                    <li>{post.title}</li>
-                  ))}
-                  {day.posts.length > 5 && <li>...</li>}
-                </ul>
-              )}
-            </span>
-          );
 
           return href ? (
             <a class="cell-link" href={href} aria-label={getDayTitle(day)}>
               {content}
-              {tooltip}
             </a>
           ) : (
             <span class="cell-link static-cell" aria-label={getDayTitle(day)}>
               {content}
-              {tooltip}
             </span>
           );
         })
@@ -320,11 +296,6 @@ function getTooltipPosts(posts: HeatmapPost[]) {
     text-decoration: none;
   }
 
-  .cell-link:hover,
-  .cell-link:focus-visible {
-    z-index: 10;
-  }
-
   .cell-link:hover .heatmap-cell {
     outline: 1px solid var(--paper-line-strong);
     outline-offset: 1px;
@@ -359,64 +330,6 @@ function getTooltipPosts(posts: HeatmapPost[]) {
 
   .level-4 {
     background: #667d6d;
-  }
-
-  .tooltip {
-    position: absolute;
-    left: 50%;
-    bottom: calc(100% + 9px);
-    z-index: 4;
-    display: grid;
-    width: max-content;
-    max-width: 230px;
-    gap: 5px;
-    padding: 10px 12px;
-    border: 1px solid var(--paper-line);
-    border-radius: 7px;
-    background: var(--paper-surface);
-    box-shadow: var(--paper-shadow-lift);
-    color: var(--paper-ink);
-    font-size: 0.78rem;
-    line-height: 1.35;
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, 6px);
-    transition:
-      opacity 140ms ease,
-      transform 140ms ease;
-  }
-
-  .cell-link:nth-child(n + 19) .tooltip {
-    left: auto;
-    right: 0;
-    transform: translate(0, 6px);
-  }
-
-  .cell-link:nth-child(n + 19):hover .tooltip,
-  .cell-link:nth-child(n + 19):focus-visible .tooltip {
-    transform: translate(0, 0);
-  }
-
-  .tooltip strong {
-    color: var(--paper-ink);
-    font-size: 0.86rem;
-  }
-
-  .tooltip ul {
-    display: grid;
-    gap: 3px;
-    margin: 4px 0 0;
-    padding-left: 16px;
-  }
-
-  .tooltip li {
-    overflow-wrap: anywhere;
-  }
-
-  .cell-link:hover .tooltip,
-  .cell-link:focus-visible .tooltip {
-    opacity: 1;
-    transform: translate(-50%, 0);
   }
 
   footer {

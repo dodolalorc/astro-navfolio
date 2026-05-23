@@ -1,12 +1,8 @@
-@import '@fontsource/maple-mono/200.css';
-@import '@fontsource/maple-mono/300.css';
 @import '@fontsource/maple-mono/400.css';
 @import '@fontsource/maple-mono/500.css';
 @import '@fontsource/maple-mono/600.css';
 @import '@fontsource/maple-mono/700.css';
-@import '@fontsource/maple-mono/800.css';
 
-@import 'lxgw-wenkai-webfont/style.css';
 @import './palettes.css';
 /*
   The CSS in this style tag is based off of Bear Blog's default CSS.
@@ -47,13 +43,13 @@
   --layout-page-bottom: 72px;
   --page-header-spacing: 54px;
   --page-header-spacing-mobile: 28px;
-  --font-serif-cn: 'Maple Mono', 'LXGW WenKai', 'STKaiti', 'KaiTi', serif;
+  --font-serif-cn: 'LXGW WenKai', 'STKaiti', 'KaiTi', 'KaiTi SC', 'Songti SC', serif;
   --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-body: var(--font-serif-cn);
-  --font-display: var(--font-serif-cn);
-  --font-note: var(--font-serif-cn);
+  --font-body: var(--font-mono);
+  --font-display: var(--font-mono);
+  --font-note: var(--font-mono);
   --font-article: var(--font-serif-cn);
-  --font-heading: var(--font-serif-cn);
+  --font-heading: var(--font-mono);
   --font-meta: var(--font-mono);
   --font-code: var(--font-mono);
   --font-ui-label: var(--font-mono);

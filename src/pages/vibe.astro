@@ -28,7 +28,11 @@ const vibes = await Promise.all(
 <!doctype html>
 <html lang="en" data-palette={palette}>
   <head>
-    <BaseHead title={`vibe | ${site.title}`} description="Small fragments of life and coding." />
+    <BaseHead
+      title={`vibe | ${site.title}`}
+      description="Small fragments of life and coding."
+      loadArticleFont
+    />
     <style>
       html {
         scroll-behavior: smooth;

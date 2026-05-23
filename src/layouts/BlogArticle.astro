@@ -98,7 +98,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
 <!doctype html>
 <html lang="en" data-palette={palette}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} loadArticleFont />
   </head>
   <body class="blog-detail-page">
     <BlogTopNav showTocIcon={hasToc} tocItems={tocItems} />
