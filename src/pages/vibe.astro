@@ -28,11 +28,7 @@ const vibes = await Promise.all(
 <!doctype html>
 <html lang="en" data-palette={palette}>
   <head>
-    <BaseHead
-      title={`vibe | ${site.title}`}
-      description="Small fragments of life and coding."
-      loadArticleFont
-    />
+    <BaseHead title={`vibe | ${site.title}`} description="Small fragments of life and coding." />
     <style>
       html {
         scroll-behavior: smooth;
@@ -82,7 +78,7 @@ const vibes = await Promise.all(
         max-width: 30ch;
         margin: 18px 0 0;
         color: var(--paper-ink-soft);
-        font-family: var(--font-article);
+        font-family: var(--font-serif-cn);
         font-size: clamp(0.98rem, 1.7vw, 1.16rem);
         line-height: 1.68;
       }
@@ -262,7 +258,7 @@ const vibes = await Promise.all(
 
       .vibe-body {
         color: var(--paper-ink);
-        font-family: var(--font-article);
+        font-family: var(--font-serif-cn);
         font-size: clamp(0.94rem, 1.42vw, 1.08rem);
         line-height: 1.9;
       }

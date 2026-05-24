@@ -63,7 +63,7 @@ company = "Independent Studio"
 location = "Remote"
 email = "hello@navfolio.site"
 website = "https://astro.navfolio.site/"
-github = "https://github.com/navfolio"
+github = "https://github.com/dodolalorc/astro-navfolio"
 meta = "Open-source maintainer"
 avatar = "/images/logo.png"
 
@@ -99,8 +99,11 @@ title = "here is navfolio"
 name = "navfolio"
 body = [
   "The name combines \"Navigation\" and \"Portfolio\".",
-  "Navfolio focuses on lightweight organization, smooth reading experience, and developer-friendly aesthetics.",
-  "It feels less like a resume, and more like a personal operating system for your ideas, projects, notes, and online presence.",
+  "Navfolio prioritizes lightweight organization, seamless reading, and developer-friendly aesthetics.",
+  "It’s less a resume than a personal OS for your ideas, projects, notes, and online presence.",
+  "这个名字融合了“导航”与“作品集”。",
+  "Navfolio 专注于轻量级组织、流畅的阅读体验，以及对开发者友好的美学设计。",
+  "它不像一份简历，更像是一个属于你自己的个人操作系统——承载想法、项目、笔记与网络足迹。",
 ]
 image = "/images/logo-cat.png"
 
@@ -128,17 +131,17 @@ href = "/blog"
 icon = "briefcase"
 title = "Resume"
 subtitle = "Career profile and experience"
-href = "https://resume.navfolio.site/"
+href = "https://github.com/dodolalorc/navfolio"
 
 [[config.home.navigation]]
 icon = "github"
 title = "Open Source"
 subtitle = "Code, experiments, and tools"
-href = "https://github.com/navfolio"
+href = "https://github.com/dodolalorc/astro-navfolio"
 
 [[config.home.connect]]
 label = "GitHub"
-href = "https://github.com/navfolio"
+href = "https://github.com/dodolalorc/astro-navfolio"
 icon = "github"
 
 [[config.home.connect]]

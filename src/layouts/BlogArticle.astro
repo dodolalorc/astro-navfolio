@@ -42,6 +42,7 @@ interface Props {
   heroImage?: ImageMetadata | string;
   showHeroImage?: boolean;
   tags?: string[];
+  contentFont?: 'article' | 'ui';
 }
 
 const props = Astro.props;
@@ -64,6 +65,7 @@ const post = props.post ?? {
 };
 const isBlogPost = post.collection === 'blog';
 const { title, description, date, heroImage, showHeroImage = true } = post.data;
+const contentFont = props.contentFont ?? 'article';
 const bodyText = 'body' in post && typeof post.body === 'string' ? post.body : description;
 const englishWords = bodyText.match(/[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*/g) ?? [];
 const cjkChars =
@@ -98,7 +100,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
 <!doctype html>
 <html lang="en" data-palette={palette}>
   <head>
-    <BaseHead title={title} description={description} loadArticleFont />
+    <BaseHead title={title} description={description} />
   </head>
   <body class="blog-detail-page">
     <BlogTopNav showTocIcon={hasToc} tocItems={tocItems} />
@@ -125,12 +127,15 @@ const hasSidebar = shouldRenderSidebar && hasToc;
           {
             hasToc && (
               <section class="mobile-article-toc" aria-label="Article table of contents">
-                <TableOfContents items={tocItems} compact collapsible />
+                <TableOfContents items={tocItems} compact collapsible font={contentFont} />
               </section>
             )
           }
 
-          <section id="article-start" class="article-content">
+          <section
+            id="article-start"
+            class:list={['article-content', { 'article-content-ui': contentFont === 'ui' }]}
+          >
             <slot />
           </section>
         </article>
@@ -141,7 +146,9 @@ const hasSidebar = shouldRenderSidebar && hasToc;
       {
         hasSidebar && (
           <aside class="right-sidebar" aria-label="Reading tools">
-            <div class="right-sidebar-inner">{hasToc && <TableOfContents items={tocItems} />}</div>
+            <div class="right-sidebar-inner">
+              {hasToc && <TableOfContents items={tocItems} font={contentFont} />}
+            </div>
           </aside>
         )
       }
@@ -272,6 +279,10 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     font-size: 18px;
     line-height: 1.75;
     text-wrap: pretty;
+  }
+
+  .article-content-ui {
+    font-family: var(--font-serif-cn);
   }
 
   .article-content :global(h2) {
