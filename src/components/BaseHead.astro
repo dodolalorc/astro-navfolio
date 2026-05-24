@@ -56,6 +56,9 @@ const { site } = await getSiteConfig();
         button.setAttribute('title', toggleLabel);
       }
       if (persist) setStoredTheme(nextTheme);
+      window.dispatchEvent(
+        new CustomEvent('navfolio:theme-change', { detail: { theme: nextTheme } }),
+      );
     };
     const syncThemeControls = () => {
       applyTheme(root.dataset.theme || storedTheme() || systemTheme(), false);

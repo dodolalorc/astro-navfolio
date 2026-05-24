@@ -59,7 +59,8 @@ const defaultGiscusConfig = {
   reactions_enabled: '1',
   emit_metadata: '0',
   input_position: 'bottom',
-  theme: 'preferred_color_scheme',
+  light_theme: 'github-light',
+  dark_theme: 'github-dark',
   lang: 'zh-CN',
   loading: 'lazy',
 };
@@ -150,7 +151,8 @@ const siteConfig = defineCollection({
             reactions_enabled: z.string().optional().default('1'),
             emit_metadata: z.string().optional().default('0'),
             input_position: z.string().optional().default('bottom'),
-            theme: z.string().optional().default('preferred_color_scheme'),
+            light_theme: z.string().optional().default('light'),
+            dark_theme: z.string().optional().default('dark'),
             lang: z.string().optional().default('zh-CN'),
             loading: z.string().optional().default('lazy'),
           })

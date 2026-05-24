@@ -38,7 +38,8 @@ strict = "0"
 reactions_enabled = "1"
 emit_metadata = "0"
 input_position = "top"
-theme = "preferred_color_scheme"
+light_theme = "light"
+dark_theme = "dark"
 lang = "zh-CN"
 loading = "lazy"
 
@@ -91,7 +92,11 @@ href = "/about"
 layout = "grid"
 
 [config.home.quote]
-text = ["Navigate your world,", "Showcase your story,", "and keep everything in one place."]
+text = [
+  "Navigate your world,",
+  "Showcase your story,",
+  "and keep everything in one place.",
+]
 image = "/images/logo-with-name.png"
 
 [config.home.intro]
