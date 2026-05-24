@@ -323,7 +323,7 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     font-size: 1.08rem;
   }
 
-  .article-content :global(pre),
+  .article-content :global(pre:not([data-language])),
   .code-block {
     overflow-x: auto;
     border: 1px solid var(--paper-line-strong);
@@ -332,19 +332,29 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     color: var(--paper-ink);
   }
 
-  .article-content :global(pre) {
+  .article-content :global(pre:not([data-language])) {
     padding: 20px;
   }
 
-  .article-content :global(code) {
+  .article-content :global(:not(pre) > code) {
     font-family: var(--font-code);
     border-radius: 7px;
     background: var(--paper-control);
     color: var(--paper-ink);
   }
 
-  .article-content :global(pre code) {
+  .article-content :global(pre:not([data-language]) > code) {
     background: transparent;
+  }
+
+  .article-content :global(.expressive-code) {
+    margin: 28px 0 30px;
+    font-family: var(--font-code);
+  }
+
+  .article-content :global(.expressive-code .frame) {
+    overflow: hidden;
+    border-radius: 7px;
   }
 
   .code-block {

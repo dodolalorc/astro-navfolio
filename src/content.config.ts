@@ -49,6 +49,22 @@ const paletteSchema = z.enum([
   'brown-soft',
 ]);
 
+const collapseStyleSchema = z.enum([
+  'github',
+  'collapsible-start',
+  'collapsible-end',
+  'collapsible-auto',
+]);
+
+const defaultCodeConfig = {
+  lightTheme: 'catppuccin-latte',
+  darkTheme: 'catppuccin-macchiato',
+  lineNumbers: true,
+  wrap: true,
+  preserveIndent: true,
+  collapseStyle: 'github',
+} as const;
+
 const defaultGiscusConfig = {
   repo: '',
   repo_id: '',
@@ -134,6 +150,17 @@ const siteConfig = defineCollection({
       .default({
         palette: 'green-soft',
       }),
+    code: z
+      .object({
+        lightTheme: z.string().optional().default(defaultCodeConfig.lightTheme),
+        darkTheme: z.string().optional().default(defaultCodeConfig.darkTheme),
+        lineNumbers: z.boolean().optional().default(defaultCodeConfig.lineNumbers),
+        wrap: z.boolean().optional().default(defaultCodeConfig.wrap),
+        preserveIndent: z.boolean().optional().default(defaultCodeConfig.preserveIndent),
+        collapseStyle: collapseStyleSchema.optional().default(defaultCodeConfig.collapseStyle),
+      })
+      .optional()
+      .default(defaultCodeConfig),
     comments: z
       .object({
         enabled: z.boolean().optional().default(true),
