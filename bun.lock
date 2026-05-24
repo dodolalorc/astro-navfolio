@@ -12,7 +12,6 @@
         "@tailwindcss/vite": "^4.3.0",
         "astro": "^6.3.5",
         "lucide-astro": "^0.556.0",
-        "lxgw-wenkai-webfont": "^1.7.0",
         "sharp": "^0.34.5",
         "tailwindcss": "^4.3.0",
       },
@@ -547,8 +546,6 @@
     "lru-cache": ["lru-cache@11.3.6", "", {}, "sha512-Gf/KoL3C/MlI7Bt0PGI9I+TeTC/I6r/csU58N4BSNc4lppLBeKsOdFYkK+dX0ABDUMJNfCHTyPpzwwO21Awd3A=="],
 
     "lucide-astro": ["lucide-astro@0.556.0", "", { "peerDependencies": { "astro": ">=2.7.1" } }, "sha512-ugMjPb45AMfkLCaduNSbyy5NQEKvB1TxVVMmUS4S6L807PMESnX0Qp+DIKHjbyjJmPXOyLRbrzvR3YikTK7brg=="],
-
-    "lxgw-wenkai-webfont": ["lxgw-wenkai-webfont@1.7.0", "", {}, "sha512-kVJmT4xMAyOLhG6q0w63wJkVU7RP8UMQRGoAWj9tnpzL7sWFFYiEHBdUQyW9myqBQFa5SQfWfa2VLYF4IJBL5g=="],
 
     "magic-string": ["magic-string@0.30.21", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ=="],
 

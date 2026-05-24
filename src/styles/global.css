@@ -4,6 +4,22 @@
 @import '@fontsource/maple-mono/700.css';
 
 @import './palettes.css';
+@font-face {
+  font-family: 'LXGW UI Subset';
+  src: url('/fonts/lxgw-ui-subset.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'LXGW WenKai Full';
+  src: url('/fonts/LXGWWenKai-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 /*
   The CSS in this style tag is based off of Bear Blog's default CSS.
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
@@ -43,12 +59,15 @@
   --layout-page-bottom: 72px;
   --page-header-spacing: 54px;
   --page-header-spacing-mobile: 28px;
-  --font-serif-cn: 'LXGW WenKai', 'STKaiti', 'KaiTi', 'KaiTi SC', 'Songti SC', serif;
-  --font-mono: 'Maple Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-cjk-system: 'Maple Mono', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-ui-cjk: 'LXGW UI Subset', var(--font-cjk-system);
+  --font-serif-cn: var(--font-ui-cjk);
+  --font-mono:
+    'Maple Mono', 'LXGW UI Subset', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-body: var(--font-mono);
   --font-display: var(--font-mono);
   --font-note: var(--font-mono);
-  --font-article: var(--font-serif-cn);
+  --font-article: 'LXGW WenKai Full', 'Maple Mono', var(--font-cjk-system);
   --font-heading: var(--font-mono);
   --font-meta: var(--font-mono);
   --font-code: var(--font-mono);

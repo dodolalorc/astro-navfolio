@@ -8,9 +8,10 @@ interface Props {
   items: Item[];
   compact?: boolean;
   collapsible?: boolean;
+  font?: 'ui' | 'article';
 }
 
-const { items, compact = false, collapsible = false } = Astro.props;
+const { items, compact = false, collapsible = false, font = 'ui' } = Astro.props;
 import { normalizeHash } from '../../utils/toc-hash';
 
 const normalizedItems = items.map((item) => {
@@ -34,6 +35,7 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
       class:list={['toc-card', 'blog-card', { compact, collapsible, 'can-collapse': canCollapse }]}
       aria-label="Table of contents"
       data-toc-root
+      data-font={font}
       data-mobile-toc={collapsible ? '' : undefined}
       data-expanded={collapsible ? 'false' : undefined}
     >
@@ -164,6 +166,10 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
     transition:
       background-color 160ms ease,
       color 160ms ease;
+  }
+
+  .toc-card[data-font='article'] a {
+    font-family: var(--font-article);
   }
 
   a[data-state='past'] {
