@@ -88,7 +88,7 @@ email = "hello@navfolio.site"
 website = "https://astro.navfolio.site/"
 github = "https://github.com/navfolio"
 meta = "Open-source maintainer"
-avatar = "/images/logo.png"
+avatar = "/images/logo.jpg"
 ```
 
 如果你要替换成自己的站点，通常优先修改这里。

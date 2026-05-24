@@ -1,10 +1,11 @@
 [config.site]
 title = "陈年往事"
-description = "A personal navigation portfolio starter built with Astro."
-pageTitle = "陈年往事 | 一个码农的喃喃自语"
-pageDescription = "A calm AI-native personal publication space for notes, links, and writing."
-repository = "https://github.com/dodolalorc/astro-navfolio"
-footerNote = "Released as an open-source starter."
+description = "一个普通人记录一些陈年往事。"
+pageTitle = "陈年往事 | 一个普通人的喃喃自语"
+pageDescription = "一个普通人的喃喃自语，记录自己的学习、工作、生活经历。"
+# 页面顶部GitHub Logo对应的Url
+repository = "https://github.com/outlook2018"
+footerNote = ""
 
 [config.vibe]
 showTrail = true
@@ -22,7 +23,7 @@ show_on_posts = true
 [config.search]
 enabled = true
 shortcut = "mod+k"
-placeholder = "Search notes..."
+placeholder = "搜索文章..."
 maxResults = 6
 
 [config.blog]
@@ -56,16 +57,16 @@ pageview = true
 comment = true
 
 [config.profile]
-name = "navfolio"
-handle = "@navfolio"
-role = "A Cat Developer"
+name = "往事"
+handle = "@wangshi"
+role = "一杯敬明天，一杯敬过往。"
 company = "Independent Studio"
 location = "Remote"
-email = "hello@navfolio.site"
-website = "https://astro.navfolio.site/"
-github = "https://github.com/navfolio"
+email = "me@liujie.dpdns.org"
+website = "https://blog.liujie.dpdns.org"
+github = "https://github.com/outlook2018"
 meta = "Open-source maintainer"
-avatar = "/images/logo.png"
+avatar = "/images/logo.jpg"
 
 [[config.topNav.links]]
 label = "首页"
@@ -98,9 +99,15 @@ image = "/images/logo-with-name.png"
 title = "here is navfolio"
 name = "navfolio"
 body = [
-  "The name combines \"Navigation\" and \"Portfolio\".",
-  "Navfolio focuses on lightweight organization, smooth reading experience, and developer-friendly aesthetics.",
-  "It feels less like a resume, and more like a personal operating system for your ideas, projects, notes, and online presence.",
+  "他们说要越过 前方风沙 必须低着头",
+  "他们说要绕过 蜿蜒的河 才能往前走",
+  "他们说烫要放手 太远要换个路口",
+  "如果得不到谁的认同 那就不算拥有",
+  "没人能够决定 谁的一生 应该怎么活",
+  "没人能够定义 谁的天空 是什么颜色",
+  "没人未梦就先懂 只是单纯相信着",
+  "背向光的英雄 每张轮廓",
+  "出自平凡的沉默",
 ]
 image = "/images/logo-cat.png"
 
@@ -112,29 +119,29 @@ excludeDraft = true
 startDate = ""
 dateArchiveBaseHref = ""
 
-[[config.home.navigation]]
-icon = "compass"
-title = "Portfolio"
-subtitle = "Selected work and case studies"
-href = "https://astro.navfolio.site/"
+# [[config.home.navigation]]
+# icon = "compass"
+# title = "Portfolio"
+# subtitle = "Selected work and case studies"
+# href = "https://astro.navfolio.site/"
 
 [[config.home.navigation]]
 icon = "pen"
-title = "Blog"
-subtitle = "Essays, notes, and field reports"
+title = "博客文章"
+subtitle = "记录自己的学习、工作、生活经历。"
 href = "/blog"
 
-[[config.home.navigation]]
-icon = "briefcase"
-title = "Resume"
-subtitle = "Career profile and experience"
-href = "https://resume.navfolio.site/"
+# [[config.home.navigation]]
+# icon = "briefcase"
+# title = "Resume"
+# subtitle = "Career profile and experience"
+# href = "https://resume.navfolio.site/"
 
-[[config.home.navigation]]
-icon = "github"
-title = "Open Source"
-subtitle = "Code, experiments, and tools"
-href = "https://github.com/navfolio"
+# [[config.home.navigation]]
+# icon = "github"
+# title = "Open Source"
+# subtitle = "Code, experiments, and tools"
+# href = "https://github.com/navfolio"
 
 [[config.home.connect]]
 label = "GitHub"
@@ -158,25 +165,25 @@ icon = "repo"
 
 [[config.home.connect]]
 label = "Email"
-href = "mailto:hello@navfolio.site"
+href = "mailto:me@liujie.dpdns.org"
 icon = "mail"
 
 [[config.home.doing]]
-text = "Shipping a personal dashboard template"
+text = "在DigitalPlat申请免费域名"
 mark = "01"
 
-[[config.home.doing]]
-text = "Writing reusable notes for future projects"
-mark = "02"
+# [[config.home.doing]]
+# text = "Writing reusable notes for future projects"
+# mark = "02"
 
-[[config.home.doing]]
-text = "Improving static-site publishing workflow"
-mark = "03"
+# [[config.home.doing]]
+# text = "Improving static-site publishing workflow"
+# mark = "03"
 
-[[config.home.doing]]
-text = "Collecting useful developer resources"
-mark = "04"
+# [[config.home.doing]]
+# text = "Collecting useful developer resources"
+# mark = "04"
 
-[[config.home.doing]]
-text = "Exploring small open-source ideas"
-mark = "05"
+# [[config.home.doing]]
+# text = "在DigitalPlat申请免费域名"
+# mark = "05"

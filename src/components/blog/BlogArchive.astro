@@ -95,7 +95,7 @@ function getPageHref(pageNumber: number) {
         href={page.url.prev ? withBase(page.url.prev) : undefined}
         aria-disabled={!page.url.prev}
       >
-        Previous
+        前页
       </a>
       <div class="pagination-pages" aria-label={`Page ${page.currentPage} of ${page.lastPage}`}>
         {Array.from({ length: page.lastPage }, (_, index) => {
@@ -118,7 +118,7 @@ function getPageHref(pageNumber: number) {
         href={page.url.next ? withBase(page.url.next) : undefined}
         aria-disabled={!page.url.next}
       >
-        Next
+        后页
       </a>
     </nav>
   )
