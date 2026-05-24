@@ -92,12 +92,12 @@ href = "/about"
 layout = "grid"
 
 [config.home.quote]
-text = ["Navigate your world,", "Showcase your story,", "and keep everything in one place."]
+text = ["别怕未来的模样，", "辜负曾经的凝望，", "有多少理想 就有多少次传唱。"]
 image = "/images/logo-with-name.png"
 
 [config.home.intro]
-title = "here is navfolio"
-name = "navfolio"
+title = "冒险的人是否会感伤"
+name = ""
 body = [
   "他们说要越过 前方风沙 必须低着头",
   "他们说要绕过 蜿蜒的河 才能往前走",

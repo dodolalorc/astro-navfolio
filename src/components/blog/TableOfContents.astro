@@ -32,12 +32,12 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
   hasItems && (
     <nav
       class:list={['toc-card', 'blog-card', { compact, collapsible, 'can-collapse': canCollapse }]}
-      aria-label="Table of contents"
+      aria-label="目录"
       data-toc-root
       data-mobile-toc={collapsible ? '' : undefined}
       data-expanded={collapsible ? 'false' : undefined}
     >
-      <h2>Table of contents</h2>
+      <h2>目录</h2>
       <ol id={listId}>
         {normalizedItems.map((item, index) => (
           <li>
@@ -88,10 +88,10 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
         button.setAttribute('aria-expanded', String(nextExpanded));
         button.setAttribute(
           'aria-label',
-          nextExpanded ? 'Collapse table of contents' : 'Expand table of contents',
+          nextExpanded ? '关闭目录' : '打开目录',
         );
         if (label) {
-          label.textContent = nextExpanded ? 'Collapse' : 'Show all';
+          label.textContent = nextExpanded ? '关闭' : '显示所有';
         }
       });
     }

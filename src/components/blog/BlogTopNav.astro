@@ -144,7 +144,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
           aria-label="Open table of contents"
           aria-expanded="false"
           aria-controls="mobile-toc-menu"
-          title="Table of contents"
+          title="目录"
           data-mobile-toc-trigger
         >
           <ListTree size={17} stroke-width={2} />
@@ -267,7 +267,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
           tocTrigger.setAttribute('aria-expanded', String(open));
           tocTrigger.setAttribute(
             'aria-label',
-            open ? 'Close table of contents' : 'Open table of contents',
+            open ? '关闭目录' : '打开目录',
           );
         };
 
