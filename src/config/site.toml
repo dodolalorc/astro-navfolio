@@ -1,7 +1,7 @@
 [config.site]
-title = "navfolio"
+title = "陈年往事"
 description = "A personal navigation portfolio starter built with Astro."
-pageTitle = "navfolio | Digital Publication Space"
+pageTitle = "陈年往事 | 一个码农的喃喃自语"
 pageDescription = "A calm AI-native personal publication space for notes, links, and writing."
 repository = "https://github.com/dodolalorc/astro-navfolio"
 footerNote = "Released as an open-source starter."
@@ -12,7 +12,7 @@ showTrail = true
 [config.theme]
 # Available palettes:
 # green-soft, green-vivid, rose-soft, pink-soft, purple-soft, blue-soft, orange-soft, brown-soft
-palette = "green-soft"
+palette = "blue-soft"
 
 [config.comments]
 enabled = true
@@ -68,23 +68,23 @@ meta = "Open-source maintainer"
 avatar = "/images/logo.png"
 
 [[config.topNav.links]]
-label = "Home"
+label = "首页"
 href = "/"
 
 [[config.topNav.links]]
-label = "Blog"
+label = "博客"
 href = "/blog"
 
 [[config.topNav.links]]
-label = "Projects"
+label = "项目"
 href = "/projects"
 
 [[config.topNav.links]]
-label = "Vibe"
+label = "微博"
 href = "/vibe"
 
 [[config.topNav.links]]
-label = "About"
+label = "关于"
 href = "/about"
 
 [config.home]
