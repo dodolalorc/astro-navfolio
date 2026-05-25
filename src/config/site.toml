@@ -17,7 +17,7 @@ palette = "blue-soft"
 
 [config.comments]
 enabled = true
-provider = "giscus"
+provider = "waline"
 show_on_posts = true
 
 [config.search]
@@ -28,6 +28,8 @@ maxResults = 6
 
 [config.blog]
 postsPerPage = 6
+[config.comments.waline]
+server_url = "https://waline.liujie.dpdns.org/"
 
 [config.comments.giscus]
 repo = "dodolalorc/astro-navfolio"
