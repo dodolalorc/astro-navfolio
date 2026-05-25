@@ -1,0 +1,64 @@
+---
+interface Props {
+  name: string;
+  slug: string;
+  count: number;
+}
+
+const { name, slug, count } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const href = `${basePath}/blog/categories/${slug}/`;
+const articleLabel = count === 1 ? 'article' : 'articles';
+---
+
+<a class="category-card" href={href}>
+  <span class="category-label">Category</span>
+  <strong>{name}</strong>
+  <span>{count} {articleLabel}</span>
+</a>
+
+<style>
+  .category-card {
+    display: grid;
+    gap: 8px;
+    min-height: 128px;
+    padding: 18px;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-surface);
+    color: var(--paper-ink);
+    text-decoration: none;
+    box-shadow: var(--paper-shadow);
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease;
+  }
+
+  .category-card:hover {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-control-hover);
+    transform: translateY(-1px);
+  }
+
+  .category-label,
+  span:last-child {
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .category-label {
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  strong {
+    color: var(--paper-ink);
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+</style>

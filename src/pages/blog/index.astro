@@ -4,6 +4,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import BlogTopNav from '../../components/blog/BlogTopNav.astro';
 import BlogArchive from '../../components/blog/BlogArchive.astro';
+import GroupNav from '../../components/blog/GroupNav.astro';
 import { getSiteConfig } from '../../data/site';
 import { sortByDateDesc } from '../../utils/content-dates';
 
@@ -46,7 +47,9 @@ const page = {
   <body>
     <BlogTopNav />
     <main data-pagefind-body>
-      <BlogArchive page={page} />
+      <BlogArchive page={page}>
+        <GroupNav slot="after-header" />
+      </BlogArchive>
     </main>
     <Footer />
   </body>

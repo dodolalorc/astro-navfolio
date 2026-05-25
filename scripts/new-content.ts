@@ -118,6 +118,8 @@ date: "${isoDate}"
 draft: true
 showHeroImage: false
 tags: []
+categories: []
+series: []
 comments: true
 sidebar:
   enable: true

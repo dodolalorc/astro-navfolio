@@ -1,0 +1,45 @@
+---
+interface Props {
+  current: number;
+  total: number;
+}
+
+const { current, total } = Astro.props;
+const safeTotal = Math.max(1, total);
+const percent = Math.round((current / safeTotal) * 100);
+---
+
+<span class="series-progress" aria-label={`${current} published articles`}>
+  <span class="series-progress-copy">{current} published</span>
+  <span class="series-progress-track" aria-hidden="true">
+    <span style={`width: ${percent}%`}></span>
+  </span>
+</span>
+
+<style>
+  .series-progress {
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.76rem;
+    font-weight: 600;
+  }
+
+  .series-progress-track {
+    display: inline-flex;
+    width: 76px;
+    height: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--paper-control);
+  }
+
+  .series-progress-track span {
+    display: block;
+    border-radius: inherit;
+    background: var(--paper-accent);
+    opacity: 0.72;
+  }
+</style>

@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import BackLink from '../../../components/blog/BackLink.astro';
+import BlogArchive from '../../../components/blog/BlogArchive.astro';
+import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
+import { getSiteConfig } from '../../../data/site';
+import { getAllCategories, getPostsByCategory } from '../../../utils/content-groups';
+import { sortByDateDesc } from '../../../utils/content-dates';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  return getAllCategories(posts).map((category) => {
+    const categoryPosts = sortByDateDesc(getPostsByCategory(posts, category.slug));
+
+    return {
+      params: { category: category.slug },
+      props: {
+        category,
+        page: {
+          data: categoryPosts,
+          currentPage: 1,
+          lastPage: 1,
+          total: categoryPosts.length,
+          size: categoryPosts.length,
+          url: {
+            current: `/blog/categories/${category.slug}/`,
+          },
+        },
+      },
+    };
+  });
+}
+
+const { site, theme } = await getSiteConfig();
+const palette = theme.palette;
+const { category, page } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-palette={palette}>
+  <head>
+    <BaseHead title={`${category.name} | ${site.title}`} description={site.description} />
+    <style>
+      main {
+        width: min(100%, var(--layout-shell-width));
+        max-width: none;
+        padding: 118px var(--layout-page-gutter) var(--layout-page-bottom);
+      }
+
+      @media (max-width: 720px) {
+        main {
+          padding-top: 88px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <BlogTopNav />
+    <main data-pagefind-body>
+      <BackLink href="/blog/categories/" label="Back to categories" />
+      <BlogArchive
+        page={page}
+        headerKicker="Category"
+        headerTitle={category.name}
+        headerNote={`${category.count} ${category.count === 1 ? 'article' : 'articles'} in this topic.`}
+      />
+    </main>
+    <Footer />
+  </body>
+</html>

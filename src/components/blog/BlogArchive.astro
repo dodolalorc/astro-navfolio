@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from '../FormattedDate.astro';
 import SmartImage from '../SmartImage.astro';
+import { slugifyGroupName } from '../../utils/content-groups';
 
 type BlogPost = CollectionEntry<'blog'>;
 
@@ -22,9 +23,18 @@ interface Props {
     data: BlogPost[];
   };
   postOffset?: number;
+  headerKicker?: string;
+  headerTitle?: string;
+  headerNote?: string;
 }
 
-const { page, postOffset = 0 } = Astro.props;
+const {
+  page,
+  postOffset = 0,
+  headerKicker = 'Notebook archive',
+  headerTitle = 'Writing notes',
+  headerNote = 'Loose pages, technical margins, and small notes gathered into a readable stack.',
+} = Astro.props;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const hasPagination = page.lastPage > 1;
 
@@ -43,28 +53,54 @@ function getPageHref(pageNumber: number) {
 
 <header class="archive-hero archive-header-shared page-header-spacing">
   <div class="archive-header-main">
-    <p class="archive-kicker">Notebook archive</p>
-    <h1 class="archive-title">Writing notes</h1>
+    <p class="archive-kicker">{headerKicker}</p>
+    <h1 class="archive-title">{headerTitle}</h1>
   </div>
-  <p class="archive-note">
-    Loose pages, technical margins, and small notes gathered into a readable stack.
-  </p>
+  <p class="archive-note">{headerNote}</p>
 </header>
+<slot name="after-header" />
 <section>
   <ul class="post-stack">
     {
       page.data.map((post, index) => (
         <li class="post-item">
-          <a
-            class:list={['post-link', { 'without-thumb': !post.data.heroImage }]}
-            href={withBase(`/blog/${post.id}/`)}
-          >
+          <article class:list={['post-link', { 'without-thumb': !post.data.heroImage }]}>
             <div class="post-copy">
               <div>
                 <span class="post-index">{String(postOffset + index + 1).padStart(2, '0')}</span>
-                <h2 class="title">{post.data.title}</h2>
-                <p class="date">
+                <h2 class="title">
+                  <a class="title-link" href={withBase(`/blog/${post.id}/`)}>
+                    {post.data.title}
+                  </a>
+                </h2>
+                <div class="date">
                   <FormattedDate date={post.data.date} />
+                  {post.data.categories.length > 0 && (
+                    <span class="post-groups">
+                      <span class="meta-label">Categories</span>
+                      {post.data.categories.map((category) => (
+                        <a
+                          class="post-group"
+                          href={withBase(`/blog/categories/${slugifyGroupName(category)}/`)}
+                        >
+                          {category}
+                        </a>
+                      ))}
+                    </span>
+                  )}
+                  {post.data.series.length > 0 && (
+                    <span class="post-groups">
+                      <span class="meta-label">Series</span>
+                      {post.data.series.map((series) => (
+                        <a
+                          class="post-group"
+                          href={withBase(`/blog/series/${slugifyGroupName(series)}/`)}
+                        >
+                          {series}
+                        </a>
+                      ))}
+                    </span>
+                  )}
                   {post.data.tags.length > 0 && (
                     <span class="post-tags">
                       {post.data.tags.map((tag) => (
@@ -72,16 +108,20 @@ function getPageHref(pageNumber: number) {
                       ))}
                     </span>
                   )}
-                </p>
+                </div>
               </div>
               <p class="post-excerpt">{post.data.description}</p>
             </div>
             {post.data.heroImage && (
-              <span class="thumb-wrap">
+              <a
+                class="thumb-wrap"
+                href={withBase(`/blog/${post.id}/`)}
+                aria-label={post.data.title}
+              >
                 <SmartImage width={520} height={360} src={post.data.heroImage} alt="" />
-              </span>
+              </a>
             )}
-          </a>
+          </article>
         </li>
       ))
     }
@@ -151,7 +191,6 @@ function getPageHref(pageNumber: number) {
     background: transparent;
     box-shadow: none;
     color: var(--paper-ink);
-    text-decoration: none;
     transform: translateY(0);
     transition:
       transform 180ms ease,
@@ -182,6 +221,11 @@ function getPageHref(pageNumber: number) {
     display: grid;
     align-content: space-between;
     gap: 0;
+    min-width: 0;
+  }
+
+  .post-copy > div {
+    min-width: 0;
   }
 
   .post-index {
@@ -193,9 +237,18 @@ function getPageHref(pageNumber: number) {
 
   .title {
     margin: 0;
-    color: var(--paper-ink);
     font-size: clamp(1.28rem, 2vw, 1.72rem);
     line-height: 1.24;
+  }
+
+  .title-link {
+    color: var(--paper-ink);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .title-link:hover {
+    color: var(--paper-accent);
   }
 
   .post-link.without-thumb .title {
@@ -231,10 +284,39 @@ function getPageHref(pageNumber: number) {
     color: var(--paper-accent);
   }
 
-  .post-tag + .post-tag::before {
+  .post-tag + .post-tag::before,
+  .post-group + .post-group::before {
     margin: 0 6px;
     color: var(--paper-ink-faint);
     content: '\00b7';
+  }
+
+  .post-groups {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+  }
+
+  .post-groups::before {
+    margin: 0 9px;
+    color: var(--paper-ink-faint);
+    content: '\00b7';
+  }
+
+  .meta-label {
+    margin-right: 6px;
+    color: var(--paper-ink-faint);
+  }
+
+  .post-group {
+    color: var(--paper-accent);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .post-group:hover {
+    color: var(--paper-ink);
   }
 
   .post-excerpt {
@@ -370,8 +452,62 @@ function getPageHref(pageNumber: number) {
 
     .title,
     .post-item:first-child .title {
+      min-width: 0;
+      max-width: 100%;
       font-size: 1.45rem;
       line-height: 1.22;
+    }
+
+    .title-link {
+      display: block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .date {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 9px;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .post-tags,
+    .post-groups {
+      display: flex;
+      flex-wrap: nowrap;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .post-tags::before,
+    .post-groups::before {
+      content: none;
+    }
+
+    .meta-label {
+      display: none;
+    }
+
+    .post-groups {
+      max-width: min(44%, 12rem);
+    }
+
+    .post-tags {
+      flex-basis: 100%;
+      max-width: 100%;
+    }
+
+    .post-tag,
+    .post-group {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .archive-pagination {

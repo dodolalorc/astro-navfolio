@@ -1,0 +1,49 @@
+---
+import { ArrowLeft } from 'lucide-astro';
+
+interface Props {
+  href: string;
+  label: string;
+}
+
+const { href, label } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const linkHref = `${basePath}${href.startsWith('/') ? href : `/${href}`}`;
+---
+
+<a class="back-link" href={linkHref}>
+  <ArrowLeft size={15} strokeWidth={2} aria-hidden="true" />
+  <span>{label}</span>
+</a>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    gap: 7px;
+    align-items: center;
+    width: fit-content;
+    min-height: 34px;
+    margin-bottom: 22px;
+    padding: 6px 10px;
+    border: 1px solid var(--paper-line);
+    border-radius: 7px;
+    background: var(--paper-control);
+    color: var(--paper-ink-soft);
+    font-family: var(--font-meta);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease,
+      color 180ms ease;
+  }
+
+  .back-link:hover {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-control-hover);
+    color: var(--paper-accent);
+    transform: translateY(-1px);
+  }
+</style>

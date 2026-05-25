@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import BackLink from '../../../components/blog/BackLink.astro';
+import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
+import SeriesCard from '../../../components/blog/SeriesCard.astro';
+import { getSiteConfig } from '../../../data/site';
+import { getAllSeries } from '../../../utils/content-groups';
+
+const { site, theme } = await getSiteConfig();
+const palette = theme.palette;
+const series = getAllSeries(await getCollection('blog', ({ data }) => !data.draft));
+---
+
+<!doctype html>
+<html lang="zh-CN" data-palette={palette}>
+  <head>
+    <BaseHead title={`${site.title} | Series`} description={site.description} />
+    <style>
+      main {
+        width: min(100%, var(--layout-shell-width));
+        max-width: none;
+        padding: 118px var(--layout-page-gutter) var(--layout-page-bottom);
+      }
+
+      .series-list {
+        display: grid;
+        gap: 0;
+      }
+
+      .empty-note {
+        max-width: 620px;
+        margin: 0;
+        color: var(--paper-ink-soft);
+        font-family: var(--font-article);
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      @media (max-width: 720px) {
+        main {
+          padding-top: 88px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <BlogTopNav />
+    <main data-pagefind-body>
+      <BackLink href="/blog/" label="Back to blog" />
+      <header class="archive-hero archive-header-shared page-header-spacing">
+        <div class="archive-header-main">
+          <p class="archive-kicker">Reading paths</p>
+          <h1 class="archive-title">Series</h1>
+        </div>
+        <p class="archive-note">
+          Connected notes that can be followed in the order they were written.
+        </p>
+      </header>
+
+      {
+        series.length > 0 ? (
+          <section class="series-list" aria-label="Blog series">
+            {series.map((item) => (
+              <SeriesCard name={item.name} slug={item.slug} posts={item.posts} />
+            ))}
+          </section>
+        ) : (
+          <p class="empty-note">No series have been added yet.</p>
+        )
+      }
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -33,6 +33,8 @@ const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
     heroImage: z.optional(contentImageSchema({ image })),
     showHeroImage: z.boolean().optional().default(true),
     tags: z.array(z.string()).optional().default([]),
+    categories: z.array(z.string()).optional().default([]),
+    series: z.array(z.string()).optional().default([]),
     comments: z.boolean().optional().default(true),
     sidebar: sidebarSchema,
   });

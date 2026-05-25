@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import BackLink from '../../../components/blog/BackLink.astro';
+import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
+import FormattedDate from '../../../components/FormattedDate.astro';
+import SeriesProgress from '../../../components/blog/SeriesProgress.astro';
+import { getSiteConfig } from '../../../data/site';
+import { getAllSeries, getPostsBySeries } from '../../../utils/content-groups';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  return getAllSeries(posts).map((series) => ({
+    params: { series: series.slug },
+    props: {
+      series,
+      posts: getPostsBySeries(posts, series.slug),
+    },
+  }));
+}
+
+const { site, theme } = await getSiteConfig();
+const palette = theme.palette;
+const { series, posts } = Astro.props;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!doctype html>
+<html lang="zh-CN" data-palette={palette}>
+  <head>
+    <BaseHead title={`${series.name} | ${site.title}`} description={site.description} />
+    <style>
+      main {
+        width: min(100%, var(--layout-shell-width));
+        max-width: none;
+        padding: 118px var(--layout-page-gutter) var(--layout-page-bottom);
+      }
+
+      .series-detail-header {
+        display: grid;
+        gap: 16px;
+      }
+
+      .series-stack {
+        display: grid;
+        gap: 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: series-post;
+      }
+
+      .series-item {
+        counter-increment: series-post;
+        border-top: 1px solid var(--paper-line);
+      }
+
+      .series-link {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 18px;
+        padding: 22px 0;
+        color: var(--paper-ink);
+        text-decoration: none;
+      }
+
+      .series-link::before {
+        color: var(--paper-ink-faint);
+        font-family: var(--font-meta);
+        font-size: 0.78rem;
+        font-weight: 600;
+        content: counter(series-post, decimal-leading-zero);
+      }
+
+      .series-link:hover h2 {
+        color: var(--paper-accent);
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.24rem, 2.4vw, 1.72rem);
+        line-height: 1.24;
+      }
+
+      .series-meta {
+        margin: 8px 0 0;
+        color: var(--paper-ink-faint);
+        font-family: var(--font-meta);
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .series-excerpt {
+        margin: 12px 0 0;
+        color: var(--paper-ink-soft);
+        font-size: 0.98rem;
+        line-height: 1.72;
+      }
+
+      @media (max-width: 720px) {
+        main {
+          padding-top: 88px;
+        }
+
+        .series-link {
+          grid-template-columns: 1fr;
+          gap: 6px;
+          padding: 20px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <BlogTopNav />
+    <main data-pagefind-body>
+      <BackLink href="/blog/series/" label="Back to series" />
+      <header class="archive-hero archive-header-shared page-header-spacing">
+        <div class="archive-header-main series-detail-header">
+          <div>
+            <p class="archive-kicker">Series</p>
+            <h1 class="archive-title">{series.name}</h1>
+          </div>
+          <SeriesProgress current={posts.length} total={posts.length} />
+        </div>
+        <p class="archive-note">
+          {posts.length}
+          {posts.length === 1 ? 'article' : 'articles'} in reading order.
+        </p>
+      </header>
+
+      <ol class="series-stack">
+        {
+          posts.map((post) => (
+            <li class="series-item">
+              <a class="series-link" href={`${basePath}/blog/${post.id}/`}>
+                <span>
+                  <h2>{post.data.title}</h2>
+                  <p class="series-meta">
+                    <FormattedDate date={post.data.date} />
+                  </p>
+                  <p class="series-excerpt">{post.data.description}</p>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </main>
+    <Footer />
+  </body>
+</html>

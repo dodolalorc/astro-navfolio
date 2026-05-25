@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import BackLink from '../../../components/blog/BackLink.astro';
+import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
+import CategoryCard from '../../../components/blog/CategoryCard.astro';
+import { getSiteConfig } from '../../../data/site';
+import { getAllCategories } from '../../../utils/content-groups';
+
+const { site, theme } = await getSiteConfig();
+const palette = theme.palette;
+const categories = getAllCategories(await getCollection('blog', ({ data }) => !data.draft));
+---
+
+<!doctype html>
+<html lang="zh-CN" data-palette={palette}>
+  <head>
+    <BaseHead title={`${site.title} | Categories`} description={site.description} />
+    <style>
+      main {
+        width: min(100%, var(--layout-shell-width));
+        max-width: none;
+        padding: 118px var(--layout-page-gutter) var(--layout-page-bottom);
+      }
+
+      .category-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .empty-note {
+        max-width: 620px;
+        margin: 0;
+        color: var(--paper-ink-soft);
+        font-family: var(--font-article);
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      @media (max-width: 900px) {
+        .category-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 720px) {
+        main {
+          padding-top: 88px;
+        }
+
+        .category-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <BlogTopNav />
+    <main data-pagefind-body>
+      <BackLink href="/blog/" label="Back to blog" />
+      <header class="archive-hero archive-header-shared page-header-spacing">
+        <div class="archive-header-main">
+          <p class="archive-kicker">Browse notes</p>
+          <h1 class="archive-title">Categories</h1>
+        </div>
+        <p class="archive-note">
+          A quiet index of recurring topics, gathered from article frontmatter.
+        </p>
+      </header>
+
+      {
+        categories.length > 0 ? (
+          <section class="category-grid" aria-label="Blog categories">
+            {categories.map((category) => (
+              <CategoryCard name={category.name} slug={category.slug} count={category.count} />
+            ))}
+          </section>
+        ) : (
+          <p class="empty-note">No categories have been added yet.</p>
+        )
+      }
+    </main>
+    <Footer />
+  </body>
+</html>

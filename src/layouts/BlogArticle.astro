@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
 import ArticleHeader from '../components/article/ArticleHeader.astro';
 import BlogTopNav from '../components/blog/BlogTopNav.astro';
 import RelatedPosts from '../components/blog/RelatedPosts.astro';
@@ -9,6 +9,7 @@ import CommentSection from '../components/comments/CommentSection.astro';
 import { getThemePalette, getSiteConfig } from '../data/site';
 import { sortByDateDesc } from '../utils/content-dates';
 const { comments } = await getSiteConfig();
+import { getSeriesContext, slugifyGroupName } from '../utils/content-groups';
 
 type SidebarConfig = {
   enable?: boolean;
@@ -28,6 +29,8 @@ interface Props {
       heroImage?: ImageMetadata | string;
       showHeroImage?: boolean;
       tags?: string[];
+      categories?: string[];
+      series?: string[];
       comments?: boolean;
       draft?: boolean;
       sidebar?: SidebarConfig;
@@ -43,11 +46,14 @@ interface Props {
   heroImage?: ImageMetadata | string;
   showHeroImage?: boolean;
   tags?: string[];
+  categories?: string[];
+  series?: string[];
   contentFont?: 'article' | 'ui';
 }
 
 const props = Astro.props;
 const palette = await getThemePalette();
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const headings = props.headings ?? [];
 const post = props.post ?? {
   id: 'standalone',
@@ -60,6 +66,8 @@ const post = props.post ?? {
     heroImage: props.heroImage,
     showHeroImage: props.showHeroImage ?? true,
     tags: props.tags ?? [],
+    categories: props.categories ?? [],
+    series: props.series ?? [],
     draft: false,
     sidebar: { enable: true, toc: true, relatedPosts: true },
   },
@@ -75,6 +83,11 @@ const wordCount = englishWords.length + cjkChars.length;
 const readingMinutes = Math.max(1, Math.ceil(englishWords.length / 220 + cjkChars.length / 500));
 const readingTime = `${readingMinutes} min read`;
 const tags = post.data.tags ?? [];
+const categoryLinks = (post.data.categories ?? []).map((name) => ({
+  name,
+  slug: slugifyGroupName(name),
+}));
+const rawSeries = post.data.series ?? [];
 const renderedTocItems = headings
   .filter((heading) => heading.depth === 2 || heading.depth === 3)
   .map((heading) => ({ href: `#${heading.slug}`, label: heading.text }));
@@ -90,9 +103,22 @@ const shouldRenderSidebar = sidebarConfig.enable ?? true;
 const shouldRenderToc = sidebarConfig.toc ?? true;
 const hasToc = shouldRenderToc && tocItems.length > 0;
 
-const relatedPosts = sortByDateDesc(
-  await getCollection('blog', ({ id, data }) => id !== post.id && !data.draft),
-).slice(0, 3);
+const allBlogPosts = await getCollection('blog', ({ data }) => !data.draft);
+const currentBlogPost = isBlogPost ? (post as CollectionEntry<'blog'>) : undefined;
+const seriesContext = isBlogPost
+  ? getSeriesContext(currentBlogPost!, allBlogPosts, rawSeries[0])
+  : undefined;
+const seriesLinks = rawSeries.map((name) => {
+  const isPrimarySeries = seriesContext?.name === name;
+
+  return {
+    name,
+    slug: slugifyGroupName(name),
+    current: isPrimarySeries ? seriesContext.current : undefined,
+    total: isPrimarySeries ? seriesContext.total : undefined,
+  };
+});
+const relatedPosts = sortByDateDesc(allBlogPosts.filter(({ id }) => id !== post.id)).slice(0, 3);
 const hasRelatedPosts =
   shouldRenderSidebar && (sidebarConfig.relatedPosts ?? true) && relatedPosts.length > 0;
 const hasSidebar = shouldRenderSidebar && hasToc;
@@ -102,9 +128,11 @@ const hasSidebar = shouldRenderSidebar && hasToc;
 <html lang="zh-CN" data-palette={palette}>
   <head>
     <BaseHead title={title} description={description} />
-    {comments.provider === 'waline' && comments.enabled && (
-      <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
-    )}
+    {
+      comments.provider === 'waline' && comments.enabled && (
+        <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+      )
+    }
   </head>
   <body class="blog-detail-page">
     <BlogTopNav showTocIcon={hasToc} tocItems={tocItems} />
@@ -120,6 +148,8 @@ const hasSidebar = shouldRenderSidebar && hasToc;
             wordCount={wordCount}
             readingTime={readingTime}
             tags={tags}
+            categories={categoryLinks}
+            series={seriesLinks}
             heroImage={heroImage}
             showHeroImage={showHeroImage}
             variant={props.headerVariant}
@@ -142,6 +172,29 @@ const hasSidebar = shouldRenderSidebar && hasToc;
           >
             <slot />
           </section>
+
+          {
+            seriesContext && (seriesContext.prev || seriesContext.next) && (
+              <nav class="series-neighbor-nav" aria-label={`More in ${seriesContext.name}`}>
+                {seriesContext.prev ? (
+                  <a href={`${basePath}/blog/${seriesContext.prev.id}/`}>
+                    <small>Previous in {seriesContext.name}</small>
+                    <span>{seriesContext.prev.data.title}</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+                {seriesContext.next ? (
+                  <a href={`${basePath}/blog/${seriesContext.next.id}/`} class="next">
+                    <small>Next in {seriesContext.name}</small>
+                    <span>{seriesContext.next.data.title}</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+              </nav>
+            )
+          }
         </article>
         {hasRelatedPosts && <RelatedPosts posts={relatedPosts} class="article-after-related" />}
         {isBlogPost && <CommentSection frontmatter={post.data} pathname={Astro.url.pathname} />}
@@ -372,6 +425,57 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     display: none;
   }
 
+  .series-neighbor-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: min(100%, var(--article-content-max, 720px));
+    margin-top: 42px;
+    padding-top: 22px;
+    border-top: 1px solid var(--paper-line);
+  }
+
+  .series-neighbor-nav a {
+    display: grid;
+    gap: 6px;
+    min-height: 86px;
+    padding: 14px;
+    border: 1px solid var(--paper-line);
+    border-radius: 8px;
+    background: var(--paper-control);
+    color: var(--paper-ink);
+    text-decoration: none;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background 180ms ease;
+  }
+
+  .series-neighbor-nav a:hover {
+    border-color: var(--paper-line-strong);
+    background: var(--paper-control-hover);
+    transform: translateY(-1px);
+  }
+
+  .series-neighbor-nav .next {
+    text-align: right;
+  }
+
+  .series-neighbor-nav small {
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+
+  .series-neighbor-nav span {
+    min-width: 0;
+    color: var(--paper-ink);
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
   @media (max-width: 1180px) {
     .blog-layout {
       grid-template-columns: minmax(0, 720px) 238px;
@@ -405,6 +509,15 @@ const hasSidebar = shouldRenderSidebar && hasToc;
 
     :global(.article-after-related .related-list) {
       grid-template-columns: 1fr;
+    }
+
+    .series-neighbor-nav {
+      grid-template-columns: 1fr;
+      margin-top: 34px;
+    }
+
+    .series-neighbor-nav .next {
+      text-align: left;
     }
   }
 

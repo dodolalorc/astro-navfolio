@@ -23,6 +23,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout content docs
+        uses: actions/checkout@v4
+        with:
+          repository: navfolio/astro-navfolio-docs
+          path: .content-docs
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -36,6 +42,13 @@ jobs:
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Replace local content with docs content
+        run: |
+          rm -rf src/content
+          mkdir -p src/content
+          rsync -a --delete --exclude='.git' .content-docs/ src/content/
+          rm -rf src/content/.git
 
       - name: Build site
         env:

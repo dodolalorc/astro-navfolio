@@ -2,6 +2,7 @@
 import SmartImage from '../SmartImage.astro';
 import PageView from '../comments/PageView.astro';
 import FormattedDate from '../FormattedDate.astro';
+import Icon from '../Icon.astro';
 
 interface Props {
   title: string;
@@ -10,6 +11,8 @@ interface Props {
   wordCount: number;
   readingTime: string;
   tags?: string[];
+  categories?: { name: string; slug: string }[];
+  series?: { name: string; slug: string; current?: number; total?: number }[];
   heroImage?: ImageMetadata | string;
   showHeroImage?: boolean;
   variant?: 'default' | 'archive';
@@ -25,6 +28,8 @@ const {
   wordCount,
   readingTime,
   tags = [],
+  categories = [],
+  series = [],
   heroImage,
   showHeroImage = true,
   variant = 'default',
@@ -34,7 +39,11 @@ const {
 } = Astro.props;
 const wordCountLabel = `${wordCount.toLocaleString('en-US')} words`;
 const hasTags = tags.length > 0;
+const hasCategories = categories.length > 0;
+const hasSeries = series.length > 0;
+const hasGroups = hasCategories || hasSeries;
 const isArchiveHeader = variant === 'archive';
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 ---
 
 <header
@@ -68,6 +77,37 @@ const isArchiveHeader = variant === 'archive';
               </span>
             )}
           </div>
+          {hasGroups && (
+            <div class="group-meta-line" aria-label="Article groups">
+              {hasCategories && (
+                <span class="group-meta-item">
+                  <Icon name="folder" size={15} />
+                  <span class="group-label">Categories</span>
+                  <span class="group-list">
+                    {categories.map((category) => (
+                      <a class="group-link" href={`${basePath}/blog/categories/${category.slug}/`}>
+                        {category.name}
+                      </a>
+                    ))}
+                  </span>
+                </span>
+              )}
+              {hasSeries && (
+                <span class="group-meta-item">
+                  <Icon name="layers" size={15} />
+                  <span class="group-label">Series</span>
+                  <span class="group-list">
+                    {series.map((item) => (
+                      <a class="group-link" href={`${basePath}/blog/series/${item.slug}/`}>
+                        {item.name}
+                        {item.current && item.total ? ` ${item.current}/${item.total}` : ''}
+                      </a>
+                    ))}
+                  </span>
+                </span>
+              )}
+            </div>
+          )}
         </div>
         {description && <p class="archive-note">{description}</p>}
       </>
@@ -92,6 +132,37 @@ const isArchiveHeader = variant === 'archive';
             </span>
           )}
         </div>
+        {hasGroups && (
+          <div class="group-meta-line" aria-label="Article groups">
+            {hasCategories && (
+              <span class="group-meta-item">
+                <Icon name="folder" size={15} />
+                <span class="group-label">Categories</span>
+                <span class="group-list">
+                  {categories.map((category) => (
+                    <a class="group-link" href={`${basePath}/blog/categories/${category.slug}/`}>
+                      {category.name}
+                    </a>
+                  ))}
+                </span>
+              </span>
+            )}
+            {hasSeries && (
+              <span class="group-meta-item">
+                <Icon name="layers" size={15} />
+                <span class="group-label">Series</span>
+                <span class="group-list">
+                  {series.map((item) => (
+                    <a class="group-link" href={`${basePath}/blog/series/${item.slug}/`}>
+                      {item.name}
+                      {item.current && item.total ? ` ${item.current}/${item.total}` : ''}
+                    </a>
+                  ))}
+                </span>
+              </span>
+            )}
+          </div>
+        )}
       </>
     )
   }
@@ -168,6 +239,59 @@ const isArchiveHeader = variant === 'archive';
     color: var(--paper-accent);
     font-family: var(--font-serif-cn);
     font-weight: 700;
+  }
+
+  .group-meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+    color: var(--paper-ink-faint);
+    font-family: var(--font-meta);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .group-meta-item {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    min-height: 30px;
+    padding: 4px 8px;
+    border: 1px solid var(--paper-line);
+    border-radius: 999px;
+    background: var(--paper-control);
+  }
+
+  .group-meta-item :global(.site-icon) {
+    color: var(--paper-accent);
+    opacity: 0.82;
+  }
+
+  .group-label {
+    color: var(--paper-ink-faint);
+  }
+
+  .group-list {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .group-link {
+    color: var(--paper-accent);
+    font-family: var(--font-serif-cn);
+    font-weight: 700;
+    text-decoration-color: rgba(102, 125, 109, 0.25);
+    text-underline-offset: 3px;
+  }
+
+  .group-link + .group-link::before {
+    margin: 0 6px 0 0;
+    color: var(--paper-ink-faint);
+    content: '\00b7';
   }
 
   .article-hero-image {
