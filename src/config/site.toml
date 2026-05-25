@@ -36,8 +36,6 @@ maxResults = 6
 
 [config.blog]
 postsPerPage = 6
-[config.comments.waline]
-server_url = "https://waline.liujie.dpdns.org/"
 
 [config.comments.giscus]
 repo = "dodolalorc/astro-navfolio"
@@ -61,7 +59,7 @@ label = "comment"
 theme = "github-light"
 
 [config.comments.waline]
-server_url = ""
+server_url = "https://waline.liujie.dpdns.org/"
 lang = "zh-CN"
 dark = "html.dark"
 pageview = true
