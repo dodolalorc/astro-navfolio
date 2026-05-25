@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist --output-subdir pagefind --root-selector main --exclude-selectors \"[data-pagefind-ignore]\"",
+    "fonts:ui": "bun scripts/fonts/subset-ui-font.ts",
+    "build": "bun run fonts:ui && astro build && pagefind --site dist --output-subdir pagefind --root-selector main --exclude-selectors \"[data-pagefind-ignore]\"",
     "preview": "astro preview",
     "astro": "astro",
     "post:new": "bun scripts/new-content.ts blog",
@@ -19,12 +20,15 @@
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
+    "@expressive-code/plugin-collapsible-sections": "^0.42.0",
+    "@expressive-code/plugin-line-numbers": "^0.42.0",
     "@fontsource/maple-mono": "^5.2.6",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.5",
+    "astro-expressive-code": "^0.42.0",
     "lucide-astro": "^0.556.0",
-    "lxgw-wenkai-webfont": "^1.7.0",
     "sharp": "^0.34.5",
+    "smol-toml": "^1.6.1",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {

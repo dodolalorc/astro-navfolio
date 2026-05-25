@@ -49,6 +49,22 @@ const paletteSchema = z.enum([
   'brown-soft',
 ]);
 
+const collapseStyleSchema = z.enum([
+  'github',
+  'collapsible-start',
+  'collapsible-end',
+  'collapsible-auto',
+]);
+
+const defaultCodeConfig = {
+  lightTheme: 'catppuccin-latte',
+  darkTheme: 'catppuccin-macchiato',
+  lineNumbers: true,
+  wrap: true,
+  preserveIndent: true,
+  collapseStyle: 'github',
+} as const;
+
 const defaultGiscusConfig = {
   repo: '',
   repo_id: '',
@@ -59,7 +75,8 @@ const defaultGiscusConfig = {
   reactions_enabled: '1',
   emit_metadata: '0',
   input_position: 'bottom',
-  theme: 'preferred_color_scheme',
+  light_theme: 'github-light',
+  dark_theme: 'github-dark',
   lang: 'zh-CN',
   loading: 'lazy',
 };
@@ -134,6 +151,17 @@ const siteConfig = defineCollection({
       .default({
         palette: 'green-soft',
       }),
+    code: z
+      .object({
+        lightTheme: z.string().optional().default(defaultCodeConfig.lightTheme),
+        darkTheme: z.string().optional().default(defaultCodeConfig.darkTheme),
+        lineNumbers: z.boolean().optional().default(defaultCodeConfig.lineNumbers),
+        wrap: z.boolean().optional().default(defaultCodeConfig.wrap),
+        preserveIndent: z.boolean().optional().default(defaultCodeConfig.preserveIndent),
+        collapseStyle: collapseStyleSchema.optional().default(defaultCodeConfig.collapseStyle),
+      })
+      .optional()
+      .default(defaultCodeConfig),
     comments: z
       .object({
         enabled: z.boolean().optional().default(true),
@@ -150,7 +178,8 @@ const siteConfig = defineCollection({
             reactions_enabled: z.string().optional().default('1'),
             emit_metadata: z.string().optional().default('0'),
             input_position: z.string().optional().default('bottom'),
-            theme: z.string().optional().default('preferred_color_scheme'),
+            light_theme: z.string().optional().default('light'),
+            dark_theme: z.string().optional().default('dark'),
             lang: z.string().optional().default('zh-CN'),
             loading: z.string().optional().default('lazy'),
           })

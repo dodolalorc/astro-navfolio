@@ -1,5 +1,6 @@
 site: dist
 output_subdir: pagefind
 root_selector: main
+force_language: zh
 exclude_selectors:
   - '[data-pagefind-ignore]'

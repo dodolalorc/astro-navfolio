@@ -2,7 +2,9 @@ type PagefindResult = {
   id: string;
   data: () => Promise<{
     url: string;
-    title: string;
+    meta?: {
+      title?: string;
+    };
     excerpt: string;
   }>;
 };
@@ -32,6 +34,14 @@ let pagefindPromise: Promise<PagefindModule> | null = null;
 let lastFocusedElement: HTMLElement | null = null;
 const searchLayers = new WeakMap<HTMLElement, HTMLElement>();
 
+function getSearchSurface(root: HTMLElement) {
+  return searchLayers.get(root) ?? root;
+}
+
+function querySearchSurface<T extends Element>(root: HTMLElement, selector: string) {
+  return getSearchSurface(root).querySelector<T>(selector) ?? root.querySelector<T>(selector);
+}
+
 function normalizeResultUrl(url: string) {
   if (/^https?:\/\//.test(url)) return url;
   const normalizedBase = baseUrl.replace(/\/$/, '');
@@ -41,6 +51,36 @@ function normalizeResultUrl(url: string) {
   if (url.startsWith('/')) return `${normalizedBase}${url}`;
 
   return `${normalizedBase}/${url}`;
+}
+
+function getResultPath(url: string) {
+  try {
+    const path = new URL(normalizeResultUrl(url), window.location.origin).pathname;
+    const normalizedBase = baseUrl.replace(/\/$/, '');
+
+    if (normalizedBase && normalizedBase !== '/' && path.startsWith(`${normalizedBase}/`)) {
+      return path.slice(normalizedBase.length) || '/';
+    }
+
+    return path;
+  } catch {
+    return normalizeResultUrl(url);
+  }
+}
+
+function getResultKind(url: string) {
+  const path = getResultPath(url);
+
+  if (/^\/blog\/[^/]+\/?$/.test(path)) return 'Blog note';
+  if (path.startsWith('/blog')) return 'Blog index';
+  if (path.startsWith('/vibe')) return 'Vibe';
+  if (path.startsWith('/projects')) return 'Project';
+
+  return 'Page';
+}
+
+function getResultTitle(result: Awaited<ReturnType<PagefindResult['data']>>) {
+  return result.meta?.title?.trim() || getResultPath(result.url);
 }
 
 async function loadPagefind() {
@@ -61,7 +101,7 @@ async function loadPagefind() {
 }
 
 function setStatus(root: HTMLElement, status: string) {
-  const statusNode = root.querySelector<HTMLElement>('[data-site-search-status]');
+  const statusNode = querySearchSurface<HTMLElement>(root, '[data-site-search-status]');
   if (statusNode) statusNode.textContent = status;
 }
 
@@ -101,7 +141,7 @@ function trapFocus(event: KeyboardEvent, dialog: HTMLElement) {
 }
 
 function renderResults(root: HTMLElement, results: Awaited<ReturnType<PagefindResult['data']>>[]) {
-  const list = root.querySelector<HTMLElement>('[data-site-search-results]');
+  const list = querySearchSurface<HTMLElement>(root, '[data-site-search-results]');
   if (!list) return;
 
   list.replaceChildren();
@@ -110,15 +150,24 @@ function renderResults(root: HTMLElement, results: Awaited<ReturnType<PagefindRe
     const item = document.createElement('li');
     const link = document.createElement('a');
     const title = document.createElement('span');
+    const meta = document.createElement('span');
+    const match = document.createElement('span');
+    const matchLabel = document.createElement('span');
     const excerpt = document.createElement('span');
 
     link.href = normalizeResultUrl(result.url);
     title.className = 'site-search-result-title';
-    title.textContent = result.title || result.url;
+    title.textContent = getResultTitle(result);
+    meta.className = 'site-search-result-meta';
+    meta.textContent = `${getResultKind(result.url)} - ${getResultPath(result.url)}`;
+    match.className = 'site-search-result-match';
+    matchLabel.className = 'site-search-result-match-label';
+    matchLabel.textContent = 'Matched passage';
     excerpt.className = 'site-search-result-excerpt';
     excerpt.innerHTML = result.excerpt;
 
-    link.append(title, excerpt);
+    match.append(matchLabel, excerpt);
+    link.append(title, meta, match);
     item.append(link);
     list.append(item);
   }
@@ -177,7 +226,7 @@ export function initSiteSearch() {
       });
     };
 
-    const runSearch = debounce(async () => {
+    const runSearchNow = async () => {
       const query = input.value.trim();
 
       if (!query) {
@@ -209,11 +258,18 @@ export function initSiteSearch() {
           root.dataset.searchUnavailableLabel || 'Search index is not available yet.',
         );
       }
-    }, 120);
+    };
+    const runSearch = debounce(runSearchNow, 120);
 
     trigger.addEventListener('click', open);
     root.addEventListener('site-search:open', open);
     input.addEventListener('input', runSearch);
+    input.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+
+      event.preventDefault();
+      void runSearchNow();
+    });
 
     for (const button of closeButtons) {
       button.addEventListener('click', close);
@@ -242,7 +298,7 @@ document.addEventListener('keydown', (event) => {
   event.preventDefault();
 
   if (root.dataset.searchOpen === 'true') {
-    root.querySelector<HTMLInputElement>('[data-site-search-input]')?.focus();
+    querySearchSurface<HTMLInputElement>(root, '[data-site-search-input]')?.focus();
     return;
   }
 

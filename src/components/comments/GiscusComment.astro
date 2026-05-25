@@ -31,12 +31,33 @@ const { config } = Astro.props;
     script.setAttribute('data-reactions-enabled', config.reactions_enabled);
     script.setAttribute('data-emit-metadata', config.emit_metadata);
     script.setAttribute('data-input-position', config.input_position);
-    script.setAttribute('data-theme', config.theme);
+    script.setAttribute(
+      'data-theme',
+      document.documentElement.dataset.theme === 'dark' ? config.dark_theme : config.light_theme,
+    );
     script.setAttribute('data-lang', config.lang);
     script.setAttribute('data-loading', config.loading);
 
     container.replaceChildren(script);
   };
+
+  // TODO: Not sure if this event could cost some delay
+
+  window.addEventListener('navfolio:theme-change', (event) => {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    const siteTheme = event.detail?.theme === 'dark' ? 'dark' : 'light';
+
+    iframe?.contentWindow?.postMessage(
+      {
+        giscus: {
+          setConfig: {
+            theme: siteTheme === 'dark' ? config.dark_theme : config.light_theme,
+          },
+        },
+      },
+      'https://giscus.app',
+    );
+  });
 
   mountGiscus();
   document.addEventListener('astro:page-load', mountGiscus);

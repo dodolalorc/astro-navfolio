@@ -11,17 +11,14 @@ interface Props {
   title: string;
   description: string;
   image?: ImageMetadata | string;
-  loadArticleFont?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
-const { title, description, image = FallbackImage, loadArticleFont = false } = Astro.props;
+const { title, description, image = FallbackImage } = Astro.props;
 const imageUrl = typeof image === 'string' ? image : image.src;
 const { site } = await getSiteConfig();
-const articleFontUrl =
-  'https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-regular.css';
 ---
 
 <!-- Global Metadata -->
@@ -59,6 +56,9 @@ const articleFontUrl =
         button.setAttribute('title', toggleLabel);
       }
       if (persist) setStoredTheme(nextTheme);
+      window.dispatchEvent(
+        new CustomEvent('navfolio:theme-change', { detail: { theme: nextTheme } }),
+      );
     };
     const syncThemeControls = () => {
       applyTheme(root.dataset.theme || storedTheme() || systemTheme(), false);
@@ -100,17 +100,6 @@ const articleFontUrl =
 <link rel="apple-touch-icon" sizes="180x180" href={assetPath('apple-touch-icon.png')} />
 <link rel="manifest" href={assetPath('manifest.json')} />
 <meta name="theme-color" content="#fdfdf9" />
-{
-  loadArticleFont && (
-    <>
-      <link rel="preload" href={articleFontUrl} as="style" />
-      <link rel="stylesheet" href={articleFontUrl} media="print" onload="this.media='all'" />
-      <noscript>
-        <link rel="stylesheet" href={articleFontUrl} />
-      </noscript>
-    </>
-  )
-}
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
   rel="alternate"

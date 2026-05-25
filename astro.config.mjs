@@ -2,9 +2,11 @@
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+
+import expressiveCode from 'astro-expressive-code';
 
 const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 const customSite = process.env.SITE_URL;
@@ -31,7 +33,7 @@ const resolvedBase =
 export default defineConfig({
   site: resolvedSite,
   base: resolvedBase,
-  integrations: [mdx(), sitemap()],
+  integrations: [expressiveCode(), mdx(), sitemap()],
 
   vite: {
     plugins: [tailwindcss()],

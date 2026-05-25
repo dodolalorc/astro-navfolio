@@ -225,45 +225,103 @@ const shortcutLabel = search.shortcut === 'mod+k' ? 'Ctrl K / Cmd K' : search.sh
 
   .site-search-results {
     display: grid;
-    gap: 2px;
+    gap: 6px;
     max-height: min(46vh, 430px);
     margin: 0;
     overflow: auto;
-    padding: 0 8px 10px;
+    padding: 0 10px 12px;
     list-style: none;
   }
 
-  .site-search-results a {
+  .site-search-results :global(li) {
+    min-width: 0;
+  }
+
+  .site-search-results :global(a) {
     display: grid;
-    gap: 4px;
-    padding: 10px 12px;
+    gap: 7px;
+    min-width: 0;
+    padding: 11px 12px 12px;
+    border: 1px solid transparent;
     border-radius: 7px;
     color: var(--paper-ink);
     text-decoration: none;
+    transition:
+      border-color 150ms ease,
+      background-color 150ms ease,
+      transform 150ms ease;
   }
 
-  .site-search-results a:hover,
-  .site-search-results a:focus-visible {
+  .site-search-results :global(a:hover),
+  .site-search-results :global(a:focus-visible) {
+    border-color: var(--paper-line);
     background: var(--paper-control-hover);
     outline: none;
+    transform: translateY(-1px);
   }
 
-  .site-search-result-title {
+  .site-search-results :global(.site-search-result-title) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 0.96rem;
     font-weight: 700;
     line-height: 1.35;
   }
 
-  .site-search-result-excerpt {
+  .site-search-results :global(.site-search-result-meta),
+  .site-search-results :global(.site-search-result-match-label) {
+    color: var(--paper-ink-faint);
+    font-family: var(--font-ui-label);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .site-search-results :global(.site-search-result-meta) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .site-search-results :global(.site-search-result-match) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 9px;
+    align-items: start;
+    padding-top: 2px;
+  }
+
+  .site-search-results :global(.site-search-result-match-label) {
+    padding-top: 2px;
+    white-space: nowrap;
+  }
+
+  .site-search-results :global(.site-search-result-excerpt) {
+    min-width: 0;
     color: var(--paper-ink-soft);
     font-size: 0.86rem;
     line-height: 1.55;
   }
 
-  .site-search-result-excerpt :global(mark) {
+  .site-search-results :global(mark) {
     border-radius: 4px;
     background: var(--paper-control-hover);
     color: var(--paper-accent);
+    font-weight: 700;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-search-results :global(a) {
+      transition: none;
+    }
+
+    .site-search-results :global(a:hover),
+    .site-search-results :global(a:focus-visible) {
+      transform: none;
+    }
   }
 
   @media (max-width: 720px) {
@@ -280,6 +338,19 @@ const shortcutLabel = search.shortcut === 'mod+k' ? 'Ctrl K / Cmd K' : search.sh
 
     .site-search-dialog {
       max-height: calc(100vh - 96px);
+    }
+
+    .site-search-results {
+      padding-inline: 8px;
+    }
+
+    .site-search-results :global(a) {
+      padding: 10px;
+    }
+
+    .site-search-results :global(.site-search-result-match) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 5px;
     }
   }
 </style>

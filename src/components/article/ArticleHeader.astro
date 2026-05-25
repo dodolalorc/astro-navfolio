@@ -48,7 +48,9 @@ const isArchiveHeader = variant === 'archive';
       <>
         <div class="archive-heading archive-header-main">
           <p class="archive-kicker">{kicker}</p>
-          <h1 class="archive-title">{title}</h1>
+          <h1 class="archive-title" data-pagefind-meta="title">
+            {title}
+          </h1>
           <div class="meta-line" aria-label="Article metadata">
             {date && (
               <span class="meta-item">
@@ -71,7 +73,7 @@ const isArchiveHeader = variant === 'archive';
       </>
     ) : (
       <>
-        <h1>{title}</h1>
+        <h1 data-pagefind-meta="title">{title}</h1>
 
         <div class="meta-line" aria-label="Article metadata">
           {date && (

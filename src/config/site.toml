@@ -15,6 +15,14 @@ showTrail = true
 # green-soft, green-vivid, rose-soft, pink-soft, purple-soft, blue-soft, orange-soft, brown-soft
 palette = "blue-soft"
 
+[config.code]
+lightTheme = "catppuccin-latte"
+darkTheme = "catppuccin-macchiato"
+lineNumbers = true
+wrap = true
+preserveIndent = true
+collapseStyle = "collapsible-auto"
+
 [config.comments]
 enabled = true
 provider = "waline"
@@ -41,7 +49,8 @@ strict = "0"
 reactions_enabled = "1"
 emit_metadata = "0"
 input_position = "top"
-theme = "preferred_color_scheme"
+light_theme = "light"
+dark_theme = "dark"
 lang = "zh-CN"
 loading = "lazy"
 
@@ -147,7 +156,7 @@ href = "/blog"
 
 [[config.home.connect]]
 label = "GitHub"
-href = "https://github.com/navfolio"
+href = "https://github.com/dodolalorc/astro-navfolio"
 icon = "github"
 
 [[config.home.connect]]

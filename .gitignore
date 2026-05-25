@@ -23,6 +23,8 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-plans/
-
 .agents/
+
+# generated font files
+scripts/fonts/ui-chars.txt
+public/fonts/lxgw-ui-subset.woff2
