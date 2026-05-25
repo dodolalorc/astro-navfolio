@@ -6,8 +6,9 @@ import RelatedPosts from '../components/blog/RelatedPosts.astro';
 import TableOfContents from '../components/blog/TableOfContents.astro';
 import BaseHead from '../components/BaseHead.astro';
 import CommentSection from '../components/comments/CommentSection.astro';
-import { getThemePalette } from '../data/site';
+import { getThemePalette, getSiteConfig } from '../data/site';
 import { sortByDateDesc } from '../utils/content-dates';
+const { comments } = await getSiteConfig();
 
 type SidebarConfig = {
   enable?: boolean;
@@ -101,6 +102,9 @@ const hasSidebar = shouldRenderSidebar && hasToc;
 <html lang="zh-CN" data-palette={palette}>
   <head>
     <BaseHead title={title} description={description} />
+    {comments.provider === 'waline' && comments.enabled && (
+      <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+    )}
   </head>
   <body class="blog-detail-page">
     <BlogTopNav showTocIcon={hasToc} tocItems={tocItems} />
