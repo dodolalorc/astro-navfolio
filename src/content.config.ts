@@ -278,6 +278,7 @@ const siteConfig = defineCollection({
         }),
       navigation: z.array(navigationItemSchema),
       connect: z.array(linkSchema.required({ icon: true })),
+      doingDynamic: z.boolean().optional().default(false),
       doing: z.array(
         z.object({
           text: z.string(),
