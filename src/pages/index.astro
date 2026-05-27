@@ -18,11 +18,15 @@ if (home.doingDynamic) {
     .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
   const doingCount = 5;
   const latestPosts = allPosts.slice(0, doingCount);
-  doingItems = latestPosts.map((post, i) => ({
-    text: post.data.title,
-    mark: String(i + 1).padStart(2, '0'),
-    href: `/blog/${post.id}`,
-  }));
+  if (latestPosts.length > 0) {
+    doingItems = latestPosts.map((post, i) => ({
+      text: post.data.title,
+      mark: String(i + 1).padStart(2, '0'),
+      href: `/blog/${post.id}`,
+    }));
+  } else {
+    doingItems = home.doing;
+  }
 } else {
   doingItems = home.doing;
 }
