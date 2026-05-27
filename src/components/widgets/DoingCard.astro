@@ -75,6 +75,12 @@ const { items } = Astro.props as { items: DoingItem[] };
     border-top: 1px solid var(--paper-line);
     color: var(--paper-ink);
     font-size: 0.98rem;
+    transition: color 0.2s ease;
+    cursor: default;
+  }
+
+  li:has(.doing-link:hover) {
+    color: var(--paper-accent);
   }
 
   li::before {
@@ -95,10 +101,5 @@ const { items } = Astro.props as { items: DoingItem[] };
   .doing-link {
     color: inherit;
     text-decoration: none;
-    transition: color 0.2s ease;
-  }
-
-  .doing-link:hover {
-    color: var(--paper-accent);
   }
 </style>
