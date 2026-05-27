@@ -4,6 +4,7 @@ import Icon from '../Icon.astro';
 interface DoingItem {
   text: string;
   mark: string;
+  href?: string;
 }
 
 const { items } = Astro.props as { items: DoingItem[] };
@@ -15,7 +16,11 @@ const { items } = Astro.props as { items: DoingItem[] };
     {
       items.map((item) => (
         <li>
-          <span>{item.text}</span>
+          {item.href ? (
+            <a href={item.href} class="doing-link">{item.text}</a>
+          ) : (
+            <span>{item.text}</span>
+          )}
           <strong aria-hidden="true">{item.mark}</strong>
         </li>
       ))
@@ -85,5 +90,15 @@ const { items } = Astro.props as { items: DoingItem[] };
   strong {
     font-size: 0.82rem;
     text-align: right;
+  }
+
+  .doing-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .doing-link:hover {
+    color: var(--paper-accent);
   }
 </style>

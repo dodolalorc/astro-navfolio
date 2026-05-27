@@ -7,8 +7,20 @@ import BlogHeatmap from '../components/widgets/BlogHeatmap.astro';
 import DoingCard from '../components/widgets/DoingCard.astro';
 import { getSiteConfig } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 
 const { home, profile, site } = await getSiteConfig();
+
+// Build doing items from the 5 most recent blog posts
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const doingCount = 5;
+const latestPosts = allPosts.slice(0, doingCount);
+const doingItems = latestPosts.map((post, i) => ({
+  text: post.data.title,
+  mark: String(i + 1).padStart(2, '0'),
+  href: `/blog/${post.id}`,
+}));
 ---
 
 <BaseLayout title={site.pageTitle} description={site.pageDescription}>
@@ -38,7 +50,7 @@ const { home, profile, site } = await getSiteConfig();
     </Fragment>
 
     <Fragment slot="recently">
-      <DoingCard items={home.doing} />
+      <DoingCard items={doingItems} />
     </Fragment>
   </DashboardFlow>
 </BaseLayout>
