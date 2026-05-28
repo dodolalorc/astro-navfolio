@@ -17,6 +17,37 @@ type SidebarConfig = {
   relatedPosts?: boolean;
 };
 
+interface TocItem {
+  href: string;
+  label: string;
+  depth: number;
+  children: TocItem[];
+}
+
+function buildTocTree(headings: { depth: number; slug: string; text: string }[]): TocItem[] {
+  const roots: TocItem[] = [];
+  const filtered = headings.filter((h) => h.depth >= 2 && h.depth <= 4);
+
+  for (const h of filtered) {
+    const item: TocItem = { href: `#${h.slug}`, label: h.text, depth: h.depth, children: [] };
+
+    if (h.depth === 2) {
+      roots.push(item);
+    } else {
+      let parent = roots[roots.length - 1];
+      if (!parent) { roots.push(item); continue; }
+
+      while (parent.children.length > 0) {
+        const last = parent.children[parent.children.length - 1];
+        if (last.depth < h.depth) { parent = last; } else { break; }
+      }
+      parent.children.push(item);
+    }
+  }
+
+  return roots;
+}
+
 interface Props {
   post?: {
     id: string;
@@ -88,10 +119,7 @@ const categoryLinks = (post.data.categories ?? []).map((name) => ({
   slug: slugifyGroupName(name),
 }));
 const rawSeries = post.data.series ?? [];
-const renderedTocItems = headings
-  .filter((heading) => heading.depth === 2 || heading.depth === 3)
-  .map((heading) => ({ href: `#${heading.slug}`, label: heading.text }));
-const tocItems = renderedTocItems;
+const tocItems = buildTocTree(headings);
 const sidebarConfig = {
   enable: true,
   toc: true,

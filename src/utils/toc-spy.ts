@@ -104,6 +104,20 @@ const setActiveLink = (activeHash: string): void => {
         link.removeAttribute('aria-current');
       }
     }
+
+    updateTocExpansion(normalizedActiveHash, root);
+  }
+};
+
+const updateTocExpansion = (normalizedActiveHash: string, root: TocRoot): void => {
+  const links = getTocLinks(root);
+  const activeLink = links.find(
+    (link) => getNormalizedLinkHash(link) === normalizedActiveHash,
+  );
+  const activeParentLi = activeLink?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
+
+  for (const li of root.querySelectorAll<HTMLElement>('li[data-toc-parent]')) {
+    li.dataset.tocExpanded = li === activeParentLi ? 'true' : 'false';
   }
 };
 

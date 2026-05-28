@@ -1,28 +1,19 @@
 ---
-interface Item {
+interface TocItem {
   href: string;
   label: string;
+  depth: number;
+  children: TocItem[];
 }
 
 interface Props {
-  items: Item[];
+  items: TocItem[];
   compact?: boolean;
   collapsible?: boolean;
   font?: 'ui' | 'article';
 }
 
 const { items, compact = false, collapsible = false, font = 'ui' } = Astro.props;
-import { normalizeHash } from '../../utils/toc-hash';
-
-const normalizedItems = items.map((item) => {
-  const normalizedHref = normalizeHash(item.href) || item.href;
-
-  return {
-    ...item,
-    href: normalizedHref,
-    normalizedHref,
-  };
-});
 
 const hasItems = items.length > 0;
 const canCollapse = collapsible && items.length > 3;
@@ -41,14 +32,54 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
     >
       <h2>Table of contents</h2>
       <ol id={listId}>
-        {normalizedItems.map((item, index) => (
-          <li>
-            <a href={item.href} data-toc-link data-toc-hash={item.normalizedHref}>
-              <span>{index + 1}</span>
-              {item.label}
-            </a>
-          </li>
-        ))}
+        {items.map((item, i) => {
+          const h2Num = i + 1;
+          const isParent = item.children.length > 0;
+          return (
+            <li
+              data-toc-depth={item.depth}
+              data-toc-parent={isParent ? '' : undefined}
+              data-toc-expanded={isParent ? 'true' : undefined}
+            >
+              <a href={item.href} data-toc-link data-toc-hash={item.href}>
+                <span>{h2Num}</span>
+                {item.label}
+              </a>
+              {isParent && (
+                <ol class="toc-children">
+                  {item.children.map((child, j) => {
+                    const h3Num = `${h2Num}.${j + 1}`;
+                    const isChildParent = child.children.length > 0;
+                    return (
+                      <li
+                        data-toc-depth={child.depth}
+                        data-toc-parent={isChildParent ? '' : undefined}
+                        data-toc-expanded={isChildParent ? 'true' : undefined}
+                      >
+                        <a href={child.href} data-toc-link data-toc-hash={child.href}>
+                          <span>{h3Num}</span>
+                          {child.label}
+                        </a>
+                        {isChildParent && (
+                          <ol class="toc-children">
+                            {child.children.map((grandchild, k) => (
+                              <li data-toc-depth={grandchild.depth}>
+                                <a href={grandchild.href} data-toc-link data-toc-hash={grandchild.href}>
+                                  <span>{`${h3Num}.${k + 1}`}</span>
+                                  {grandchild.label}
+                                </a>
+                              </li>
+                            ))}
+                          </ol>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+            </li>
+          );
+        })}
       </ol>
       {canCollapse && (
         <button
@@ -128,12 +159,41 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
     list-style: none;
   }
 
+  .toc-children {
+    gap: 3px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 320ms ease;
+  }
+
+  li[data-toc-parent][data-toc-expanded='true'] > .toc-children {
+    max-height: 2000px;
+  }
+
+  li[data-toc-parent][data-toc-expanded='false'] > .toc-children {
+    max-height: 0;
+  }
+
   li {
     position: relative;
     --toc-line-x: 4px;
     --toc-dot-size: 7px;
     --toc-dot-border: 2px;
     padding-left: 14px;
+  }
+
+  li[data-toc-depth='3'] {
+    --toc-dot-size: 5px;
+    --toc-dot-border: 1.5px;
+    padding-left: 36px;
+  }
+
+  li[data-toc-depth='4'] {
+    --toc-dot-size: 4px;
+    --toc-dot-border: 1px;
+    padding-left: 56px;
   }
 
   li::before {
@@ -144,6 +204,16 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
     width: 1px;
     background: rgba(102, 125, 109, 0.16);
     content: '';
+  }
+
+  li[data-toc-depth='3']::before {
+    left: calc(var(--toc-line-x) + 21px);
+    opacity: 0.6;
+  }
+
+  li[data-toc-depth='4']::before {
+    left: calc(var(--toc-line-x) + 41px);
+    opacity: 0.45;
   }
 
   li:last-child::before {
@@ -166,6 +236,17 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
     transition:
       background-color 160ms ease,
       color 160ms ease;
+  }
+
+  li[data-toc-depth='3'] a {
+    grid-template-columns: 30px 1fr;
+    font-size: 0.82rem;
+  }
+
+  li[data-toc-depth='4'] a {
+    grid-template-columns: 36px 1fr;
+    font-size: 0.78rem;
+    opacity: 0.85;
   }
 
   .toc-card[data-font='article'] a {
@@ -297,13 +378,13 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
       scroll-margin-top: 78px;
     }
 
-    .can-collapse ol {
+    .can-collapse > ol {
       max-height: 129px;
       overflow: hidden;
       transition: max-height 180ms ease;
     }
 
-    .can-collapse[data-expanded='true'] ol {
+    .can-collapse[data-expanded='true'] > ol {
       max-height: none;
     }
 
@@ -348,7 +429,8 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .collapsible ol,
+    .collapsible > ol,
+    .toc-children,
     .toc-expand i {
       transition: none;
     }

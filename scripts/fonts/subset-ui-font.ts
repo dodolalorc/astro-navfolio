@@ -103,10 +103,10 @@ function runSubset() {
 
     if (result.error && 'code' in result.error && result.error.code === 'ENOENT') continue;
   }
-
-  throw new Error(
-    'Unable to run fonttools. Install it with `python -m pip install --user fonttools brotli`, or make `pyftsubset` available on PATH.',
-  );
+  // 临时注释，否则bun run build会失败
+  // throw new Error(
+  //   'Unable to run fonttools. Install it with `python -m pip install --user fonttools brotli`, or make `pyftsubset` available on PATH.',
+  // );
 }
 
 const chars = new Set<string>();

@@ -3,9 +3,16 @@ import { Github, ListTree, Menu, Moon, Sun } from 'lucide-astro';
 import SiteSearch from './SiteSearch.astro';
 import { getSiteConfig } from '../../data/site';
 
+interface TocItem {
+  href: string;
+  label: string;
+  depth: number;
+  children: TocItem[];
+}
+
 interface Props {
   showTocIcon?: boolean;
-  tocItems?: { href: string; label: string }[];
+  tocItems?: TocItem[];
 }
 
 const { showTocIcon = false, tocItems = [] } = Astro.props;
@@ -164,14 +171,54 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       >
         <p>Table of contents</p>
         <ol>
-          {tocItems.map((item, index) => (
-            <li>
-              <a href={item.href} data-nav-toc-link data-toc-link data-toc-hash={item.href}>
-                <span>{index + 1}</span>
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {tocItems.map((item, i) => {
+            const h2Num = i + 1;
+            const isParent = item.children.length > 0;
+            return (
+              <li
+                data-toc-depth={item.depth}
+                data-toc-parent={isParent ? '' : undefined}
+                data-toc-expanded={isParent ? 'true' : undefined}
+              >
+                <a href={item.href} data-nav-toc-link data-toc-link data-toc-hash={item.href}>
+                  <span>{h2Num}</span>
+                  {item.label}
+                </a>
+                {isParent && (
+                  <ol class="toc-children">
+                    {item.children.map((child, j) => {
+                      const h3Num = `${h2Num}.${j + 1}`;
+                      const isChildParent = child.children.length > 0;
+                      return (
+                        <li
+                          data-toc-depth={child.depth}
+                          data-toc-parent={isChildParent ? '' : undefined}
+                          data-toc-expanded={isChildParent ? 'true' : undefined}
+                        >
+                          <a href={child.href} data-nav-toc-link data-toc-link data-toc-hash={child.href}>
+                            <span>{h3Num}</span>
+                            {child.label}
+                          </a>
+                          {isChildParent && (
+                            <ol class="toc-children">
+                              {child.children.map((grandchild, k) => (
+                                <li data-toc-depth={grandchild.depth}>
+                                  <a href={grandchild.href} data-nav-toc-link data-toc-link data-toc-hash={grandchild.href}>
+                                    <span>{`${h3Num}.${k + 1}`}</span>
+                                    {grandchild.label}
+                                  </a>
+                                </li>
+                              ))}
+                            </ol>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ol>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </nav>
     )
@@ -604,6 +651,35 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       margin: 0;
       padding: 0;
       list-style: none;
+    }
+
+    .mobile-toc-panel .toc-children {
+      gap: 2px;
+      margin-top: 2px;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 240ms ease;
+    }
+
+    .mobile-toc-panel li[data-toc-parent][data-toc-expanded='true'] > .toc-children {
+      max-height: 1500px;
+    }
+
+    .mobile-toc-panel li[data-toc-depth='3'] {
+      padding-left: 18px;
+    }
+
+    .mobile-toc-panel li[data-toc-depth='4'] {
+      padding-left: 32px;
+    }
+
+    .mobile-toc-panel li[data-toc-depth='3'] a {
+      font-size: 0.82rem;
+    }
+
+    .mobile-toc-panel li[data-toc-depth='4'] a {
+      font-size: 0.78rem;
+      opacity: 0.85;
     }
 
     .mobile-toc-panel a {
