@@ -47,8 +47,7 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
               </a>
               {isParent && (
                 <ol class="toc-children">
-                  {item.children.map((child, j) => {
-                    const h3Num = `${h2Num}.${j + 1}`;
+                  {item.children.map((child) => {
                     const isChildParent = child.children.length > 0;
                     return (
                       <li
@@ -57,15 +56,13 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
                         data-toc-expanded={isChildParent ? 'true' : undefined}
                       >
                         <a href={child.href} data-toc-link data-toc-hash={child.href}>
-                          <span>{h3Num}</span>
                           {child.label}
                         </a>
                         {isChildParent && (
                           <ol class="toc-children">
-                            {child.children.map((grandchild, k) => (
+                            {child.children.map((grandchild) => (
                               <li data-toc-depth={grandchild.depth}>
                                 <a href={grandchild.href} data-toc-link data-toc-hash={grandchild.href}>
-                                  <span>{`${h3Num}.${k + 1}`}</span>
                                   {grandchild.label}
                                 </a>
                               </li>
@@ -160,9 +157,9 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
   }
 
   .toc-children {
-    gap: 3px;
-    margin-top: 4px;
-    margin-bottom: 2px;
+    gap: 1px;
+    margin-top: 2px;
+    margin-bottom: 1px;
     overflow: hidden;
     max-height: 0;
     transition: max-height 320ms ease;
@@ -206,14 +203,9 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
     content: '';
   }
 
-  li[data-toc-depth='3']::before {
-    left: calc(var(--toc-line-x) + 21px);
-    opacity: 0.6;
-  }
-
+  li[data-toc-depth='3']::before,
   li[data-toc-depth='4']::before {
-    left: calc(var(--toc-line-x) + 41px);
-    opacity: 0.45;
+    content: none;
   }
 
   li:last-child::before {
@@ -239,12 +231,12 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
   }
 
   li[data-toc-depth='3'] a {
-    grid-template-columns: 30px 1fr;
+    grid-template-columns: 1fr;
     font-size: 0.82rem;
   }
 
   li[data-toc-depth='4'] a {
-    grid-template-columns: 36px 1fr;
+    grid-template-columns: 1fr;
     font-size: 0.78rem;
     opacity: 0.85;
   }

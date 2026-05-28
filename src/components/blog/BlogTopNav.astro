@@ -186,8 +186,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
                 </a>
                 {isParent && (
                   <ol class="toc-children">
-                    {item.children.map((child, j) => {
-                      const h3Num = `${h2Num}.${j + 1}`;
+                    {item.children.map((child) => {
                       const isChildParent = child.children.length > 0;
                       return (
                         <li
@@ -196,15 +195,13 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
                           data-toc-expanded={isChildParent ? 'true' : undefined}
                         >
                           <a href={child.href} data-nav-toc-link data-toc-link data-toc-hash={child.href}>
-                            <span>{h3Num}</span>
                             {child.label}
                           </a>
                           {isChildParent && (
                             <ol class="toc-children">
-                              {child.children.map((grandchild, k) => (
+                              {child.children.map((grandchild) => (
                                 <li data-toc-depth={grandchild.depth}>
                                   <a href={grandchild.href} data-nav-toc-link data-toc-link data-toc-hash={grandchild.href}>
-                                    <span>{`${h3Num}.${k + 1}`}</span>
                                     {grandchild.label}
                                   </a>
                                 </li>
@@ -654,8 +651,8 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     }
 
     .mobile-toc-panel .toc-children {
-      gap: 2px;
-      margin-top: 2px;
+      gap: 1px;
+      margin-top: 1px;
       overflow: hidden;
       max-height: 0;
       transition: max-height 240ms ease;
@@ -674,10 +671,12 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     }
 
     .mobile-toc-panel li[data-toc-depth='3'] a {
+      grid-template-columns: 1fr;
       font-size: 0.82rem;
     }
 
     .mobile-toc-panel li[data-toc-depth='4'] a {
+      grid-template-columns: 1fr;
       font-size: 0.78rem;
       opacity: 0.85;
     }
