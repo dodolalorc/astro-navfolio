@@ -114,10 +114,17 @@ const updateTocExpansion = (normalizedActiveHash: string, root: TocRoot): void =
   const activeLink = links.find(
     (link) => getNormalizedLinkHash(link) === normalizedActiveHash,
   );
-  const activeParentLi = activeLink?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
+
+  const ancestorParents = new Set<HTMLElement>();
+  let el: HTMLElement | null =
+    activeLink?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
+  while (el) {
+    ancestorParents.add(el);
+    el = el.parentElement?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
+  }
 
   for (const li of root.querySelectorAll<HTMLElement>('li[data-toc-parent]')) {
-    li.dataset.tocExpanded = li === activeParentLi ? 'true' : 'false';
+    li.dataset.tocExpanded = ancestorParents.has(li) ? 'true' : 'false';
   }
 };
 
