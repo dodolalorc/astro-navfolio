@@ -114,7 +114,7 @@ const wordCount = englishWords.length + cjkChars.length;
 const readingMinutes = Math.max(1, Math.ceil(englishWords.length / 220 + cjkChars.length / 500));
 const readingTime = `${readingMinutes} min read`;
 const tags = post.data.tags ?? [];
-const categoryLinks = (post.data.categories ?? []).map((name) => ({
+const categoryLinks = (post.data.categories ?? []).map((name: string) => ({
   name,
   slug: slugifyGroupName(name),
 }));
@@ -136,14 +136,14 @@ const currentBlogPost = isBlogPost ? (post as CollectionEntry<'blog'>) : undefin
 const seriesContext = isBlogPost
   ? getSeriesContext(currentBlogPost!, allBlogPosts, rawSeries[0])
   : undefined;
-const seriesLinks = rawSeries.map((name) => {
+const seriesLinks = rawSeries.map((name: string) => {
   const isPrimarySeries = seriesContext?.name === name;
 
   return {
     name,
     slug: slugifyGroupName(name),
-    current: isPrimarySeries ? seriesContext.current : undefined,
-    total: isPrimarySeries ? seriesContext.total : undefined,
+    current: isPrimarySeries ? seriesContext!.current : undefined,
+    total: isPrimarySeries ? seriesContext!.total : undefined,
   };
 });
 const relatedPosts = sortByDateDesc(allBlogPosts.filter(({ id }) => id !== post.id)).slice(0, 3);
@@ -308,6 +308,16 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     display: grid;
     gap: 18px;
     align-content: start;
+    position: sticky;
+    top: 96px;
+    align-self: start;
+    max-height: calc(100vh - 128px);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .right-sidebar-inner::-webkit-scrollbar {
+    display: none;
   }
 
   :global(.article-after-related) {
@@ -331,12 +341,6 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     border: 1px solid var(--paper-line);
     border-radius: 7px;
     background: var(--paper-control);
-  }
-
-  .right-sidebar-inner {
-    position: sticky;
-    top: 96px;
-    align-self: start;
   }
 
   :global(.blog-card) {

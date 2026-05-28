@@ -73,6 +73,51 @@ const getSections = (): HTMLElement[] => {
     });
 };
 
+//优化滚动函数，使用 requestAnimationFrame 实现平滑滚动，并添加边距以避免链接紧贴容器边缘
+const scrollTocToActiveLink = (link: TocLink): void => {
+  const tocRoot = link.closest<HTMLElement>('[data-toc-root]');
+  if (!tocRoot) return;
+
+  const container = tocRoot.closest('.right-sidebar-inner');
+  if (!container) return;
+
+  const linkRect = link.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+  const linkTop = linkRect.top - containerRect.top + container.scrollTop;
+  const linkBottom = linkTop + linkRect.height;
+
+  const viewTop = container.scrollTop;
+  const viewBottom = viewTop + container.clientHeight;
+  const margin = 8;
+
+  let target: number | null = null;
+  if (linkTop < viewTop + margin) {
+    target = linkTop - margin;
+  } else if (linkBottom > viewBottom - margin) {
+    target = linkBottom - container.clientHeight + margin;
+  }
+
+  if (target === null) return;
+
+  const start = container.scrollTop;
+  const delta = target - start;
+  const duration = 100;
+  const startTime = performance.now();
+
+  const animate = (now: number) => {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - (1 - progress) ** 3;
+    container.scrollTop = start + delta * eased;
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+
+  requestAnimationFrame(animate);
+};
+
 const setActiveLink = (activeHash: string): void => {
   const normalizedActiveHash = normalizeHash(activeHash);
 
@@ -81,6 +126,8 @@ const setActiveLink = (activeHash: string): void => {
     const activeIndex = links.findIndex(
       (link) => getNormalizedLinkHash(link) === normalizedActiveHash,
     );
+
+    let activeLink: TocLink | null = null;
 
     for (const [index, link] of links.entries()) {
       const state =
@@ -100,12 +147,17 @@ const setActiveLink = (activeHash: string): void => {
 
       if (isActive) {
         link.setAttribute('aria-current', 'true');
+        activeLink = link;
       } else {
         link.removeAttribute('aria-current');
       }
     }
 
     updateTocExpansion(normalizedActiveHash, root);
+
+    if (activeLink) {
+      scrollTocToActiveLink(activeLink);
+    }
   }
 };
 
