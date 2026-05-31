@@ -26,7 +26,6 @@
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.5",
     "astro-expressive-code": "^0.42.0",
-    "katex": "^0.17.0",
     "lucide-astro": "^0.556.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
