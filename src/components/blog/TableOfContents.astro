@@ -1,10 +1,5 @@
 ---
-interface TocItem {
-  href: string;
-  label: string;
-  depth: number;
-  children: TocItem[];
-}
+import { type TocItem } from '../../utils/toc-tree';
 
 interface Props {
   items: TocItem[];
@@ -62,7 +57,11 @@ const listId = collapsible ? 'mobile-article-toc-list' : undefined;
                           <ol class="toc-children">
                             {child.children.map((grandchild) => (
                               <li data-toc-depth={grandchild.depth}>
-                                <a href={grandchild.href} data-toc-link data-toc-hash={grandchild.href}>
+                                <a
+                                  href={grandchild.href}
+                                  data-toc-link
+                                  data-toc-hash={grandchild.href}
+                                >
                                   {grandchild.label}
                                 </a>
                               </li>

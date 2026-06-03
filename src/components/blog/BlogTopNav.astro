@@ -2,13 +2,7 @@
 import { Github, ListTree, Menu, Moon, Sun } from 'lucide-astro';
 import SiteSearch from './SiteSearch.astro';
 import { getSiteConfig } from '../../data/site';
-
-interface TocItem {
-  href: string;
-  label: string;
-  depth: number;
-  children: TocItem[];
-}
+import { type TocItem } from '../../utils/toc-tree';
 
 interface Props {
   showTocIcon?: boolean;
@@ -194,14 +188,24 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
                           data-toc-parent={isChildParent ? '' : undefined}
                           data-toc-expanded={isChildParent ? 'true' : undefined}
                         >
-                          <a href={child.href} data-nav-toc-link data-toc-link data-toc-hash={child.href}>
+                          <a
+                            href={child.href}
+                            data-nav-toc-link
+                            data-toc-link
+                            data-toc-hash={child.href}
+                          >
                             {child.label}
                           </a>
                           {isChildParent && (
                             <ol class="toc-children">
                               {child.children.map((grandchild) => (
                                 <li data-toc-depth={grandchild.depth}>
-                                  <a href={grandchild.href} data-nav-toc-link data-toc-link data-toc-hash={grandchild.href}>
+                                  <a
+                                    href={grandchild.href}
+                                    data-nav-toc-link
+                                    data-toc-link
+                                    data-toc-hash={grandchild.href}
+                                  >
                                     {grandchild.label}
                                   </a>
                                 </li>

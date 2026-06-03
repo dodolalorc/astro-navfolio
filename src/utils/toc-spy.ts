@@ -163,13 +163,10 @@ const setActiveLink = (activeHash: string): void => {
 
 const updateTocExpansion = (normalizedActiveHash: string, root: TocRoot): void => {
   const links = getTocLinks(root);
-  const activeLink = links.find(
-    (link) => getNormalizedLinkHash(link) === normalizedActiveHash,
-  );
+  const activeLink = links.find((link) => getNormalizedLinkHash(link) === normalizedActiveHash);
 
   const ancestorParents = new Set<HTMLElement>();
-  let el: HTMLElement | null =
-    activeLink?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
+  let el: HTMLElement | null = activeLink?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
   while (el) {
     ancestorParents.add(el);
     el = el.parentElement?.closest<HTMLElement>('li[data-toc-parent]') ?? null;
