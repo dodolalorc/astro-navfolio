@@ -14,6 +14,8 @@
   <a href="./README.en.md">English</a>
   ·
   <a href="https://astro.navfolio.site/">在线预览</a>
+  .
+  <a href="https://astro-navfolio.vercel.app/">Vercel 预览</a>
   ·
   <a href="https://astro.navfolio.site/blog/">模块手册</a>
 </p>
