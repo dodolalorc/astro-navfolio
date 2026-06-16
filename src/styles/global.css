@@ -250,6 +250,7 @@ hr {
 
 html {
   background: var(--paper-bg);
+  scrollbar-gutter: stable;
 }
 
 body {
