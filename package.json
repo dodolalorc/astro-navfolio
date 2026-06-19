@@ -19,28 +19,28 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/mdx": "^6.0.2",
+    "@astrojs/mdx": "^6.0.3",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
-    "@expressive-code/plugin-collapsible-sections": "^0.42.0",
-    "@expressive-code/plugin-line-numbers": "^0.42.0",
+    "@expressive-code/plugin-collapsible-sections": "^0.43.1",
+    "@expressive-code/plugin-line-numbers": "^0.43.1",
     "@fontsource/maple-mono": "^5.2.6",
-    "@tailwindcss/vite": "^4.3.0",
-    "astro": "^6.4.4",
-    "astro-expressive-code": "^0.42.0",
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.4.8",
+    "astro-expressive-code": "^0.43.1",
     "lucide-astro": "^0.556.0",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.1",
     "smol-toml": "^1.6.1",
-    "tailwindcss": "^4.3.0"
+    "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
     "@astrojs/compiler": "^4.0.0",
-    "@typescript-eslint/parser": "^8.60.1",
+    "@typescript-eslint/parser": "^8.61.1",
     "eslint-plugin-deprecation": "^3.0.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
     "pagefind": "^1.5.2",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"
   },
