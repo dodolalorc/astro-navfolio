@@ -666,6 +666,12 @@ const vibes = await Promise.all(
         document
           .querySelectorAll<HTMLButtonElement>('[data-vibe-image-toggle]')
           .forEach((button) => {
+            if (button.dataset.vibeImageToggleBound === 'true') {
+              return;
+            }
+
+            button.dataset.vibeImageToggleBound = 'true';
+
             button.addEventListener('click', () => {
               const group = button.closest<HTMLElement>('[data-vibe-image-group]');
 
@@ -680,6 +686,7 @@ const vibes = await Promise.all(
           });
       };
 
+      document.addEventListener('astro:page-load', mountVibeImageToggles);
       mountVibeImageToggles();
     </script>
     <ZoomableImage />
