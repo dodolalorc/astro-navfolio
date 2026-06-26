@@ -5,7 +5,9 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import SmartImage from '../components/SmartImage.astro';
 import BlogTopNav from '../components/blog/BlogTopNav.astro';
+import ZoomableImage from '../components/mdx/ZoomableImage.astro';
 import { getSiteConfig } from '../data/site';
+import { getVibeImageLayout } from '../utils/vibe-image-layout';
 
 const { site, vibe: vibeConfig, theme } = await getSiteConfig();
 const palette = theme.palette;
@@ -19,8 +21,9 @@ const vibes = await Promise.all(
   vibeEntries.map(async (entry, index) => {
     const { Content } = await render(entry);
     const align = entry.data.align ?? (index % 2 === 0 ? 'left' : 'right');
+    const imageLayout = getVibeImageLayout(entry.data.images.length);
 
-    return { entry, Content, align };
+    return { entry, Content, align, imageLayout };
   }),
 );
 ---
@@ -219,13 +222,11 @@ const vibes = await Promise.all(
         opacity: 0.78;
       }
 
-      .vibe-item.right .vibe-meta,
-      .vibe-item.right .vibe-images {
+      .vibe-item.right .vibe-meta {
         justify-content: flex-end;
       }
 
-      .vibe-item.center .vibe-meta,
-      .vibe-item.center .vibe-images {
+      .vibe-item.center .vibe-meta {
         justify-content: center;
       }
 
@@ -282,33 +283,157 @@ const vibes = await Promise.all(
       }
 
       .vibe-images {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        align-items: flex-start;
+        --vibe-image-active-columns: var(--vibe-image-columns);
+        --vibe-image-gap: 10px;
+        --vibe-image-cell: clamp(132px, 21vw, 172px);
+
+        display: grid;
+        grid-template-columns: repeat(var(--vibe-image-active-columns), minmax(0, 1fr));
+        gap: var(--vibe-image-gap);
         margin: 16px 0 18px;
+        width: min(
+          100%,
+          calc(
+            (var(--vibe-image-columns) * var(--vibe-image-cell)) +
+              ((var(--vibe-image-columns) - 1) * var(--vibe-image-gap))
+          )
+        );
+      }
+
+      .vibe-item.right .vibe-images {
+        margin-left: auto;
+      }
+
+      .vibe-item.center .vibe-images {
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .vibe-images[data-vibe-image-count='1'] {
+        width: min(100%, 420px);
       }
 
       .vibe-image {
-        flex: 1 1 210px;
-        max-width: min(100%, 420px);
+        position: relative;
         margin: 0;
         overflow: hidden;
+        aspect-ratio: 1;
         border-radius: 10px;
+        cursor: zoom-in;
         opacity: 0.94;
         rotate: -0.6deg;
+      }
+
+      .vibe-image:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--paper-accent) 36%, transparent);
+        outline-offset: 4px;
+      }
+
+      .vibe-images[data-vibe-image-count='1'] .vibe-image {
+        aspect-ratio: auto;
+      }
+
+      .vibe-image.is-extra {
+        display: none;
+      }
+
+      .vibe-images.is-expanded .vibe-image.is-extra {
+        display: block;
       }
 
       .vibe-image:nth-child(even) {
         rotate: 0.7deg;
       }
 
+      .vibe-image::before,
+      .vibe-image::after {
+        position: absolute;
+        z-index: 1;
+        pointer-events: none;
+        opacity: 0;
+        transition:
+          opacity 160ms ease,
+          transform 160ms ease;
+        content: '';
+      }
+
+      .vibe-image::before {
+        inset: 0;
+        background: color-mix(in srgb, var(--paper-ink) 24%, transparent);
+      }
+
+      .vibe-image::after {
+        right: 10px;
+        bottom: 10px;
+        width: 34px;
+        height: 34px;
+        border: 1px solid color-mix(in srgb, var(--paper-surface) 72%, transparent);
+        border-radius: 999px;
+        background-color: color-mix(in srgb, var(--paper-surface) 88%, transparent);
+        background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23343c35' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3M11 8v6M8 11h6'/%3E%3C/g%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        box-shadow: 0 8px 20px color-mix(in srgb, var(--paper-ink) 10%, transparent);
+        transform: translateY(2px) scale(0.96);
+      }
+
+      .vibe-image:hover::before,
+      .vibe-image:hover::after,
+      .vibe-image:focus-visible::before,
+      .vibe-image:focus-visible::after {
+        opacity: 1;
+      }
+
+      .vibe-image:hover::after,
+      .vibe-image:focus-visible::after {
+        transform: translateY(0) scale(1);
+      }
+
       .vibe-image img {
         display: block;
         width: 100%;
-        height: auto;
+        height: 100%;
         border-radius: 10px;
         filter: saturate(0.86) contrast(0.98);
+        object-fit: cover;
+      }
+
+      .vibe-images[data-vibe-image-count='1'] .vibe-image img {
+        height: auto;
+        object-fit: initial;
+      }
+
+      .vibe-image-toggle {
+        grid-column: 1 / -1;
+        justify-self: center;
+        margin: 4px 0 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: var(--paper-ink-faint);
+        cursor: pointer;
+        font-family: var(--font-meta);
+        font-size: 0.68rem;
+        line-height: 1.8;
+        text-decoration: underline;
+        text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
+        text-underline-offset: 0.28em;
+        opacity: 0.78;
+        transition:
+          color 160ms ease,
+          opacity 160ms ease;
+      }
+
+      .vibe-image-toggle:hover,
+      .vibe-image-toggle:focus-visible {
+        color: var(--paper-ink-soft);
+        opacity: 1;
+      }
+
+      .vibe-image-toggle:focus-visible {
+        outline: 1px solid color-mix(in srgb, var(--paper-accent) 42%, transparent);
+        outline-offset: 4px;
       }
 
       .vibe-item.quote .vibe-body {
@@ -395,9 +520,23 @@ const vibes = await Promise.all(
           line-height: 1.86;
         }
 
-        .vibe-image {
-          flex-basis: 100%;
-          max-width: 100%;
+        .vibe-images[data-vibe-image-columns='3'],
+        .vibe-images[data-vibe-image-columns='4'] {
+          --vibe-image-active-columns: 2;
+        }
+
+        .vibe-images {
+          width: 100%;
+        }
+
+        .vibe-image-toggle {
+          min-height: 34px;
+          font-size: 0.72rem;
+        }
+
+        .vibe-image::before,
+        .vibe-image::after {
+          display: none;
         }
       }
     </style>
@@ -440,7 +579,7 @@ const vibes = await Promise.all(
             )
           }
           {
-            vibes.map(({ entry, Content, align }, index) => (
+            vibes.map(({ entry, Content, align, imageLayout }, index) => (
               <article
                 class:list={['vibe-item', align, entry.data.size, entry.data.type]}
                 style={`--vibe-index: ${index}`}
@@ -462,17 +601,48 @@ const vibes = await Promise.all(
                 {entry.data.title && <h2 class="vibe-heading">{entry.data.title}</h2>}
 
                 {entry.data.images.length > 0 && (
-                  <div class="vibe-images" aria-label={`${entry.data.title ?? entry.id} images`}>
-                    {entry.data.images.map((image) => (
-                      <figure class="vibe-image">
+                  <div
+                    class:list={['vibe-images', imageLayout.isCollapsible && 'is-collapsible']}
+                    style={`--vibe-image-columns: ${imageLayout.columns};`}
+                    data-vibe-image-group
+                    data-vibe-image-count={imageLayout.count}
+                    data-vibe-image-columns={imageLayout.columns}
+                    aria-label={`${entry.data.title ?? entry.id} images`}
+                  >
+                    {entry.data.images.map((image, imageIndex) => (
+                      <figure
+                        class:list={[
+                          'vibe-image',
+                          imageLayout.isCollapsible &&
+                            imageIndex >= imageLayout.visibleCount &&
+                            'is-extra',
+                        ]}
+                        data-zoomable-image
+                        role="button"
+                        tabindex="0"
+                        aria-label={`${entry.data.title ?? entry.id} image ${imageIndex + 1}`}
+                      >
                         <SmartImage
                           src={image}
                           alt=""
                           widths={[360, 520, 720]}
                           sizes="(max-width: 720px) 100vw, 420px"
+                          data-zoomable-image-target
                         />
                       </figure>
                     ))}
+                    {imageLayout.isCollapsible && (
+                      <button
+                        class="vibe-image-toggle"
+                        type="button"
+                        aria-expanded="false"
+                        data-vibe-image-toggle
+                        data-expand-label={`展开 ${imageLayout.hiddenCount} 张`}
+                        data-collapse-label="收起图片"
+                      >
+                        展开 {imageLayout.hiddenCount} 张
+                      </button>
+                    )}
                   </div>
                 )}
 
@@ -491,5 +661,34 @@ const vibes = await Promise.all(
         <script>import {mountVibeThread} from '../utils/vibe-thread'; mountVibeThread();</script>
       )
     }
+    <script>
+      const mountVibeImageToggles = () => {
+        document
+          .querySelectorAll<HTMLButtonElement>('[data-vibe-image-toggle]')
+          .forEach((button) => {
+            if (button.dataset.vibeImageToggleBound === 'true') {
+              return;
+            }
+
+            button.dataset.vibeImageToggleBound = 'true';
+
+            button.addEventListener('click', () => {
+              const group = button.closest<HTMLElement>('[data-vibe-image-group]');
+
+              if (!group) return;
+
+              const isExpanded = group.classList.toggle('is-expanded');
+              button.setAttribute('aria-expanded', String(isExpanded));
+              button.textContent = isExpanded
+                ? (button.dataset.collapseLabel ?? '收起图片')
+                : (button.dataset.expandLabel ?? '展开图片');
+            });
+          });
+      };
+
+      document.addEventListener('astro:page-load', mountVibeImageToggles);
+      mountVibeImageToggles();
+    </script>
+    <ZoomableImage />
   </body>
 </html>
