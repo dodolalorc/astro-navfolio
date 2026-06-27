@@ -179,11 +179,6 @@ const initBranchToggles = (signal: AbortSignal): void => {
       'click',
       () => {
         const expanded = item.dataset.tocExpanded === 'true';
-        const hasActiveChild = Boolean(item.querySelector('[data-toc-link][aria-current="true"]'));
-
-        if (expanded && hasActiveChild) {
-          return;
-        }
 
         setBranchExpanded(item, !expanded);
       },
