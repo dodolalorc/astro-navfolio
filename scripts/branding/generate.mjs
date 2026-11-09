@@ -72,6 +72,9 @@ images.forEach((image, i) => {
   const entry = 6 + 16 * i;
   header[entry] = sizes[i];
   header[entry + 1] = sizes[i];
+  // ICONDIRENTRY: four BYTEs, then two WORDs (2 bytes each).
+  // wPlanes is at +4, wBitCount at +6; dwBytesInRes starts at +8.
+  // https://devblogs.microsoft.com/oldnewthing/20101018-00/?p=12513
   header.writeUInt16LE(1, entry + 4);
   header.writeUInt16LE(32, entry + 6);
   header.writeUInt32LE(image.length, entry + 8);

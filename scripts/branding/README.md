@@ -14,7 +14,14 @@ Regenerate exports from the repository root with:
 
 ```sh
 node scripts/branding/generate.mjs
+node scripts/branding/verify-ico.mjs
 ```
+
+The ICO verifier checks directory field bytes, payload bounds, and decoding of all
+three PNG images. Each directory entry starts with four one-byte fields, followed
+by the two-byte planes field at offset `+4` and the two-byte bit-count field at
+`+6`. The image length starts at `+8`; writing the bit count at `+7` would corrupt
+that length. See Microsoft's [ICO format description](https://devblogs.microsoft.com/oldnewthing/20101018-00/?p=12513).
 
 The master and README lockup were created with the built-in image generation tool,
 using the previous `logo-cat.png` as the character reference. Sharp handles
