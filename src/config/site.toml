@@ -124,7 +124,7 @@ role = "A Cat Developer"
 email = "hello@navfolio.site"
 website = "https://astro.navfolio.site/"
 github = "https://github.com/dodolalorc/astro-navfolio"
-avatar = "/images/logo-thin.webp"
+avatar = "/images/avatar.webp"
 
 [[config.topNav.links]]
 label = "Home"
